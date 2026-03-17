@@ -41,12 +41,6 @@ $flash = get_flash();
                     <a class="button button--primary" href="#acceso">Empezar ahora</a>
                     <a class="button button--ghost" href="#temario">Ver 100 niveles</a>
                 </div>
-                <div class="hero__badges">
-                    <span><i class="fa-solid fa-bolt"></i> PHP puro</span>
-                    <span><i class="fa-solid fa-database"></i> MySQL</span>
-                    <span><i class="fa-solid fa-mobile-screen"></i> Responsive</span>
-                    <span><i class="fa-solid fa-trophy"></i> Ranking</span>
-                </div>
                 <div class="hero__metrics" data-stagger-group>
                     <article class="metric-pill" data-reveal-item>
                         <strong>20</strong>
@@ -226,14 +220,6 @@ $flash = get_flash();
                 </div>
             </section>
         </main>
-
-        <section class="bottom-banner" data-reveal>
-            <div>
-                <span class="eyebrow">Listo para publicar</span>
-                <h2>Subible directo a Hostinger sin proceso de build.</h2>
-            </div>
-            <p>La UI usa librerías frontend por CDN, así que no dependes de Node para desplegar el proyecto.</p>
-        </section>
     </div>
     <?php render_app_scripts(); ?>
 </body>
