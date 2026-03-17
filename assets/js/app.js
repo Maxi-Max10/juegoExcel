@@ -128,11 +128,14 @@ function initStudyChat() {
         widget.classList.toggle('is-open', open);
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+        panel.hidden = !open;
 
         if (open) {
             window.setTimeout(() => textarea?.focus(), 120);
         }
     };
+
+    setOpen(false);
 
     toggle.addEventListener('click', () => {
         setOpen(!widget.classList.contains('is-open'));

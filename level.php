@@ -143,12 +143,12 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
         </main>
 
         <div class="chat-widget" data-study-chat>
-            <button class="chat-widget__toggle" type="button" data-chat-toggle aria-expanded="false" aria-controls="study-chat-panel">
+            <button class="button button--primary chat-widget__toggle" type="button" data-chat-toggle aria-expanded="false" aria-controls="study-chat-panel">
                 <i class="fa-solid fa-comments"></i>
                 <span>Asistente</span>
             </button>
 
-            <section id="study-chat-panel" class="chat-card chat-card--floating" data-chat-panel aria-hidden="true">
+            <section id="study-chat-panel" class="chat-card chat-card--floating" data-chat-panel aria-hidden="true" hidden>
                 <div class="chat-card__header chat-card__header--floating">
                     <div>
                         <h3>Asistente de estudio</h3>
