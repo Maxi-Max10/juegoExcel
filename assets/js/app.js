@@ -124,25 +124,23 @@ function initStudyChat() {
     const levelId = form.dataset.levelId || '';
     const history = [];
 
-    const setOpen = (open) => {
+    const syncOpenState = () => {
+        const open = widget.hasAttribute('open');
         widget.classList.toggle('is-open', open);
         toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         panel.setAttribute('aria-hidden', open ? 'false' : 'true');
-        panel.hidden = !open;
 
         if (open) {
             window.setTimeout(() => textarea?.focus(), 120);
         }
     };
 
-    setOpen(false);
-
-    toggle.addEventListener('click', () => {
-        setOpen(!widget.classList.contains('is-open'));
-    });
+    syncOpenState();
+    widget.addEventListener('toggle', syncOpenState);
 
     close.addEventListener('click', () => {
-        setOpen(false);
+        widget.removeAttribute('open');
+        syncOpenState();
     });
 
     form.addEventListener('submit', async (event) => {
@@ -153,7 +151,8 @@ function initStudyChat() {
             return;
         }
 
-        setOpen(true);
+        widget.setAttribute('open', 'open');
+        syncOpenState();
 
         appendChatMessage(thread, 'user', message);
         history.push({ role: 'user', content: message });

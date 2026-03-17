@@ -142,13 +142,13 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
             </aside>
         </main>
 
-        <div class="chat-widget" data-study-chat>
-            <button class="button button--primary chat-widget__toggle" type="button" data-chat-toggle aria-expanded="false" aria-controls="study-chat-panel" onclick="(function(btn){const widget=btn.closest('[data-study-chat]');const panel=widget.querySelector('[data-chat-panel]');const open=!widget.classList.contains('is-open');widget.classList.toggle('is-open',open);btn.setAttribute('aria-expanded',open?'true':'false');panel.setAttribute('aria-hidden',open?'false':'true');panel.hidden=!open;})(this)">
+        <details class="chat-widget" data-study-chat>
+            <summary class="button button--primary chat-widget__toggle" data-chat-toggle>
                 <i class="fa-solid fa-comments"></i>
                 <span>Asistente</span>
-            </button>
+            </summary>
 
-            <section id="study-chat-panel" class="chat-card chat-card--floating" data-chat-panel aria-hidden="true" hidden>
+            <section id="study-chat-panel" class="chat-card chat-card--floating" data-chat-panel>
                 <div class="chat-card__header chat-card__header--floating">
                     <div>
                         <h3>Asistente de estudio</h3>
@@ -156,7 +156,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     </div>
                     <div class="chat-card__controls">
                         <span class="pill pill--neutral">Sin respuesta final</span>
-                        <button class="chat-card__close" type="button" data-chat-close aria-label="Cerrar asistente" onclick="(function(btn){const widget=btn.closest('[data-study-chat]');const panel=widget.querySelector('[data-chat-panel]');const toggle=widget.querySelector('[data-chat-toggle]');widget.classList.remove('is-open');toggle.setAttribute('aria-expanded','false');panel.setAttribute('aria-hidden','true');panel.hidden=true;})(this)">
+                        <button class="chat-card__close" type="button" data-chat-close aria-label="Cerrar asistente">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
@@ -176,7 +176,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     <button class="button button--secondary button--wide" type="submit">Preguntar al asistente</button>
                 </form>
             </section>
-        </div>
+        </details>
     </div>
     <?php render_app_scripts(); ?>
 </body>

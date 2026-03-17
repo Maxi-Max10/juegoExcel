@@ -1052,6 +1052,14 @@ img {
     gap: 14px;
 }
 
+[data-study-chat].chat-widget > summary {
+    list-style: none;
+}
+
+[data-study-chat].chat-widget > summary::-webkit-details-marker {
+    display: none;
+}
+
 [data-study-chat] .chat-widget__toggle {
     appearance: none;
     border: 0;
@@ -1090,6 +1098,7 @@ img {
     bottom: 92px;
     width: min(420px, calc(100vw - 32px));
     max-height: min(78vh, 720px);
+    display: none;
     opacity: 0;
     transform: translateY(18px) scale(0.98);
     transform-origin: bottom right;
@@ -1097,7 +1106,9 @@ img {
     transition: opacity 180ms ease, transform 180ms ease;
 }
 
-[data-study-chat].is-open .chat-card--floating {
+[data-study-chat].is-open .chat-card--floating,
+[data-study-chat][open] .chat-card--floating {
+    display: grid;
     opacity: 1;
     transform: translateY(0) scale(1);
     pointer-events: auto;
