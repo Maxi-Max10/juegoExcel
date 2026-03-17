@@ -792,33 +792,34 @@ img {
 }
 
 .stat-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 228px;
     padding: 26px;
-    background: linear-gradient(180deg, rgba(255, 252, 248, 0.96), rgba(248, 242, 234, 0.92));
-    border: 1px solid rgba(255, 255, 255, 0.72);
+    background: linear-gradient(180deg, rgba(255, 253, 249, 0.98), rgba(249, 243, 236, 0.94));
+    border: 1px solid rgba(255, 255, 255, 0.82);
     overflow: hidden;
 }
 
 .stat-card::before {
     content: '';
     position: absolute;
-    inset: auto -30px -40px auto;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+    left: 26px;
+    top: 0;
+    width: 64px;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(12, 122, 99, 0.9), rgba(255, 141, 65, 0.7));
     pointer-events: none;
 }
 
 .stat-card__top {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 14px;
+    justify-content: flex-start;
+    margin-bottom: 18px;
 }
 
 .stat-card__label {
@@ -840,37 +841,9 @@ img {
 
 .stat-card p {
     margin: 0;
-    max-width: 24ch;
-    font-size: 1.04rem;
+    max-width: 26ch;
+    font-size: 1rem;
     line-height: 1.45;
-}
-
-.stat-card__icon {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 16px;
-    background: rgba(12, 122, 99, 0.12);
-    color: var(--primary-strong);
-    box-shadow: inset 0 0 0 1px rgba(12, 122, 99, 0.08);
-}
-
-.stat-card__icon--amber {
-    background: rgba(247, 201, 72, 0.18);
-    color: #b88307;
-}
-
-.stat-card__icon--blue {
-    background: rgba(38, 116, 240, 0.14);
-    color: var(--info);
-}
-
-.stat-card__icon--rose {
-    background: rgba(207, 77, 96, 0.14);
-    color: var(--danger);
 }
 
 .stat-card__cta {
@@ -887,12 +860,6 @@ img {
 .stat-card--highlight .stat-card__label,
 .stat-card--highlight p {
     color: rgba(255, 255, 255, 0.82);
-}
-
-.stat-card--highlight .stat-card__icon {
-    background: rgba(255, 255, 255, 0.16);
-    color: #ffffff;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .stat-card--highlight .stat-card__cta.button--primary {
