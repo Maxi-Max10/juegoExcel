@@ -115,16 +115,37 @@ curl_close($ch);
 
 if ($response === false || $curlError !== '') {
     http_response_code(502);
-    echo json_encode(['success' => false, 'message' => 'No se pudo contactar al asistente externo.']);
+    echo json_encode([
+        'success' => false,
+        'message' => 'No se pudo contactar al asistente externo. ' . trim($curlError),
+    ]);
     exit;
 }
 
 $decoded = json_decode($response, true);
 $reply = trim((string) ($decoded['choices'][0]['message']['content'] ?? ''));
 
-if ($statusCode >= 400 || $reply === '') {
+if (!is_array($decoded)) {
     http_response_code(502);
-    echo json_encode(['success' => false, 'message' => 'El asistente no pudo responder en este momento.']);
+    echo json_encode([
+        'success' => false,
+        'message' => 'La respuesta del asistente no fue valida.',
+    ]);
+    exit;
+}
+
+if ($statusCode >= 400 || $reply === '') {
+    $apiErrorMessage = trim((string) ($decoded['error']['message'] ?? ''));
+    $apiErrorType = trim((string) ($decoded['error']['type'] ?? ''));
+    $details = trim($apiErrorType . ($apiErrorMessage !== '' ? ': ' . $apiErrorMessage : ''));
+
+    http_response_code(502);
+    echo json_encode([
+        'success' => false,
+        'message' => $details !== ''
+            ? 'El asistente no pudo responder. ' . $details
+            : 'El asistente no pudo responder en este momento.',
+    ]);
     exit;
 }
 
