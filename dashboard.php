@@ -79,24 +79,36 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
 
         <section class="overview-grid" data-stagger-group>
             <article class="stat-card stat-card--highlight">
-                <span class="stat-card__label">Siguiente reto</span>
-                <strong>Nivel <?= e((string) $currentLevel) ?></strong>
+                <div class="stat-card__top">
+                    <span class="stat-card__label">Siguiente reto</span>
+                    <span class="stat-card__icon"><i class="fa-solid fa-flag-checkered"></i></span>
+                </div>
+                <strong class="stat-card__value">Nivel <?= e((string) $currentLevel) ?></strong>
                 <p><?= e(level_band_title($currentLevel)) ?> · Sigue donde te quedaste.</p>
-                <a class="button button--primary" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Continuar</a>
+                <a class="button button--primary stat-card__cta" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Continuar</a>
             </article>
             <article class="stat-card" data-reveal-item>
-                <span class="stat-card__label">Puntos</span>
-                <strong><?= e((string) $progress['puntos']) ?></strong>
+                <div class="stat-card__top">
+                    <span class="stat-card__label">Puntos</span>
+                    <span class="stat-card__icon stat-card__icon--amber"><i class="fa-solid fa-star"></i></span>
+                </div>
+                <strong class="stat-card__value"><?= e((string) $progress['puntos']) ?></strong>
                 <p>Se acumulan con cada nivel nuevo completado.</p>
             </article>
             <article class="stat-card" data-reveal-item>
-                <span class="stat-card__label">Niveles completados</span>
-                <strong><?= e((string) $progress['niveles_completados']) ?>/<?= TOTAL_LEVELS ?></strong>
+                <div class="stat-card__top">
+                    <span class="stat-card__label">Niveles completados</span>
+                    <span class="stat-card__icon stat-card__icon--blue"><i class="fa-solid fa-layer-group"></i></span>
+                </div>
+                <strong class="stat-card__value"><?= e((string) $progress['niveles_completados']) ?>/<?= TOTAL_LEVELS ?></strong>
                 <p>Tu dominio actual de Excel en el juego.</p>
             </article>
             <article class="stat-card" data-reveal-item>
-                <span class="stat-card__label">Vidas</span>
-                <strong><?= e((string) $progress['vidas']) ?>/5</strong>
+                <div class="stat-card__top">
+                    <span class="stat-card__label">Vidas</span>
+                    <span class="stat-card__icon stat-card__icon--rose"><i class="fa-solid fa-heart"></i></span>
+                </div>
+                <strong class="stat-card__value"><?= e((string) $progress['vidas']) ?>/5</strong>
                 <p>Se recuperan poco a poco cuando respondes bien.</p>
             </article>
         </section>
