@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    document.documentElement.classList.add('js-ready');
     initAuthTabs();
     initLevelForm();
+    initMotion();
+    initLevelCardTilt();
+    initScrollHints();
 });
 
 function initAuthTabs() {
@@ -156,4 +160,116 @@ function celebrate() {
     window.setTimeout(() => {
         burst.remove();
     }, 1400);
+}
+
+function initMotion() {
+    if (!window.gsap) {
+        return;
+    }
+
+    if (window.ScrollTrigger) {
+        window.gsap.registerPlugin(window.ScrollTrigger);
+    }
+
+    const revealBlocks = document.querySelectorAll('[data-reveal]');
+    revealBlocks.forEach((element, index) => {
+        const config = {
+            opacity: 0,
+            y: 28,
+            duration: 0.8,
+            ease: 'power3.out',
+            delay: index < 2 ? index * 0.08 : 0,
+        };
+
+        if (window.ScrollTrigger) {
+            window.gsap.from(element, {
+                ...config,
+                scrollTrigger: {
+                    trigger: element,
+                    start: 'top 88%',
+                    once: true,
+                },
+            });
+            return;
+        }
+
+        window.gsap.from(element, config);
+    });
+
+    document.querySelectorAll('[data-stagger-group]').forEach((group) => {
+        const items = group.querySelectorAll('[data-reveal-item]');
+        if (!items.length) {
+            return;
+        }
+
+        if (window.ScrollTrigger) {
+            window.gsap.from(items, {
+                opacity: 0,
+                y: 22,
+                duration: 0.7,
+                stagger: 0.1,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: group,
+                    start: 'top 88%',
+                    once: true,
+                },
+            });
+            return;
+        }
+
+        window.gsap.from(items, {
+            opacity: 0,
+            y: 22,
+            duration: 0.7,
+            stagger: 0.1,
+            ease: 'power2.out',
+        });
+    });
+
+    const orbits = document.querySelectorAll('.hero-orbit');
+    orbits.forEach((orbit, index) => {
+        window.gsap.to(orbit, {
+            y: index % 2 === 0 ? -10 : 12,
+            x: index === 1 ? 8 : -6,
+            duration: 2.4 + index * 0.4,
+            repeat: -1,
+            yoyo: true,
+            ease: 'sine.inOut',
+        });
+    });
+}
+
+function initLevelCardTilt() {
+    if (window.matchMedia('(pointer: coarse)').matches) {
+        return;
+    }
+
+    document.querySelectorAll('[data-level-card]').forEach((card) => {
+        card.addEventListener('mousemove', (event) => {
+            const bounds = card.getBoundingClientRect();
+            const px = (event.clientX - bounds.left) / bounds.width;
+            const py = (event.clientY - bounds.top) / bounds.height;
+            const rotateY = (px - 0.5) * 7;
+            const rotateX = (0.5 - py) * 7;
+
+            card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}
+
+function initScrollHints() {
+    document.querySelectorAll('.excel-grid-wrapper').forEach((wrapper) => {
+        const update = () => {
+            const hasOverflow = wrapper.scrollWidth > wrapper.clientWidth + 8;
+            wrapper.classList.toggle('has-overflow', hasOverflow);
+        };
+
+        update();
+        window.addEventListener('resize', update, { passive: true });
+    });
 }

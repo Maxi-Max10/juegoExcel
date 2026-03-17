@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/layout.php';
 
 require_login();
 
@@ -29,20 +30,29 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= e(APP_NAME) ?> | Nivel <?= e((string) $requestedLevel) ?></title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <?php render_head(APP_NAME . ' | Nivel ' . (string) $requestedLevel); ?>
 </head>
 <body class="app-page">
     <div class="page-shell">
-        <header class="topbar">
+        <header class="site-header" data-reveal>
+            <a class="brand" href="dashboard.php">
+                <span class="brand__mark"><i class="fa-solid fa-table-cells-large"></i></span>
+                <span>
+                    <strong>Excel Quest</strong>
+                    <small>Modo práctica</small>
+                </span>
+            </a>
+            <nav class="site-nav site-nav--actions">
+                <a href="dashboard.php">Mapa</a>
+                <a href="leaderboard.php">Ranking</a>
+            </nav>
+        </header>
+
+        <header class="topbar topbar--hero" data-reveal>
             <div>
                 <a class="eyebrow link-inline" href="dashboard.php">Volver al mapa</a>
                 <h1>Nivel <?= e((string) $requestedLevel) ?> · <?= e($level['titulo']) ?></h1>
+                <p class="topbar__lead">El objetivo es escribir una fórmula válida en la celda marcada. La hoja se adapta a móvil con desplazamiento seguro y feedback inmediato.</p>
             </div>
             <div class="topbar__actions">
                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
@@ -54,9 +64,22 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
             <div class="flash flash--<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
         <?php endif; ?>
 
+        <section class="lesson-spotlight" data-reveal>
+            <article class="lesson-spotlight__card">
+                <div>
+                    <span class="eyebrow">Objetivo actual</span>
+                    <h2><?= e($level['consigna']) ?></h2>
+                </div>
+                <div class="lesson-spotlight__meta">
+                    <span><i class="fa-solid fa-location-crosshairs"></i> Celda <?= e($level['formula_target']) ?></span>
+                    <span><i class="fa-solid fa-star"></i> <?= e((string) $level['points_reward']) ?> pts</span>
+                </div>
+            </article>
+        </section>
+
         <main class="play-layout">
             <section class="play-panel">
-                <div class="prompt-card">
+                <div class="prompt-card" data-reveal>
                     <span class="eyebrow"><?= e($level['categoria']) ?></span>
                     <h2><?= e($level['consigna']) ?></h2>
                     <p>Escribe la fórmula exacta para colocarla en la celda <?= e($level['formula_target']) ?>.</p>
@@ -66,7 +89,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
             </section>
 
             <aside class="play-sidebar">
-                <section class="answer-card">
+                <section class="answer-card" data-reveal>
                     <h2>Tu respuesta</h2>
                     <form id="level-form" class="stacked-form" data-next-level="<?= e((string) $nextLevel) ?>" data-dashboard-url="dashboard.php" novalidate>
                         <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
@@ -87,7 +110,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     </div>
                 </section>
 
-                <section class="mini-stat-card">
+                <section class="mini-stat-card" data-reveal>
                     <h3>Tu progreso</h3>
                     <p>Nivel actual desbloqueado: <?= e((string) $progress['nivel_actual']) ?></p>
                     <p>Puntos acumulados: <strong id="player-points"><?= e((string) $progress['puntos']) ?></strong></p>
@@ -97,7 +120,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     </div>
                 </section>
 
-                <section class="hint-card">
+                <section class="hint-card" data-reveal>
                     <h3>Tip rápido</h3>
                     <ul>
                         <li>Usa paréntesis cuando combines operaciones.</li>
@@ -108,6 +131,6 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
             </aside>
         </main>
     </div>
-    <script src="assets/js/app.js"></script>
+    <?php render_app_scripts(); ?>
 </body>
 </html>

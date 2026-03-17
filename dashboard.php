@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/layout.php';
 
 require_login();
 
@@ -17,24 +18,33 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= e(APP_NAME) ?> | Panel</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <?php render_head(APP_NAME . ' | Panel'); ?>
 </head>
 <body class="app-page">
     <div class="page-shell">
-        <header class="topbar">
+        <header class="site-header" data-reveal>
+            <a class="brand" href="dashboard.php">
+                <span class="brand__mark"><i class="fa-solid fa-table-cells-large"></i></span>
+                <span>
+                    <strong>Excel Quest</strong>
+                    <small>Panel de progreso</small>
+                </span>
+            </a>
+            <nav class="site-nav site-nav--actions">
+                <a href="leaderboard.php">Ranking</a>
+                <a href="logout.php">Salir</a>
+            </nav>
+        </header>
+
+        <header class="topbar topbar--hero" data-reveal>
             <div>
                 <span class="eyebrow">Hola, <?= e($user['username'] ?? $_SESSION['username'] ?? 'Jugador') ?></span>
                 <h1>Mapa de progreso</h1>
+                <p class="topbar__lead">Tu tablero resume dónde estás, qué te falta y cuál es el siguiente reto que más impacto tiene en tu avance.</p>
             </div>
             <nav class="topbar__actions">
-                <a class="button button--ghost" href="leaderboard.php">Ranking</a>
-                <a class="button button--ghost" href="logout.php">Salir</a>
+                <a class="button button--primary" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Jugar ahora</a>
+                <a class="button button--ghost" href="leaderboard.php">Ver ranking</a>
             </nav>
         </header>
 
@@ -42,31 +52,56 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
             <div class="flash flash--<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
         <?php endif; ?>
 
-        <section class="overview-grid">
+        <section class="dashboard-hero-grid">
+            <article class="focus-card" data-reveal>
+                <div class="focus-card__copy">
+                    <span class="eyebrow">Siguiente misión</span>
+                    <h2>Nivel <?= e((string) $currentLevel) ?> listo para jugar</h2>
+                    <p><?= e(level_band_title($currentLevel)) ?> · Mantén el ritmo, suma puntos y desbloquea la siguiente zona.</p>
+                    <div class="focus-card__actions">
+                        <a class="button button--primary" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Continuar partida</a>
+                        <a class="button button--ghost" href="leaderboard.php">Comparar ranking</a>
+                    </div>
+                </div>
+                <div class="focus-card__rings">
+                    <div class="focus-ring">
+                        <span><?= number_format(progress_percentage($progress), 0) ?>%</span>
+                        <small>Completado</small>
+                    </div>
+                    <ul class="focus-list">
+                        <li><i class="fa-solid fa-star"></i> <?= e((string) $progress['puntos']) ?> puntos</li>
+                        <li><i class="fa-solid fa-heart"></i> <?= e((string) $progress['vidas']) ?>/5 vidas</li>
+                        <li><i class="fa-solid fa-layer-group"></i> <?= e((string) $progress['niveles_completados']) ?> niveles resueltos</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <section class="overview-grid" data-stagger-group>
             <article class="stat-card stat-card--highlight">
                 <span class="stat-card__label">Siguiente reto</span>
                 <strong>Nivel <?= e((string) $currentLevel) ?></strong>
                 <p><?= e(level_band_title($currentLevel)) ?> · Sigue donde te quedaste.</p>
                 <a class="button button--primary" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Continuar</a>
             </article>
-            <article class="stat-card">
+            <article class="stat-card" data-reveal-item>
                 <span class="stat-card__label">Puntos</span>
                 <strong><?= e((string) $progress['puntos']) ?></strong>
                 <p>Se acumulan con cada nivel nuevo completado.</p>
             </article>
-            <article class="stat-card">
+            <article class="stat-card" data-reveal-item>
                 <span class="stat-card__label">Niveles completados</span>
                 <strong><?= e((string) $progress['niveles_completados']) ?>/<?= TOTAL_LEVELS ?></strong>
                 <p>Tu dominio actual de Excel en el juego.</p>
             </article>
-            <article class="stat-card">
+            <article class="stat-card" data-reveal-item>
                 <span class="stat-card__label">Vidas</span>
                 <strong><?= e((string) $progress['vidas']) ?>/5</strong>
                 <p>Se recuperan poco a poco cuando respondes bien.</p>
             </article>
         </section>
 
-        <section class="progress-section">
+        <section class="progress-section" data-reveal>
             <div>
                 <div class="section-heading">
                     <h2>Progreso general</h2>
@@ -88,7 +123,7 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
         </section>
 
         <main class="dashboard-grid">
-            <section class="levels-panel">
+            <section class="levels-panel" data-reveal>
                 <div class="section-heading">
                     <h2>Ruta de 100 niveles</h2>
                     <span>Desbloqueo progresivo</span>
@@ -102,7 +137,7 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
                         $unlocked = level_is_unlocked($progress, $number);
                         $cardClass = $completed ? 'is-completed' : ($unlocked ? 'is-unlocked' : 'is-locked');
                         ?>
-                        <article class="level-card <?= e($cardClass) ?>">
+                        <article class="level-card <?= e($cardClass) ?>" data-level-card>
                             <div class="level-card__header">
                                 <span class="level-card__number">Nivel <?= e((string) $number) ?></span>
                                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
@@ -123,7 +158,7 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
             </section>
 
             <aside class="side-panel">
-                <section class="leaderboard-card">
+                <section class="leaderboard-card" data-reveal>
                     <div class="section-heading">
                         <h2>Top jugadores</h2>
                         <a href="leaderboard.php">Ver más</a>
@@ -141,7 +176,7 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
                     </ol>
                 </section>
 
-                <section class="hint-card">
+                <section class="hint-card" data-reveal>
                     <h2>Cómo avanzar más rápido</h2>
                     <ul>
                         <li>Escribe la fórmula con o sin espacios: el validador normaliza el formato.</li>
@@ -152,6 +187,6 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
             </aside>
         </main>
     </div>
-    <script src="assets/js/app.js"></script>
+    <?php render_app_scripts(); ?>
 </body>
 </html>

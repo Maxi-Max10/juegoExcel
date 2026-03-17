@@ -38,4 +38,12 @@ php -S localhost:8000
 - Desbloqueo progresivo y puntaje acumulado
 - Sistema de vidas y racha
 - Ranking de jugadores
-- Interfaz responsive con animaciones y sonidos generados por JavaScript
+- Interfaz responsive con animaciones, microinteracciones y sonidos generados por JavaScript
+
+## Librerías frontend integradas
+
+- GSAP por CDN para animaciones de entrada y movimiento sutil
+- ScrollTrigger por CDN para revelar bloques al hacer scroll
+- Font Awesome por CDN para iconografía
+
+Este enfoque evita depender de Node o de un build step, lo que simplifica la publicación en Hostinger.

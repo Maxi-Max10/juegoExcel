@@ -2,27 +2,42 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/layout.php';
 
 $leaderboard = fetch_leaderboard(25);
 $flash = get_flash();
+$podium = array_slice($leaderboard, 0, 3);
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= e(APP_NAME) ?> | Ranking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <?php render_head(APP_NAME . ' | Ranking'); ?>
 </head>
 <body class="app-page">
     <div class="page-shell">
-        <header class="topbar">
+        <header class="site-header" data-reveal>
+            <a class="brand" href="index.php">
+                <span class="brand__mark"><i class="fa-solid fa-table-cells-large"></i></span>
+                <span>
+                    <strong>Excel Quest</strong>
+                    <small>Ranking global</small>
+                </span>
+            </a>
+            <nav class="site-nav site-nav--actions">
+                <a href="dashboard.php">Mapa</a>
+                <?php if (is_logged_in()): ?>
+                    <a href="logout.php">Salir</a>
+                <?php else: ?>
+                    <a href="index.php">Entrar</a>
+                <?php endif; ?>
+            </nav>
+        </header>
+
+        <header class="topbar topbar--hero" data-reveal>
             <div>
                 <span class="eyebrow">Competencia sana</span>
                 <h1>Ranking de jugadores</h1>
+                <p class="topbar__lead">Los mejores puestos premian precisión y constancia. El empate se resuelve por niveles completados.</p>
             </div>
             <nav class="topbar__actions">
                 <a class="button button--ghost" href="dashboard.php">Mapa</a>
@@ -38,12 +53,22 @@ $flash = get_flash();
             <div class="flash flash--<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
         <?php endif; ?>
 
-        <section class="leaderboard-hero">
+        <section class="leaderboard-hero" data-reveal>
             <h2>Los mejores puntajes combinan precisión, constancia y dominio de fórmulas.</h2>
             <p>Se ordena por puntos totales y luego por niveles completados.</p>
         </section>
 
-        <section class="leaderboard-table-card">
+        <section class="podium-grid" data-stagger-group>
+            <?php foreach ($podium as $index => $entry): ?>
+                <article class="podium-card podium-card--<?= e((string) ($index + 1)) ?>" data-reveal-item>
+                    <span class="podium-card__place">#<?= e((string) ($index + 1)) ?></span>
+                    <h3><?= e($entry['username']) ?></h3>
+                    <p><?= e((string) $entry['puntos']) ?> pts · <?= e((string) $entry['niveles_completados']) ?> niveles</p>
+                </article>
+            <?php endforeach; ?>
+        </section>
+
+        <section class="leaderboard-table-card" data-reveal>
             <table class="leaderboard-table">
                 <thead>
                     <tr>
@@ -68,6 +93,6 @@ $flash = get_flash();
             </table>
         </section>
     </div>
-    <script src="assets/js/app.js"></script>
+    <?php render_app_scripts(); ?>
 </body>
 </html>
