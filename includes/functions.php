@@ -282,6 +282,146 @@ function level_band_title(int $number): string
     };
 }
 
+function level_learning_guide(array $level): array
+{
+    $formula = mb_strtoupper(normalize_formula((string) ($level['respuesta_correcta'] ?? '')), 'UTF-8');
+    $category = mb_strtoupper((string) ($level['categoria'] ?? ''), 'UTF-8');
+
+    if (str_contains($formula, 'SI.ERROR')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'SI.ERROR sirve para mostrar un resultado alternativo cuando una formula puede fallar. Primero se evalua la formula principal y, si devuelve error, Excel muestra el valor de respaldo.',
+            'example' => '=SI.ERROR(BUSCARV(H2,A2:D10,3,FALSO),"No encontrado")',
+        ];
+    }
+
+    if (str_contains($formula, 'BUSCARX')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'BUSCARX busca un valor en una columna o fila y devuelve el dato relacionado desde otro rango. Es ideal cuando quieres una busqueda exacta y mas flexible que BUSCARV.',
+            'example' => '=BUSCARX(H2,A2:A10,C2:C10,"No encontrado")',
+        ];
+    }
+
+    if (str_contains($formula, 'BUSCARV')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'BUSCARV localiza un valor en la primera columna de una tabla y devuelve el dato de otra columna en la misma fila. En estos retos debes fijarte bien en la referencia, la tabla y el numero de columna.',
+            'example' => '=BUSCARV(H2,A2:D10,3,FALSO)',
+        ];
+    }
+
+    if (str_contains($formula, 'PROMEDIO.SI')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'PROMEDIO.SI calcula la media solo de los valores que cumplen una condicion. Primero se define donde se revisa el criterio y luego el rango que se promedia.',
+            'example' => '=PROMEDIO.SI(A2:A10,"Marketing",B2:B10)',
+        ];
+    }
+
+    if (str_contains($formula, 'SUMAR.SI')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'SUMAR.SI suma un rango solo cuando otro rango cumple una condicion. Es util para totalizar ventas, zonas, estados o categorias concretas.',
+            'example' => '=SUMAR.SI(A2:A10,"Norte",B2:B10)',
+        ];
+    }
+
+    if (preg_match('/=SI\(/u', $formula) === 1) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'SI permite tomar decisiones en Excel. Evalua una condicion, devuelve un valor si se cumple y otro distinto si no se cumple.',
+            'example' => '=SI(B2>=70,"Aprobado","Reforzar")',
+        ];
+    }
+
+    if (str_contains($formula, 'PROMEDIO(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'PROMEDIO suma todos los valores del rango y los divide por la cantidad de datos numericos. Se usa para obtener una media rapida de resultados o cantidades.',
+            'example' => '=PROMEDIO(B2:B6)',
+        ];
+    }
+
+    if (str_contains($formula, 'CONTAR(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'CONTAR devuelve cuantas celdas numericas hay dentro de un rango. Sirve para saber cuantos datos validos tienes en una lista.',
+            'example' => '=CONTAR(B2:B10)',
+        ];
+    }
+
+    if (str_contains($formula, 'MAX(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'MAX encuentra el valor mas alto de un rango. Es la forma rapida de detectar el mejor resultado, el mayor precio o el pico de una serie.',
+            'example' => '=MAX(C2:C10)',
+        ];
+    }
+
+    if (str_contains($formula, 'MIN(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'MIN devuelve el valor mas bajo de un rango. Es util para localizar el minimo costo, la menor nota o el dato mas pequeno.',
+            'example' => '=MIN(C2:C10)',
+        ];
+    }
+
+    if (str_contains($formula, 'SUMA(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'SUMA agrega varios valores o un rango completo en una sola formula. Es la base para totalizar listas de cantidades, costos o ventas.',
+            'example' => '=SUMA(B2:B6)',
+        ];
+    }
+
+    if (str_contains($formula, '*') && str_contains($formula, '+')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'En este tipo de nivel combinas operaciones. Conviene resolver primero multiplicaciones o divisiones y usar parentesis si necesitas controlar el orden del calculo.',
+            'example' => '=B2*C2+D2',
+        ];
+    }
+
+    if (str_contains($formula, '/')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'La division compara una cantidad con otra. Este tipo de formula se usa para razones, promedios simples o indicadores de rendimiento.',
+            'example' => '=D4/C4',
+        ];
+    }
+
+    if (str_contains($formula, '*') || str_contains($category, 'MULTIPLICACION')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'La multiplicacion sirve para calcular totales por cantidad, precio por unidad o combinaciones de dos valores relacionados.',
+            'example' => '=B3*C3',
+        ];
+    }
+
+    if (str_contains($formula, '-') || str_contains($category, 'RESTA')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'La resta se usa para obtener diferencias entre dos o mas valores. Te ayuda a calcular descuentos, faltantes o variaciones.',
+            'example' => '=D3-C3',
+        ];
+    }
+
+    if (str_contains($formula, '+') || str_contains($category, 'SUMA')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'La suma combina valores para obtener un total. En estos ejercicios debes fijarte en las celdas correctas y en el orden de la operacion si hay mas de un paso.',
+            'example' => '=B2+C2',
+        ];
+    }
+
+    return [
+        'title' => 'Explicacion del nivel',
+        'explanation' => 'Analiza la consigna, identifica la celda objetivo y detecta que tipo de calculo o funcion necesita el nivel. La clave es reconocer la estructura antes de escribir la formula.',
+        'example' => '=SUMA(B2:B6)',
+    ];
+}
+
 function build_level_tables(array $level): array
 {
     $number = (int) $level['numero'];

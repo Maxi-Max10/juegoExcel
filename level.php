@@ -24,6 +24,7 @@ if (!$level) {
 
 $status = get_single_level_status($userId, (int) $level['id']);
 $tables = build_level_tables($level);
+$guide = level_learning_guide($level);
 $flash = get_flash();
 $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
 ?>
@@ -117,6 +118,15 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     <p>Vidas: <strong id="player-lives"><?= e((string) $progress['vidas']) ?></strong>/5</p>
                     <div class="progress-bar">
                         <div id="level-progress-fill" class="progress-bar__fill" style="width: <?= number_format(progress_percentage($progress), 2, '.', '') ?>%"></div>
+                    </div>
+                </section>
+
+                <section class="hint-card mb-0" data-reveal>
+                    <h3><?= e($guide['title']) ?></h3>
+                    <p class="hint-card__explanation"><?= e($guide['explanation']) ?></p>
+                    <div class="formula-example">
+                        <span class="formula-example__label">Ejemplo</span>
+                        <strong class="formula-example__value"><?= e($guide['example']) ?></strong>
                     </div>
                 </section>
 
