@@ -915,12 +915,19 @@ img {
 .play-layout {
     grid-template-columns: minmax(0, 1.38fr) minmax(320px, 0.62fr);
     align-items: start;
+    gap: 28px;
 }
 
 .play-panel,
 .play-sidebar {
-    display: grid;
-    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.play-panel > * + *,
+.play-sidebar > * + * {
+    margin-top: 24px;
 }
 
 .answer-card h2,
@@ -1283,6 +1290,11 @@ img {
     .podium-grid,
     .levels-grid {
         gap: 18px;
+    }
+
+    .play-panel > * + *,
+    .play-sidebar > * + * {
+        margin-top: 20px;
     }
 
     .topbar {

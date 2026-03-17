@@ -78,8 +78,8 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
         </section>
 
         <main class="play-layout">
-            <section class="play-panel">
-                <div class="prompt-card" data-reveal>
+            <section class="play-panel d-flex flex-column gap-4">
+                <div class="prompt-card mb-0" data-reveal>
                     <span class="eyebrow"><?= e($level['categoria']) ?></span>
                     <h2><?= e($level['consigna']) ?></h2>
                     <p>Escribe la fórmula exacta para colocarla en la celda <?= e($level['formula_target']) ?>.</p>
@@ -88,8 +88,8 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                 <?= render_excel_tables($tables, (string) $level['formula_target']) ?>
             </section>
 
-            <aside class="play-sidebar">
-                <section class="answer-card" data-reveal>
+            <aside class="play-sidebar d-flex flex-column gap-4">
+                <section class="answer-card mb-0" data-reveal>
                     <h2>Tu respuesta</h2>
                     <form id="level-form" class="stacked-form" data-next-level="<?= e((string) $nextLevel) ?>" data-dashboard-url="dashboard.php" novalidate>
                         <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
@@ -110,7 +110,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     </div>
                 </section>
 
-                <section class="mini-stat-card" data-reveal>
+                <section class="mini-stat-card mb-0" data-reveal>
                     <h3>Tu progreso</h3>
                     <p>Nivel actual desbloqueado: <?= e((string) $progress['nivel_actual']) ?></p>
                     <p>Puntos acumulados: <strong id="player-points"><?= e((string) $progress['puntos']) ?></strong></p>
@@ -120,7 +120,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     </div>
                 </section>
 
-                <section class="hint-card" data-reveal>
+                <section class="hint-card mb-0" data-reveal>
                     <h3>Tip rápido</h3>
                     <ul>
                         <li>Usa paréntesis cuando combines operaciones.</li>
