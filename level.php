@@ -143,7 +143,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
         </main>
 
         <div class="chat-widget" data-study-chat>
-            <button class="button button--primary chat-widget__toggle" type="button" data-chat-toggle aria-expanded="false" aria-controls="study-chat-panel">
+            <button class="button button--primary chat-widget__toggle" type="button" data-chat-toggle aria-expanded="false" aria-controls="study-chat-panel" onclick="(function(btn){const widget=btn.closest('[data-study-chat]');const panel=widget.querySelector('[data-chat-panel]');const open=!widget.classList.contains('is-open');widget.classList.toggle('is-open',open);btn.setAttribute('aria-expanded',open?'true':'false');panel.setAttribute('aria-hidden',open?'false':'true');panel.hidden=!open;})(this)">
                 <i class="fa-solid fa-comments"></i>
                 <span>Asistente</span>
             </button>
@@ -156,7 +156,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     </div>
                     <div class="chat-card__controls">
                         <span class="pill pill--neutral">Sin respuesta final</span>
-                        <button class="chat-card__close" type="button" data-chat-close aria-label="Cerrar asistente">
+                        <button class="chat-card__close" type="button" data-chat-close aria-label="Cerrar asistente" onclick="(function(btn){const widget=btn.closest('[data-study-chat]');const panel=widget.querySelector('[data-chat-panel]');const toggle=widget.querySelector('[data-chat-toggle]');widget.classList.remove('is-open');toggle.setAttribute('aria-expanded','false');panel.setAttribute('aria-hidden','true');panel.hidden=true;})(this)">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
