@@ -139,31 +139,44 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     </ul>
                 </section>
 
-                <section class="chat-card mb-0" data-reveal>
-                    <div class="chat-card__header">
-                        <div>
-                            <h3>Asistente de estudio</h3>
-                            <p class="chat-card__intro">Haz preguntas sobre la lógica del nivel, la función o el siguiente paso. Te guía, pero no te da la fórmula exacta.</p>
-                        </div>
-                        <span class="pill pill--neutral">Sin respuesta final</span>
-                    </div>
-                    <div id="study-chat-thread" class="chat-thread" aria-live="polite">
-                        <article class="chat-message chat-message--assistant">
-                            <strong>Asistente</strong>
-                            <p>Puedo ayudarte a entender qué función usar, cómo leer el rango y qué revisar antes de escribir la fórmula.</p>
-                        </article>
-                    </div>
-                    <form id="study-chat-form" class="chat-form" data-level-id="<?= e((string) $level['id']) ?>" novalidate>
-                        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
-                        <label>
-                            <span>Escribe tu duda</span>
-                            <textarea name="message" rows="3" maxlength="500" required></textarea>
-                        </label>
-                        <button class="button button--secondary button--wide" type="submit">Preguntar al asistente</button>
-                    </form>
-                </section>
             </aside>
         </main>
+
+        <div class="chat-widget" data-study-chat>
+            <button class="chat-widget__toggle" type="button" data-chat-toggle aria-expanded="false" aria-controls="study-chat-panel">
+                <i class="fa-solid fa-comments"></i>
+                <span>Asistente</span>
+            </button>
+
+            <section id="study-chat-panel" class="chat-card chat-card--floating" data-chat-panel aria-hidden="true">
+                <div class="chat-card__header chat-card__header--floating">
+                    <div>
+                        <h3>Asistente de estudio</h3>
+                        <p class="chat-card__intro">Haz preguntas sobre la lógica del nivel, la función o el siguiente paso. Te guía, pero no te da la fórmula exacta.</p>
+                    </div>
+                    <div class="chat-card__controls">
+                        <span class="pill pill--neutral">Sin respuesta final</span>
+                        <button class="chat-card__close" type="button" data-chat-close aria-label="Cerrar asistente">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="study-chat-thread" class="chat-thread" aria-live="polite">
+                    <article class="chat-message chat-message--assistant">
+                        <strong>Asistente</strong>
+                        <p>Puedo ayudarte a entender qué función usar, cómo leer el rango y qué revisar antes de escribir la fórmula.</p>
+                    </article>
+                </div>
+                <form id="study-chat-form" class="chat-form" data-level-id="<?= e((string) $level['id']) ?>" novalidate>
+                    <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                    <label>
+                        <span>Escribe tu duda</span>
+                        <textarea name="message" rows="3" maxlength="500" required></textarea>
+                    </label>
+                    <button class="button button--secondary button--wide" type="submit">Preguntar al asistente</button>
+                </form>
+            </section>
+        </div>
     </div>
     <?php render_app_scripts(); ?>
 </body>

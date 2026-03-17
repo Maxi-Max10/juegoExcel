@@ -107,10 +107,14 @@ function initLevelForm() {
 }
 
 function initStudyChat() {
+    const widget = document.querySelector('[data-study-chat]');
+    const panel = document.querySelector('[data-chat-panel]');
+    const toggle = document.querySelector('[data-chat-toggle]');
+    const close = document.querySelector('[data-chat-close]');
     const form = document.getElementById('study-chat-form');
     const thread = document.getElementById('study-chat-thread');
 
-    if (!form || !thread) {
+    if (!widget || !panel || !toggle || !close || !form || !thread) {
         return;
     }
 
@@ -120,6 +124,24 @@ function initStudyChat() {
     const levelId = form.dataset.levelId || '';
     const history = [];
 
+    const setOpen = (open) => {
+        widget.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+
+        if (open) {
+            window.setTimeout(() => textarea?.focus(), 120);
+        }
+    };
+
+    toggle.addEventListener('click', () => {
+        setOpen(!widget.classList.contains('is-open'));
+    });
+
+    close.addEventListener('click', () => {
+        setOpen(false);
+    });
+
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
@@ -127,6 +149,8 @@ function initStudyChat() {
         if (!message) {
             return;
         }
+
+        setOpen(true);
 
         appendChatMessage(thread, 'user', message);
         history.push({ role: 'user', content: message });
