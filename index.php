@@ -77,11 +77,6 @@ $flash = get_flash();
                         <span class="hero__cell hero__cell--accent">=SI(B2&gt;=70,&quot;Aprobado&quot;,&quot;Reforzar&quot;)</span>
                         <span class="hero__cell">=BUSCARV(H2,A2:D8,3,FALSO)</span>
                     </div>
-                    <div class="hero__orbits">
-                        <div class="hero-orbit hero-orbit--one"><i class="fa-solid fa-medal"></i> Feedback inmediato</div>
-                        <div class="hero-orbit hero-orbit--two"><i class="fa-solid fa-fire"></i> Rachas y puntos</div>
-                        <div class="hero-orbit hero-orbit--three"><i class="fa-solid fa-unlock-keyhole"></i> Desbloqueo progresivo</div>
-                    </div>
                 </div>
             </div>
         </header>

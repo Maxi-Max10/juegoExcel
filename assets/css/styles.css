@@ -439,14 +439,6 @@ img {
     margin-top: 18px;
 }
 
-.hero__orbits {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-top: 22px;
-    padding-bottom: 6px;
-}
-
 .hero__cell {
     padding: 16px 18px;
     border-radius: 18px;
@@ -457,33 +449,6 @@ img {
 
 .hero__cell--accent {
     background: linear-gradient(135deg, rgba(12, 122, 99, 0.16), rgba(255, 141, 65, 0.16));
-}
-
-.hero-orbit {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.88);
-    box-shadow: 0 16px 32px rgba(26, 36, 52, 0.12);
-    font-weight: 800;
-    color: var(--ink);
-    position: relative;
-    max-width: 100%;
-    white-space: nowrap;
-}
-
-.hero-orbit--two {
-    margin-top: -6px;
-    margin-left: 26px;
-    z-index: 2;
-}
-
-.hero-orbit--three {
-    margin-top: -6px;
-    margin-left: 52px;
-    z-index: 1;
 }
 
 .feature-ribbon,
@@ -1290,19 +1255,6 @@ img {
     .hero-stage {
         display: grid;
         gap: 12px;
-    }
-
-    .hero__orbits {
-        align-items: stretch;
-    }
-
-    .hero-orbit,
-    .hero-orbit--two,
-    .hero-orbit--three {
-        margin-top: 0;
-        margin-left: 0;
-        width: 100%;
-        white-space: normal;
     }
 
     .site-nav,
