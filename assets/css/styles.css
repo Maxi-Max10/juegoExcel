@@ -923,6 +923,44 @@ img {
     gap: 20px;
 }
 
+.answer-card h2,
+.mini-stat-card h3,
+.hint-card h3,
+.hint-card h2 {
+    margin-bottom: 18px;
+}
+
+.answer-card .stacked-form {
+    gap: 18px;
+}
+
+.answer-card .stacked-form label {
+    gap: 10px;
+}
+
+.answer-card .stacked-form input {
+    min-height: 62px;
+}
+
+.answer-card .button,
+.next-actions .button {
+    min-height: 64px;
+}
+
+.mini-stat-card p,
+.hint-card li,
+.feedback-box {
+    line-height: 1.55;
+}
+
+.mini-stat-card p {
+    margin: 0 0 14px;
+}
+
+.mini-stat-card .progress-bar {
+    margin-top: 10px;
+}
+
 .excel-card__header {
     display: flex;
     justify-content: space-between;
@@ -1206,8 +1244,8 @@ img {
 
 @media (max-width: 640px) {
     .page-shell {
-        width: min(100% - 20px, 1400px);
-        padding-bottom: 48px;
+        width: min(100% - 28px, 1400px);
+        padding-bottom: 56px;
     }
 
     .site-header,
@@ -1230,8 +1268,29 @@ img {
     .lesson-spotlight__card,
     .bottom-banner,
     .podium-card {
-        padding: 20px;
+        padding: 24px;
         border-radius: 24px;
+    }
+
+    .play-layout,
+    .play-panel,
+    .play-sidebar,
+    .overview-grid,
+    .progress-section,
+    .dashboard-grid,
+    .feature-ribbon,
+    .curriculum-grid,
+    .podium-grid,
+    .levels-grid {
+        gap: 18px;
+    }
+
+    .topbar {
+        margin-bottom: 20px;
+    }
+
+    .lesson-spotlight {
+        margin-bottom: 18px;
     }
 
     .hero__copy h1 {
@@ -1256,6 +1315,47 @@ img {
     .site-nav a,
     .auth-tab {
         width: 100%;
+    }
+
+    .answer-card h2,
+    .mini-stat-card h3,
+    .hint-card h3,
+    .hint-card h2 {
+        margin-bottom: 20px;
+    }
+
+    .answer-card .stacked-form {
+        gap: 20px;
+    }
+
+    .answer-card .stacked-form input {
+        min-height: 64px;
+        padding: 17px 18px;
+    }
+
+    .answer-card .button,
+    .next-actions .button {
+        min-height: 66px;
+    }
+
+    .feedback-box {
+        margin-top: 20px;
+        min-height: 78px;
+        padding: 18px;
+    }
+
+    .next-actions {
+        margin-top: 20px;
+    }
+
+    .mini-stat-card p {
+        margin-bottom: 16px;
+    }
+
+    .hint-card ul {
+        margin-top: 12px;
+        gap: 14px;
+        padding-left: 22px;
     }
 
     .hero__chips,
