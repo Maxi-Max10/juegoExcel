@@ -869,6 +869,39 @@ img {
     align-items: start;
 }
 
+.levels-panel__heading {
+    align-items: start;
+}
+
+.levels-panel__summary {
+    margin: 8px 0 0;
+    color: var(--muted);
+    max-width: 54ch;
+}
+
+.levels-panel__toggle {
+    min-width: 190px;
+}
+
+.levels-panel__viewport {
+    position: relative;
+    transition: max-height 240ms ease;
+}
+
+.levels-panel__viewport.is-collapsed {
+    max-height: 880px;
+    overflow: hidden;
+}
+
+.levels-panel__viewport.is-collapsed::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 180px;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.92) 88%);
+}
+
 .levels-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -1281,6 +1314,15 @@ img {
     .focus-card__actions,
     .lesson-spotlight__meta {
         width: 100%;
+    }
+
+    .levels-panel__heading {
+        gap: 16px;
+    }
+
+    .levels-panel__toggle {
+        width: 100%;
+        min-width: 0;
     }
 }
 

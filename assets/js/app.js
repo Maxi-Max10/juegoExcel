@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMotion();
     initLevelCardTilt();
     initScrollHints();
+    initDashboardRouteToggle();
 });
 
 function initAuthTabs() {
@@ -271,5 +272,21 @@ function initScrollHints() {
 
         update();
         window.addEventListener('resize', update, { passive: true });
+    });
+}
+
+function initDashboardRouteToggle() {
+    const button = document.querySelector('[data-route-toggle]');
+    const viewport = document.querySelector('[data-route-viewport]');
+
+    if (!button || !viewport) {
+        return;
+    }
+
+    button.addEventListener('click', () => {
+        const collapsed = viewport.classList.toggle('is-collapsed');
+        button.textContent = collapsed
+            ? button.dataset.labelExpand || 'Ver ruta completa'
+            : button.dataset.labelCollapse || 'Ver menos';
     });
 }

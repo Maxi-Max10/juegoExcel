@@ -132,11 +132,17 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
 
         <main class="dashboard-grid">
             <section class="levels-panel" data-reveal>
-                <div class="section-heading">
-                    <h2>Ruta de 100 niveles</h2>
-                    <span>Desbloqueo progresivo</span>
+                <div class="section-heading levels-panel__heading">
+                    <div>
+                        <h2>Ruta de niveles</h2>
+                        <p class="levels-panel__summary">Vista resumida del mapa completo. Expándelo solo cuando quieras revisar toda la ruta.</p>
+                    </div>
+                    <button class="button button--ghost levels-panel__toggle" type="button" data-route-toggle data-label-expand="Ver ruta completa" data-label-collapse="Ver menos">
+                        Ver ruta completa
+                    </button>
                 </div>
-                <div class="levels-grid">
+                <div class="levels-panel__viewport is-collapsed" data-route-viewport>
+                    <div class="levels-grid">
                     <?php foreach ($levels as $level): ?>
                         <?php
                         $number = (int) $level['numero'];
@@ -162,6 +168,7 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
                             </div>
                         </article>
                     <?php endforeach; ?>
+                    </div>
                 </div>
             </section>
 
