@@ -108,36 +108,26 @@ $flash = get_flash();
         <section id="temario" class="curriculum-showcase">
             <div class="section-heading section-heading--wide" data-reveal>
                 <div>
-                    <span class="eyebrow">Temario completo</span>
-                    <h2>Una curva de dificultad pensada para que el avance se sienta real.</h2>
+                    <span class="eyebrow">Ruta de 100 niveles</span>
+                    <h2>Un recorrido corto de entender y largo de dominar.</h2>
                 </div>
-                <p>Los bloques cambian de ritmo y contexto para evitar repetición. No son 100 pantallas iguales: son 100 decisiones distintas.</p>
+                <p>Tres etapas claras para avanzar desde lo esencial hasta fórmulas de uso real.</p>
             </div>
             <div class="curriculum-grid" data-stagger-group>
                 <article class="curriculum-card" data-reveal-item>
-                    <span class="pill difficulty-basic">Niveles 1-20</span>
-                    <h3>Básico</h3>
-                    <p>SUMA, RESTA, MULTIPLICACIÓN, DIVISIÓN y referencias tipo A1, B2, C3.</p>
+                    <span class="pill difficulty-basic">Niveles 1-30</span>
+                    <h3>Base</h3>
+                    <p>Operaciones, referencias y fórmulas esenciales para empezar bien.</p>
                 </article>
                 <article class="curriculum-card" data-reveal-item>
-                    <span class="pill difficulty-mid-1">Niveles 21-40</span>
-                    <h3>Intermedio 1</h3>
-                    <p>PROMEDIO, MAX, MIN, CONTAR y lectura correcta de rangos.</p>
+                    <span class="pill difficulty-mid-1">Niveles 31-70</span>
+                    <h3>Progreso</h3>
+                    <p>Funciones, criterios y análisis para resolver ejercicios más útiles.</p>
                 </article>
                 <article class="curriculum-card" data-reveal-item>
-                    <span class="pill difficulty-mid-2">Niveles 41-60</span>
-                    <h3>Intermedio 2</h3>
-                    <p>SI, SUMAR.SI, PROMEDIO.SI y criterios aplicados a datos reales.</p>
-                </article>
-                <article class="curriculum-card" data-reveal-item>
-                    <span class="pill difficulty-adv-1">Niveles 61-80</span>
-                    <h3>Avanzado 1</h3>
-                    <p>BUSCARV, BUSCARX, tablas de referencia y control de errores.</p>
-                </article>
-                <article class="curriculum-card" data-reveal-item>
-                    <span class="pill difficulty-adv-2">Niveles 81-100</span>
-                    <h3>Avanzado 2</h3>
-                    <p>Fórmulas combinadas, anidación, optimización y escenarios tipo trabajo real.</p>
+                    <span class="pill difficulty-adv-2">Niveles 71-100</span>
+                    <h3>Dominio</h3>
+                    <p>Búsquedas, combinaciones y retos pensados como casos reales de trabajo.</p>
                 </article>
             </div>
         </section>
