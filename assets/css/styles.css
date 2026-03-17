@@ -371,7 +371,6 @@ img {
 .hero-stage {
     position: relative;
     min-height: 100%;
-    padding: 20px 20px 44px;
 }
 
 .floating-panel {
@@ -440,6 +439,13 @@ img {
     margin-top: 18px;
 }
 
+.hero__orbits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 18px;
+}
+
 .hero__cell {
     padding: 16px 18px;
     border-radius: 18px;
@@ -453,7 +459,6 @@ img {
 }
 
 .hero-orbit {
-    position: absolute;
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -462,24 +467,7 @@ img {
     background: rgba(255, 255, 255, 0.88);
     box-shadow: 0 16px 32px rgba(26, 36, 52, 0.12);
     font-weight: 800;
-    z-index: 2;
-    max-width: calc(100% - 40px);
-    white-space: nowrap;
-}
-
-.hero-orbit--one {
-    top: 28px;
-    right: 28px;
-}
-
-.hero-orbit--two {
-    left: 28px;
-    bottom: 28px;
-}
-
-.hero-orbit--three {
-    right: 28px;
-    bottom: 28px;
+    color: var(--ink);
 }
 
 .feature-ribbon,
@@ -1268,11 +1256,6 @@ img {
         grid-template-columns: 1fr;
     }
 
-    .hero-orbit--two {
-        left: auto;
-        right: 28px;
-        bottom: 28px;
-    }
 }
 
 @media (max-width: 920px) {
@@ -1286,12 +1269,6 @@ img {
 
     .curriculum-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .hero-orbit {
-        position: static;
-        margin-top: 12px;
-        width: fit-content;
     }
 
     .hero-stage {
