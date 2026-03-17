@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+$localSecrets = __DIR__ . '/secrets.php';
+if (is_file($localSecrets)) {
+    require_once $localSecrets;
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -16,5 +21,5 @@ define('DB_NAME', getenv('DB_NAME') ?: 'u404968876_gameExcel');
 define('DB_USER', getenv('DB_USER') ?: 'u404968876_gameExcel');
 define('DB_PASS', getenv('DB_PASS') ?: 'gameExcel12');
 
-define('OPENAI_API_KEY', getenv('OPENAI_API_KEY') ?: '');
-define('OPENAI_MODEL', getenv('OPENAI_MODEL') ?: 'gpt-4.1-mini');
+define('OPENAI_API_KEY', $_SERVER['OPENAI_API_KEY'] ?? getenv('OPENAI_API_KEY') ?: (defined('LOCAL_OPENAI_API_KEY') ? LOCAL_OPENAI_API_KEY : ''));
+define('OPENAI_MODEL', $_SERVER['OPENAI_MODEL'] ?? getenv('OPENAI_MODEL') ?: (defined('LOCAL_OPENAI_MODEL') ? LOCAL_OPENAI_MODEL : 'gpt-4.1-mini'));
