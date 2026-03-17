@@ -14,6 +14,10 @@ $statusMap = get_user_level_status_map((int) $userId);
 $flash = get_flash();
 $leaderboard = fetch_leaderboard(8);
 $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
+$previewSize = 12;
+$previewStart = max(1, $currentLevel - 2);
+$previewEnd = min(TOTAL_LEVELS, $previewStart + $previewSize - 1);
+$previewStart = max(1, $previewEnd - $previewSize + 1);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -135,10 +139,10 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
                 <div class="section-heading levels-panel__heading">
                     <div>
                         <h2>Ruta de niveles</h2>
-                        <p class="levels-panel__summary">Vista resumida del mapa completo. Expándelo solo cuando quieras revisar toda la ruta.</p>
+                        <p class="levels-panel__summary">Mostrando niveles <?= e((string) $previewStart) ?> al <?= e((string) $previewEnd) ?> alrededor de tu progreso actual.</p>
                     </div>
-                    <button class="button button--ghost levels-panel__toggle" type="button" data-route-toggle data-label-expand="Ver ruta completa" data-label-collapse="Ver menos">
-                        Ver ruta completa
+                    <button class="button button--ghost levels-panel__toggle" type="button" data-route-toggle data-label-expand="Ver los 100 niveles" data-label-collapse="Volver a resumen">
+                        Ver los 100 niveles
                     </button>
                 </div>
                 <div class="levels-panel__viewport is-collapsed" data-route-viewport>
@@ -150,8 +154,9 @@ $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
                         $completed = !empty($status['completed_at']);
                         $unlocked = level_is_unlocked($progress, $number);
                         $cardClass = $completed ? 'is-completed' : ($unlocked ? 'is-unlocked' : 'is-locked');
+                        $hiddenInPreview = $number < $previewStart || $number > $previewEnd;
                         ?>
-                        <article class="level-card <?= e($cardClass) ?>" data-level-card>
+                        <article class="level-card <?= e($cardClass) ?><?= $hiddenInPreview ? ' level-card--preview-hidden' : '' ?>" data-level-card>
                             <div class="level-card__header">
                                 <span class="level-card__number">Nivel <?= e((string) $number) ?></span>
                                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>

@@ -889,7 +889,7 @@ img {
 }
 
 .levels-panel__viewport.is-collapsed {
-    max-height: 880px;
+    max-height: 640px;
     overflow: hidden;
 }
 
@@ -906,6 +906,10 @@ img {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
+}
+
+.levels-panel__viewport.is-collapsed .level-card--preview-hidden {
+    display: none;
 }
 
 .level-card {
