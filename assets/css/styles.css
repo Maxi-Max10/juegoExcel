@@ -735,26 +735,57 @@ img {
 }
 
 .focus-ring {
-    width: 170px;
-    height: 170px;
+    --progress: 0%;
+    width: 188px;
+    aspect-ratio: 1;
     border-radius: 50%;
+    position: relative;
     display: grid;
     place-items: center;
-    text-align: center;
+    padding: 14px;
     background:
-        radial-gradient(circle at center, rgba(17, 24, 39, 0.96) 52%, transparent 54%),
-        conic-gradient(var(--primary) 0deg, var(--accent) 230deg, rgba(229, 231, 235, 0.08) 230deg 360deg);
-    box-shadow: inset 0 0 0 1px rgba(229, 231, 235, 0.08);
+        radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 58%, transparent 59%),
+        conic-gradient(from -90deg, var(--primary-strong) 0%, var(--primary) 42%, var(--accent) var(--progress), rgba(229, 231, 235, 0.1) var(--progress), rgba(229, 231, 235, 0.1) 100%);
+    box-shadow: inset 0 0 0 1px rgba(229, 231, 235, 0.08), 0 0 30px rgba(51, 196, 129, 0.08);
 }
 
-.focus-ring span {
+.focus-ring::before {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(15, 23, 42, 0.94));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.focus-ring__inner {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 4px;
+    justify-items: center;
+    text-align: center;
+    padding: 18px;
+}
+
+.focus-ring__value {
     display: block;
-    font-size: 2rem;
+    font-size: clamp(2.4rem, 5vw, 3.3rem);
+    line-height: 0.9;
     font-family: var(--font-display);
+    letter-spacing: -0.04em;
 }
 
 .focus-ring small {
+    color: rgba(229, 231, 235, 0.92);
+    font-size: 0.98rem;
+    font-weight: 800;
+}
+
+.focus-ring__meta {
     color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.3;
 }
 
 .focus-list {

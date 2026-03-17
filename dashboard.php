@@ -14,6 +14,7 @@ $statusMap = get_user_level_status_map((int) $userId);
 $flash = get_flash();
 $leaderboard = fetch_leaderboard(8);
 $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
+$progressPercent = number_format(progress_percentage($progress), 2, '.', '');
 $previewSize = 12;
 $previewStart = max(1, $currentLevel - 2);
 $previewEnd = min(TOTAL_LEVELS, $previewStart + $previewSize - 1);
@@ -68,9 +69,12 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                     </div>
                 </div>
                 <div class="focus-card__rings">
-                    <div class="focus-ring">
-                        <span><?= number_format(progress_percentage($progress), 0) ?>%</span>
-                        <small>Completado</small>
+                    <div class="focus-ring" style="--progress: <?= e($progressPercent) ?>%;" aria-label="<?= e((string) number_format((float) $progressPercent, 0)) ?> por ciento completado">
+                        <div class="focus-ring__inner">
+                            <strong class="focus-ring__value"><?= e((string) number_format((float) $progressPercent, 0)) ?>%</strong>
+                            <small>Completado</small>
+                            <span class="focus-ring__meta"><?= e((string) $progress['niveles_completados']) ?> de <?= TOTAL_LEVELS ?> niveles</span>
+                        </div>
                     </div>
                     <ul class="focus-list">
                         <li><i class="fa-solid fa-star"></i> <?= e((string) $progress['puntos']) ?> puntos</li>
