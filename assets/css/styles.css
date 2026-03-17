@@ -371,12 +371,14 @@ img {
 .hero-stage {
     position: relative;
     min-height: 100%;
+    padding: 20px 20px 44px;
 }
 
 .floating-panel {
     position: relative;
     min-height: 100%;
     overflow: hidden;
+    width: 100%;
 }
 
 .floating-panel::before {
@@ -460,21 +462,24 @@ img {
     background: rgba(255, 255, 255, 0.88);
     box-shadow: 0 16px 32px rgba(26, 36, 52, 0.12);
     font-weight: 800;
+    z-index: 2;
+    max-width: calc(100% - 40px);
+    white-space: nowrap;
 }
 
 .hero-orbit--one {
-    top: 8%;
-    right: 4%;
+    top: 28px;
+    right: 28px;
 }
 
 .hero-orbit--two {
-    bottom: 24%;
-    left: -4%;
+    left: 28px;
+    bottom: 28px;
 }
 
 .hero-orbit--three {
-    right: 12%;
-    bottom: -16px;
+    right: 28px;
+    bottom: 28px;
 }
 
 .feature-ribbon,
@@ -1265,8 +1270,8 @@ img {
 
     .hero-orbit--two {
         left: auto;
-        right: 8%;
-        bottom: 16%;
+        right: 28px;
+        bottom: 28px;
     }
 }
 
