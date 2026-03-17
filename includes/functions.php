@@ -67,8 +67,11 @@ function require_login(): void
 
 function fetch_user_by_login(string $login): ?array
 {
-    $stmt = getPDO()->prepare('SELECT * FROM users WHERE email = :login OR username = :login LIMIT 1');
-    $stmt->execute(['login' => $login]);
+    $stmt = getPDO()->prepare('SELECT * FROM users WHERE email = :email_login OR username = :username_login LIMIT 1');
+    $stmt->execute([
+        'email_login' => $login,
+        'username_login' => $login,
+    ]);
     $user = $stmt->fetch();
 
     return $user ?: null;
