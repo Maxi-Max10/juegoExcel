@@ -96,7 +96,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                         <input type="hidden" name="level_id" value="<?= e((string) $level['id']) ?>">
                         <label>
                             <span>Fórmula</span>
-                            <input type="text" name="formula" placeholder="=SUMA(B2:B6)" autocomplete="off" required>
+                            <input type="text" name="formula" autocomplete="off" required>
                         </label>
                         <button class="button button--primary button--wide" type="submit">Validar fórmula</button>
                     </form>
