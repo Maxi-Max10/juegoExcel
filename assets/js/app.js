@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('js-ready');
     initAuthTabs();
     initLevelForm();
+    initStudyChat();
     initMotion();
     initLevelCardTilt();
     initScrollHints();
@@ -103,6 +104,91 @@ function initLevelForm() {
             }
         }
     });
+}
+
+function initStudyChat() {
+    const form = document.getElementById('study-chat-form');
+    const thread = document.getElementById('study-chat-thread');
+
+    if (!form || !thread) {
+        return;
+    }
+
+    const textarea = form.querySelector('textarea[name="message"]');
+    const button = form.querySelector('button[type="submit"]');
+    const csrfToken = form.querySelector('input[name="csrf_token"]')?.value || '';
+    const levelId = form.dataset.levelId || '';
+    const history = [];
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const message = String(textarea?.value || '').trim();
+        if (!message) {
+            return;
+        }
+
+        appendChatMessage(thread, 'user', message);
+        history.push({ role: 'user', content: message });
+        if (textarea) {
+            textarea.value = '';
+        }
+
+        if (button) {
+            button.disabled = true;
+            button.textContent = 'Pensando...';
+        }
+
+        try {
+            const response = await fetch('study_chat.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    csrf_token: csrfToken,
+                    level_id: levelId,
+                    message,
+                    history,
+                }),
+            });
+
+            const payload = await response.json();
+
+            if (!response.ok || !payload.success) {
+                throw new Error(payload.message || 'No se pudo obtener ayuda del asistente.');
+            }
+
+            appendChatMessage(thread, 'assistant', payload.reply);
+            history.push({ role: 'assistant', content: payload.reply });
+            while (history.length > 6) {
+                history.shift();
+            }
+        } catch (error) {
+            appendChatMessage(thread, 'assistant', error.message || 'No se pudo obtener ayuda del asistente.');
+        } finally {
+            if (button) {
+                button.disabled = false;
+                button.textContent = 'Preguntar al asistente';
+            }
+        }
+    });
+}
+
+function appendChatMessage(thread, role, content) {
+    const item = document.createElement('article');
+    item.className = `chat-message chat-message--${role}`;
+
+    const title = document.createElement('strong');
+    title.textContent = role === 'user' ? 'Tú' : 'Asistente';
+
+    const body = document.createElement('p');
+    body.textContent = content;
+
+    item.appendChild(title);
+    item.appendChild(body);
+    thread.appendChild(item);
+    thread.scrollTop = thread.scrollHeight;
 }
 
 function setFeedback(node, type, message) {

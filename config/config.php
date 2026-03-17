@@ -15,3 +15,6 @@ define('DB_PORT', getenv('DB_PORT') ?: '3306');
 define('DB_NAME', getenv('DB_NAME') ?: 'u404968876_gameExcel');
 define('DB_USER', getenv('DB_USER') ?: 'u404968876_gameExcel');
 define('DB_PASS', getenv('DB_PASS') ?: 'gameExcel12');
+
+define('OPENAI_API_KEY', getenv('OPENAI_API_KEY') ?: '');
+define('OPENAI_MODEL', getenv('OPENAI_MODEL') ?: 'gpt-4.1-mini');

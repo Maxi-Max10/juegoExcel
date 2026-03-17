@@ -1042,6 +1042,101 @@ img {
     color: var(--ink);
 }
 
+.chat-card {
+    display: grid;
+    gap: 18px;
+    padding: 24px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.98), rgba(15, 23, 42, 0.94));
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+}
+
+.chat-card__header {
+    display: grid;
+    gap: 12px;
+}
+
+.chat-card__header h3 {
+    margin: 0;
+    font-family: var(--font-display);
+}
+
+.chat-card__intro {
+    margin: 8px 0 0;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
+.chat-thread {
+    display: grid;
+    gap: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.chat-message {
+    display: grid;
+    gap: 8px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.chat-message strong {
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.chat-message p {
+    margin: 0;
+    color: var(--ink);
+    line-height: 1.55;
+}
+
+.chat-message--assistant {
+    border-color: rgba(59, 130, 246, 0.22);
+    background: rgba(59, 130, 246, 0.08);
+}
+
+.chat-message--user {
+    border-color: rgba(51, 196, 129, 0.22);
+    background: rgba(33, 115, 70, 0.12);
+}
+
+.chat-form {
+    display: grid;
+    gap: 14px;
+}
+
+.chat-form label {
+    display: grid;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.chat-form textarea {
+    width: 100%;
+    min-height: 92px;
+    resize: vertical;
+    padding: 15px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 18px;
+    background: rgba(15, 23, 42, 0.78);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.chat-form textarea:focus {
+    border-color: rgba(59, 130, 246, 0.68);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.16);
+    transform: translateY(-1px);
+}
+
 .lesson-spotlight {
     margin-bottom: 22px;
 }

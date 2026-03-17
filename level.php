@@ -138,6 +138,30 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                         <li>Si te equivocas, revisa si el rango y el criterio coinciden.</li>
                     </ul>
                 </section>
+
+                <section class="chat-card mb-0" data-reveal>
+                    <div class="chat-card__header">
+                        <div>
+                            <h3>Asistente de estudio</h3>
+                            <p class="chat-card__intro">Haz preguntas sobre la lógica del nivel, la función o el siguiente paso. Te guía, pero no te da la fórmula exacta.</p>
+                        </div>
+                        <span class="pill pill--neutral">Sin respuesta final</span>
+                    </div>
+                    <div id="study-chat-thread" class="chat-thread" aria-live="polite">
+                        <article class="chat-message chat-message--assistant">
+                            <strong>Asistente</strong>
+                            <p>Puedo ayudarte a entender qué función usar, cómo leer el rango y qué revisar antes de escribir la fórmula.</p>
+                        </article>
+                    </div>
+                    <form id="study-chat-form" class="chat-form" data-level-id="<?= e((string) $level['id']) ?>" novalidate>
+                        <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
+                        <label>
+                            <span>Escribe tu duda</span>
+                            <textarea name="message" rows="3" maxlength="500" required></textarea>
+                        </label>
+                        <button class="button button--secondary button--wide" type="submit">Preguntar al asistente</button>
+                    </form>
+                </section>
             </aside>
         </main>
     </div>
