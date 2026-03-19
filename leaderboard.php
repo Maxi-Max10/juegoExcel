@@ -23,7 +23,7 @@ $podium = array_slice($leaderboard, 0, 3);
                     <small>Ranking global</small>
                 </span>
             </a>
-            <nav class="site-nav site-nav--actions">
+            <nav class="site-nav site-nav--actions" id="main-nav">
                 <a href="dashboard.php">Mapa</a>
                 <?php if (is_logged_in()): ?>
                     <a href="logout.php">Salir</a>
@@ -31,7 +31,34 @@ $podium = array_slice($leaderboard, 0, 3);
                     <a href="index.php">Entrar</a>
                 <?php endif; ?>
             </nav>
+            <button class="nav-toggle" type="button" aria-label="Menú" aria-expanded="false" data-nav-toggle>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+            </button>
         </header>
+
+        <nav class="bottom-nav" aria-label="Navegación principal">
+            <a href="dashboard.php" class="bottom-nav__item">
+                <i class="fa-solid fa-map"></i>
+                <span>Mapa</span>
+            </a>
+            <a href="leaderboard.php" class="bottom-nav__item bottom-nav__item--active">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Ranking</span>
+            </a>
+            <?php if (is_logged_in()): ?>
+                <a href="logout.php" class="bottom-nav__item">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Salir</span>
+                </a>
+            <?php else: ?>
+                <a href="index.php" class="bottom-nav__item">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Entrar</span>
+                </a>
+            <?php endif; ?>
+        </nav>
 
         <header class="topbar topbar--hero" data-reveal>
             <div>

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('js-ready');
+    initNavToggle();
     initAuthTabs();
     initLevelForm();
     initStudyChat();
@@ -8,6 +9,39 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollHints();
     initDashboardRouteToggle();
 });
+
+function initNavToggle() {
+    const toggle = document.querySelector('[data-nav-toggle]');
+    const nav = document.getElementById('main-nav');
+
+    if (!toggle || !nav) {
+        return;
+    }
+
+    toggle.addEventListener('click', () => {
+        const isOpen = toggle.classList.toggle('is-open');
+        nav.classList.toggle('is-open', isOpen);
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    // Close menu when clicking a link
+    nav.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+            toggle.classList.remove('is-open');
+            nav.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        });
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!toggle.contains(event.target) && !nav.contains(event.target)) {
+            toggle.classList.remove('is-open');
+            nav.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
 
 function initAuthTabs() {
     const tabs = document.querySelectorAll('.auth-tab');

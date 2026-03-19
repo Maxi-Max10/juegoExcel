@@ -35,11 +35,35 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                     <small>Panel de progreso</small>
                 </span>
             </a>
-            <nav class="site-nav site-nav--actions">
+            <nav class="site-nav site-nav--actions" id="main-nav">
                 <a href="leaderboard.php">Ranking</a>
                 <a href="logout.php">Salir</a>
             </nav>
+            <button class="nav-toggle" type="button" aria-label="Menú" aria-expanded="false" data-nav-toggle>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+            </button>
         </header>
+
+        <nav class="bottom-nav" aria-label="Navegación principal">
+            <a href="dashboard.php" class="bottom-nav__item bottom-nav__item--active">
+                <i class="fa-solid fa-map"></i>
+                <span>Mapa</span>
+            </a>
+            <a href="level.php?nivel=<?= e((string) $currentLevel) ?>" class="bottom-nav__item">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Jugar</span>
+            </a>
+            <a href="leaderboard.php" class="bottom-nav__item">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Ranking</span>
+            </a>
+            <a href="logout.php" class="bottom-nav__item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Salir</span>
+            </a>
+        </nav>
 
         <header class="topbar topbar--hero" data-reveal>
             <div>

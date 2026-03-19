@@ -25,11 +25,16 @@ $flash = get_flash();
                     <small>Aprende jugando</small>
                 </span>
             </a>
-            <nav class="site-nav">
+            <nav class="site-nav" id="main-nav">
                 <a href="#temario">Temario</a>
                 <a href="#acceso">Acceso</a>
                 <a href="leaderboard.php">Ranking</a>
             </nav>
+            <button class="nav-toggle" type="button" aria-label="Menú" aria-expanded="false" data-nav-toggle>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+            </button>
         </header>
 
         <header class="hero hero--enhanced">

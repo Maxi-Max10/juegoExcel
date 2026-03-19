@@ -43,11 +43,35 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     <small>Modo práctica</small>
                 </span>
             </a>
-            <nav class="site-nav site-nav--actions">
+            <nav class="site-nav site-nav--actions" id="main-nav">
                 <a href="dashboard.php">Mapa</a>
                 <a href="leaderboard.php">Ranking</a>
             </nav>
+            <button class="nav-toggle" type="button" aria-label="Menú" aria-expanded="false" data-nav-toggle>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+            </button>
         </header>
+
+        <nav class="bottom-nav" aria-label="Navegación principal">
+            <a href="dashboard.php" class="bottom-nav__item">
+                <i class="fa-solid fa-map"></i>
+                <span>Mapa</span>
+            </a>
+            <a href="level.php?nivel=<?= e((string) $requestedLevel) ?>" class="bottom-nav__item bottom-nav__item--active">
+                <i class="fa-solid fa-gamepad"></i>
+                <span>Jugar</span>
+            </a>
+            <a href="leaderboard.php" class="bottom-nav__item">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Ranking</span>
+            </a>
+            <a href="dashboard.php" class="bottom-nav__item">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Volver</span>
+            </a>
+        </nav>
 
         <header class="topbar topbar--hero" data-reveal>
             <div>

@@ -1584,13 +1584,171 @@ img {
         width: 100%;
         min-width: 0;
     }
+
+    /* Show hamburger, hide desktop nav */
+    .nav-toggle {
+        display: flex;
+    }
+
+    .site-nav {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        padding: 16px;
+        background: rgba(17, 24, 39, 0.96);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        gap: 4px;
+        z-index: 20;
+        animation: slideDown 250ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .site-nav.is-open {
+        display: flex;
+    }
+
+    .site-nav a {
+        width: 100%;
+        padding: 14px 18px;
+        border-radius: 14px;
+    }
+
+    .site-header {
+        position: relative;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 @media (max-width: 640px) {
-    .page-shell {
-        width: min(100% - 28px, 1400px);
-        padding-bottom: 56px;
+    /* ────────────────────────────────────────────
+       GLOBAL MOBILE LAYOUT
+       ──────────────────────────────────────────── */
+
+    body {
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        -webkit-text-size-adjust: 100%;
     }
+
+    .page-shell {
+        width: min(100% - 20px, 1400px);
+        padding: 12px 0 100px;
+    }
+
+    .page-shell--landing {
+        padding-top: 12px;
+    }
+
+    /* ────────────────────────────────────────────
+       HEADER MOBILE
+       ──────────────────────────────────────────── */
+
+    .site-header {
+        padding: 12px 16px;
+        border-radius: 20px;
+        margin-bottom: 16px;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .site-header--landing {
+        margin-bottom: 20px;
+    }
+
+    .brand__mark {
+        width: 40px;
+        height: 40px;
+        border-radius: 13px;
+        font-size: 1rem;
+    }
+
+    .brand strong {
+        font-size: 0.95rem;
+    }
+
+    .brand small {
+        font-size: 0.72rem;
+    }
+
+    .brand {
+        gap: 10px;
+    }
+
+    /* ────────────────────────────────────────────
+       BOTTOM NAVIGATION BAR
+       ──────────────────────────────────────────── */
+
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        justify-content: space-around;
+        align-items: stretch;
+        padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+        background: rgba(15, 23, 42, 0.92);
+        backdrop-filter: blur(24px) saturate(1.4);
+        -webkit-backdrop-filter: blur(24px) saturate(1.4);
+        border-top: 1px solid var(--line);
+        box-shadow: 0 -8px 32px rgba(2, 6, 23, 0.5);
+    }
+
+    .bottom-nav__item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        flex: 1;
+        padding: 8px 4px;
+        border-radius: 14px;
+        color: var(--muted);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        text-decoration: none;
+        transition: color 180ms ease, background 180ms ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .bottom-nav__item i {
+        font-size: 1.15rem;
+        transition: transform 200ms ease;
+    }
+
+    .bottom-nav__item--active {
+        color: var(--primary-strong);
+    }
+
+    .bottom-nav__item--active i {
+        transform: scale(1.1);
+    }
+
+    .bottom-nav__item:active {
+        background: rgba(255, 255, 255, 0.06);
+        transform: scale(0.94);
+    }
+
+    /* ────────────────────────────────────────────
+       CARDS & PANELS — GLASS MORPHISM MOBILE
+       ──────────────────────────────────────────── */
 
     .site-header,
     .hero__copy,
@@ -1612,9 +1770,29 @@ img {
     .lesson-spotlight__card,
     .bottom-banner,
     .podium-card {
-        padding: 24px;
-        border-radius: 24px;
+        padding: 20px;
+        border-radius: 22px;
     }
+
+    .ribbon-card,
+    .curriculum-card,
+    .stat-card,
+    .focus-card,
+    .auth-card,
+    .levels-panel,
+    .prompt-card,
+    .answer-card,
+    .mini-stat-card,
+    .hint-card,
+    .lesson-spotlight__card,
+    .podium-card {
+        border-color: rgba(229, 231, 235, 0.08);
+        box-shadow: 0 8px 24px rgba(2, 6, 23, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    /* ────────────────────────────────────────────
+       GRIDS STACK VERTICALLY
+       ──────────────────────────────────────────── */
 
     .play-layout,
     .play-panel,
@@ -1626,85 +1804,12 @@ img {
     .curriculum-grid,
     .podium-grid,
     .levels-grid {
-        gap: 18px;
+        gap: 14px;
     }
 
     .play-panel > * + *,
     .play-sidebar > * + * {
-        margin-top: 20px;
-    }
-
-    .topbar {
-        margin-bottom: 20px;
-    }
-
-    .lesson-spotlight {
-        margin-bottom: 18px;
-    }
-
-    .hero__copy h1 {
-        font-size: 2.55rem;
-        max-width: 100%;
-    }
-
-    .topbar h1 {
-        font-size: 2rem;
-    }
-
-    .site-nav,
-    .hero__actions,
-    .topbar__actions,
-    .focus-card__actions,
-    .auth-tabs {
-        display: grid;
-        width: 100%;
-    }
-
-    .button,
-    .site-nav a,
-    .auth-tab {
-        width: 100%;
-    }
-
-    .answer-card h2,
-    .mini-stat-card h3,
-    .hint-card h3,
-    .hint-card h2 {
-        margin-bottom: 20px;
-    }
-
-    .answer-card .stacked-form {
-        gap: 20px;
-    }
-
-    .answer-card .stacked-form input {
-        min-height: 64px;
-        padding: 17px 18px;
-    }
-
-    .answer-card .button,
-    .next-actions .button {
-        min-height: 66px;
-    }
-
-    .feedback-box {
-        margin-top: 20px;
-        min-height: 78px;
-        padding: 18px;
-    }
-
-    .next-actions {
-        margin-top: 20px;
-    }
-
-    .mini-stat-card p {
-        margin-bottom: 16px;
-    }
-
-    .hint-card ul {
-        margin-top: 12px;
-        gap: 14px;
-        padding-left: 22px;
+        margin-top: 14px;
     }
 
     .hero__chips,
@@ -1718,18 +1823,210 @@ img {
         grid-template-columns: 1fr;
     }
 
+    /* ────────────────────────────────────────────
+       TYPOGRAPHY MOBILE
+       ──────────────────────────────────────────── */
+
+    .topbar {
+        margin-bottom: 16px;
+    }
+
+    .topbar--hero {
+        padding: 2px 0 0;
+    }
+
+    .lesson-spotlight {
+        margin-bottom: 14px;
+    }
+
+    .hero__copy h1 {
+        font-size: 2.2rem;
+        max-width: 100%;
+        line-height: 0.96;
+    }
+
+    .topbar h1 {
+        font-size: 1.75rem;
+        line-height: 1;
+    }
+
+    .topbar__lead {
+        font-size: 0.92rem;
+        margin-top: 8px;
+    }
+
+    .eyebrow {
+        font-size: 0.7rem;
+        margin-bottom: 10px;
+    }
+
+    .eyebrow::before {
+        width: 24px;
+    }
+
+    .section-heading h2 {
+        font-size: 1.3rem;
+    }
+
+    .hero__copy p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* ────────────────────────────────────────────
+       BUTTONS AND NAVIGATION
+       ──────────────────────────────────────────── */
+
+    .site-nav,
+    .hero__actions,
+    .topbar__actions,
+    .focus-card__actions,
+    .auth-tabs {
+        display: none;
+        width: 100%;
+    }
+
+    .site-nav.is-open {
+        display: flex;
+    }
+
+    .hero__actions {
+        display: grid;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .topbar__actions {
+        display: grid;
+        width: 100%;
+    }
+
+    .focus-card__actions {
+        display: grid;
+        width: 100%;
+    }
+
+    .auth-tabs {
+        display: flex;
+        width: 100%;
+    }
+
+    .button,
+    .site-nav a,
+    .auth-tab {
+        width: 100%;
+        min-height: 52px;
+        font-size: 0.95rem;
+    }
+
+    .button {
+        border-radius: 16px;
+        padding: 14px 18px;
+    }
+
+    .button--primary,
+    .button--secondary {
+        font-weight: 800;
+    }
+
+    /* ────────────────────────────────────────────
+       FORM INPUTS — TOUCH-FRIENDLY
+       ──────────────────────────────────────────── */
+
+    .stacked-form {
+        gap: 14px;
+    }
+
+    .stacked-form label {
+        gap: 6px;
+        font-size: 0.88rem;
+    }
+
+    .stacked-form input {
+        min-height: 56px;
+        padding: 16px;
+        border-radius: 16px;
+        font-size: 1rem;
+    }
+
+    .stacked-form input:focus {
+        border-color: rgba(59, 130, 246, 0.8);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        transform: none;
+    }
+
+    .answer-card h2,
+    .mini-stat-card h3,
+    .hint-card h3,
+    .hint-card h2 {
+        margin-bottom: 16px;
+        font-size: 1.15rem;
+    }
+
+    .answer-card .stacked-form {
+        gap: 14px;
+    }
+
+    .answer-card .stacked-form label {
+        gap: 8px;
+    }
+
+    .answer-card .stacked-form input {
+        min-height: 58px;
+        padding: 16px;
+        font-size: 1.05rem;
+    }
+
+    .answer-card .button,
+    .next-actions .button {
+        min-height: 58px;
+        font-size: 1rem;
+    }
+
+    .feedback-box {
+        margin-top: 14px;
+        min-height: 64px;
+        padding: 14px;
+        font-size: 0.92rem;
+        border-radius: 16px;
+    }
+
+    .next-actions {
+        margin-top: 14px;
+    }
+
+    .mini-stat-card p {
+        margin-bottom: 12px;
+        font-size: 0.92rem;
+    }
+
+    .hint-card ul {
+        margin-top: 10px;
+        gap: 10px;
+        padding-left: 20px;
+    }
+
+    .hint-card li {
+        font-size: 0.9rem;
+    }
+
+    /* ────────────────────────────────────────────
+       STAT CARDS MOBILE
+       ──────────────────────────────────────────── */
+
     .stat-card {
         min-height: auto;
-        padding: 24px;
+        padding: 20px;
     }
 
     .stat-card__value,
     .stat-card strong {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
     }
 
     .stat-card p {
         max-width: 100%;
+        font-size: 0.9rem;
     }
 
     .stat-card__cta {
@@ -1737,40 +2034,394 @@ img {
         align-self: stretch;
     }
 
+    .stat-card__label {
+        font-size: 0.72rem;
+    }
+
+    /* ────────────────────────────────────────────
+       FOCUS CARD MOBILE
+       ──────────────────────────────────────────── */
+
+    .focus-card {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .focus-card__rings {
+        order: -1;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        gap: 16px;
+    }
+
     .focus-ring {
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
+    }
+
+    .focus-ring__value {
+        font-size: 1.8rem;
+    }
+
+    .focus-ring small {
+        font-size: 0.75rem;
+    }
+
+    .focus-ring__meta {
+        font-size: 0.7rem;
+    }
+
+    .focus-list {
+        gap: 6px;
+    }
+
+    .focus-list li {
+        padding: 10px 12px;
+        border-radius: 12px;
+        font-size: 0.88rem;
+    }
+
+    /* ────────────────────────────────────────────
+       HERO LANDING MOBILE
+       ──────────────────────────────────────────── */
+
+    .hero--enhanced {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .hero__score strong {
+        font-size: 1.8rem;
+    }
+
+    .hero__cell {
+        padding: 14px;
+        border-radius: 14px;
+        font-size: 0.88rem;
+    }
+
+    .metric-pill {
+        min-width: unset;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 14px 16px;
+        border-radius: 16px;
+    }
+
+    .metric-pill span {
+        font-size: 0.85rem;
+    }
+
+    /* ────────────────────────────────────────────
+       RIBBON CARDS MOBILE
+       ──────────────────────────────────────────── */
+
+    .ribbon-card {
+        padding: 18px;
+        gap: 14px;
+    }
+
+    .ribbon-card i {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+    }
+
+    .ribbon-card strong {
+        font-size: 0.95rem;
+    }
+
+    .ribbon-card p {
+        font-size: 0.85rem;
+        margin: 4px 0 0;
+    }
+
+    /* ────────────────────────────────────────────
+       CURRICULUM MOBILE
+       ──────────────────────────────────────────── */
+
+    .curriculum-showcase {
+        margin-bottom: 20px;
+    }
+
+    .curriculum-card {
+        padding: 18px;
+    }
+
+    .curriculum-card h3 {
+        margin: 10px 0 8px;
+        font-size: 1.1rem;
+    }
+
+    .curriculum-card p {
+        font-size: 0.88rem;
+    }
+
+    /* ────────────────────────────────────────────
+       AUTH LAYOUT MOBILE
+       ──────────────────────────────────────────── */
+
+    .auth-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .auth-card {
+        padding: 22px;
+    }
+
+    .auth-card--info {
+        order: 1;
+    }
+
+    .auth-card--form {
+        order: 0;
+    }
+
+    .auth-card h2 {
+        font-size: 1.4rem;
+    }
+
+    .auth-card__intro h2 {
+        font-size: 1.5rem;
+        line-height: 1.1;
+    }
+
+    .auth-card__intro {
+        margin-bottom: 16px;
+    }
+
+    .auth-card__intro p {
+        font-size: 0.9rem;
+    }
+
+    .auth-tabs {
+        padding: 6px;
+        margin-bottom: 18px;
+    }
+
+    .auth-tab {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+        min-height: 46px;
+    }
+
+    .auth-panel h2 {
+        font-size: 1.25rem;
+        margin-bottom: 14px;
+    }
+
+    .feature-list {
+        gap: 10px;
+    }
+
+    .feature-list article {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    .feature-list article h3 {
+        font-size: 0.95rem;
+        margin: 0 0 4px;
+    }
+
+    .feature-list article p {
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    /* ────────────────────────────────────────────
+       LEVEL CARDS MOBILE
+       ──────────────────────────────────────────── */
+
+    .level-card {
+        padding: 16px;
+        border-radius: 18px;
+    }
+
+    .level-card h3 {
+        font-size: 1rem;
+        margin: 6px 0;
+    }
+
+    .level-card p {
+        font-size: 0.82rem;
+    }
+
+    .level-card__footer {
+        font-size: 0.82rem;
+        margin-top: 10px;
+    }
+
+    .level-card__number {
+        font-size: 0.85rem;
+    }
+
+    /* ────────────────────────────────────────────
+       PROGRESS BARS MOBILE
+       ──────────────────────────────────────────── */
+
+    .progress-bar {
+        height: 12px;
+    }
+
+    .progress-bar--large {
+        height: 14px;
+    }
+
+    .progress-labels {
+        font-size: 0.82rem;
+    }
+
+    /* ────────────────────────────────────────────
+       EXCEL GRID AND TABLE MOBILE
+       ──────────────────────────────────────────── */
+
+    .excel-card {
+        padding: 16px;
     }
 
     .excel-grid,
     .leaderboard-table {
-        min-width: 620px;
+        min-width: 560px;
+    }
+
+    .excel-grid th,
+    .excel-grid td,
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 10px 12px;
+        font-size: 0.85rem;
     }
 
     .excel-grid-wrapper.has-overflow::after {
-        font-size: 0.68rem;
-        padding: 7px 10px;
+        font-size: 0.66rem;
+        padding: 6px 10px;
     }
 
+    .excel-card__header {
+        margin-bottom: 12px;
+    }
+
+    /* ────────────────────────────────────────────
+       PODIUM MOBILE
+       ──────────────────────────────────────────── */
+
+    .podium-card {
+        padding: 18px;
+        min-height: auto;
+    }
+
+    .podium-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .podium-card p {
+        font-size: 0.85rem;
+    }
+
+    .podium-card__place {
+        margin-bottom: 14px;
+        padding: 8px 14px;
+        font-size: 0.85rem;
+    }
+
+    /* ────────────────────────────────────────────
+       LEADERBOARD MOBILE
+       ──────────────────────────────────────────── */
+
+    .leaderboard-hero {
+        padding: 20px;
+    }
+
+    .leaderboard-hero h2 {
+        font-size: 1.3rem;
+        line-height: 1.25;
+    }
+
+    .leaderboard-hero p {
+        font-size: 0.88rem;
+    }
+
+    .leaderboard-list li {
+        padding: 12px 0;
+        font-size: 0.9rem;
+    }
+
+    /* ────────────────────────────────────────────
+       LESSON SPOTLIGHT MOBILE
+       ──────────────────────────────────────────── */
+
+    .lesson-spotlight__card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .lesson-spotlight__card h2 {
+        font-size: 1.15rem;
+    }
+
+    .lesson-spotlight__meta {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .lesson-spotlight__meta span {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        width: 100%;
+    }
+
+    /* ────────────────────────────────────────────
+       FORMULA EXAMPLE MOBILE
+       ──────────────────────────────────────────── */
+
+    .formula-example {
+        padding: 14px 16px;
+        border-radius: 16px;
+        margin-top: 12px;
+    }
+
+    .formula-example__value {
+        font-size: 0.95rem;
+    }
+
+    /* ────────────────────────────────────────────
+       CHAT WIDGET MOBILE
+       ──────────────────────────────────────────── */
+
     [data-study-chat].chat-widget {
-        right: 14px;
-        left: 14px;
-        bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+        right: 10px;
+        left: 10px;
+        bottom: calc(72px + env(safe-area-inset-bottom, 0px));
         justify-items: stretch;
     }
 
     [data-study-chat] .chat-widget__toggle {
         width: 100%;
         justify-content: center;
+        border-radius: 16px;
+        padding: 12px 16px;
     }
 
     [data-study-chat] .chat-card--floating {
-        right: 14px;
-        left: 14px;
-        bottom: calc(78px + env(safe-area-inset-bottom, 0px));
-        width: 100%;
-        max-height: min(68vh, 620px);
+        right: 10px;
+        left: 10px;
+        bottom: calc(136px + env(safe-area-inset-bottom, 0px));
+        width: auto;
+        max-height: min(60vh, 520px);
         transform-origin: bottom center;
+        border-radius: 22px;
+    }
+
+    .chat-card {
+        padding: 18px;
+        border-radius: 22px;
     }
 
     .chat-card__header--floating {
@@ -1781,6 +2432,139 @@ img {
         width: 100%;
         grid-template-columns: 1fr auto;
         align-items: center;
+    }
+
+    .chat-thread {
+        min-height: 140px;
+        max-height: 240px;
+    }
+
+    .chat-message {
+        padding: 12px 14px;
+        border-radius: 16px;
+        font-size: 0.9rem;
+    }
+
+    .chat-form textarea {
+        min-height: 72px;
+        padding: 14px;
+        border-radius: 16px;
+        font-size: 0.95rem;
+    }
+
+    /* ────────────────────────────────────────────
+       FLASH MESSAGES MOBILE
+       ──────────────────────────────────────────── */
+
+    .flash {
+        margin-bottom: 14px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        font-size: 0.9rem;
+    }
+
+    /* ────────────────────────────────────────────
+       BOTTOM BANNER MOBILE
+       ──────────────────────────────────────────── */
+
+    .bottom-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        margin-top: 20px;
+        padding: 20px;
+    }
+
+    .bottom-banner p {
+        font-size: 0.9rem;
+    }
+
+    /* ────────────────────────────────────────────
+       SECTIONS SPACING MOBILE
+       ──────────────────────────────────────────── */
+
+    .dashboard-hero-grid,
+    .focus-card {
+        margin-bottom: 14px;
+    }
+
+    .curriculum-showcase,
+    .feature-ribbon {
+        margin-bottom: 16px;
+    }
+
+    .section-heading {
+        margin-bottom: 12px;
+    }
+
+    .section-heading--wide {
+        margin-bottom: 14px;
+    }
+
+    .section-heading--wide p {
+        font-size: 0.9rem;
+    }
+
+    .overview-grid {
+        margin-bottom: 16px;
+    }
+
+    .progress-section {
+        margin-bottom: 16px;
+    }
+
+    .leaderboard-hero {
+        margin-bottom: 14px;
+    }
+
+    .podium-grid {
+        margin-bottom: 14px;
+    }
+
+    /* ────────────────────────────────────────────
+       LEVELS PANEL MOBILE
+       ──────────────────────────────────────────── */
+
+    .levels-panel {
+        padding: 18px;
+    }
+
+    .levels-panel__heading {
+        gap: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .levels-panel__summary {
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+
+    .levels-panel__toggle {
+        width: 100%;
+        min-width: unset;
+        min-height: 48px;
+    }
+
+    .levels-panel__viewport.is-collapsed {
+        max-height: 480px;
+    }
+
+    .levels-panel__viewport.is-collapsed::after {
+        height: 140px;
+    }
+
+    /* ────────────────────────────────────────────
+       SIDE PANEL MOBILE (LEADERBOARD + HINTS)
+       ──────────────────────────────────────────── */
+
+    .side-panel {
+        display: grid;
+        gap: 14px;
+    }
+
+    .side-panel section {
+        padding: 18px;
     }
 }
 
@@ -1809,4 +2593,98 @@ img {
 .answer-card .button:disabled {
     opacity: 1;
     filter: saturate(0.92);
+}
+
+/* ────────────────────────────────────────────
+   HAMBURGER MENU TOGGLE
+   ──────────────────────────────────────────── */
+
+.nav-toggle {
+    display: none;
+    appearance: none;
+    border: 0;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    width: 46px;
+    height: 46px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 180ms ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nav-toggle:active {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.nav-toggle__bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 999px;
+    background: var(--ink);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease;
+}
+
+.nav-toggle.is-open .nav-toggle__bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle.is-open .nav-toggle__bar:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.nav-toggle.is-open .nav-toggle__bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ────────────────────────────────────────────
+   BOTTOM NAVIGATION BAR (MOBILE)
+   ──────────────────────────────────────────── */
+
+.bottom-nav {
+    display: none;
+}
+
+/* ────────────────────────────────────────────
+   SCROLL FADE TOP (MOBILE STATUS BAR BLEND)
+   ──────────────────────────────────────────── */
+
+.page-shell::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: env(safe-area-inset-top, 0px);
+    background: var(--bg);
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* ────────────────────────────────────────────
+   TOUCH ACTIVE STATES
+   ──────────────────────────────────────────── */
+
+@media (pointer: coarse) {
+    .button:active,
+    .auth-tab:active,
+    .ribbon-card:active,
+    .level-card:active,
+    .stat-card:active,
+    .curriculum-card:active,
+    .podium-card:active {
+        transform: scale(0.97);
+        transition-duration: 80ms;
+    }
+
+    .site-nav a:active {
+        background: rgba(59, 130, 246, 0.22);
+        transform: scale(0.96);
+    }
 }
