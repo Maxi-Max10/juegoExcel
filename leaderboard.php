@@ -96,28 +96,30 @@ $podium = array_slice($leaderboard, 0, 3);
         </section>
 
         <section class="leaderboard-table-card" data-reveal>
-            <table class="leaderboard-table">
-                <thead>
-                    <tr>
-                        <th>Posición</th>
-                        <th>Jugador</th>
-                        <th>Puntos</th>
-                        <th>Niveles completados</th>
-                        <th>Nivel desbloqueado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($leaderboard as $index => $entry): ?>
+            <div class="table-scroll">
+                <table class="leaderboard-table">
+                    <thead>
                         <tr>
-                            <td>#<?= e((string) ($index + 1)) ?></td>
-                            <td><?= e($entry['username']) ?></td>
-                            <td><?= e((string) $entry['puntos']) ?></td>
-                            <td><?= e((string) $entry['niveles_completados']) ?></td>
-                            <td><?= e((string) $entry['nivel_actual']) ?></td>
+                            <th>Posición</th>
+                            <th>Jugador</th>
+                            <th>Puntos</th>
+                            <th>Niveles completados</th>
+                            <th>Nivel desbloqueado</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($leaderboard as $index => $entry): ?>
+                            <tr>
+                                <td>#<?= e((string) ($index + 1)) ?></td>
+                                <td><?= e($entry['username']) ?></td>
+                                <td><?= e((string) $entry['puntos']) ?></td>
+                                <td><?= e((string) $entry['niveles_completados']) ?></td>
+                                <td><?= e((string) $entry['nivel_actual']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
     <?php render_app_scripts(); ?>

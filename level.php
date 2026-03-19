@@ -67,9 +67,9 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                 <i class="fa-solid fa-trophy"></i>
                 <span>Ranking</span>
             </a>
-            <a href="dashboard.php" class="bottom-nav__item">
+            <a href="logout.php" class="bottom-nav__item">
                 <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Volver</span>
+                <span>Salir</span>
             </a>
         </nav>
 

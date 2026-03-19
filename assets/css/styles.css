@@ -33,6 +33,16 @@ html {
     scroll-behavior: smooth;
 }
 
+html,
+body {
+    overflow-x: clip;
+}
+
+::selection {
+    background: rgba(51, 196, 129, 0.3);
+    color: #FFFFFF;
+}
+
 body {
     margin: 0;
     min-height: 100vh;
@@ -72,8 +82,44 @@ a {
 }
 
 button,
-input {
+input,
+textarea {
     font: inherit;
+}
+
+button,
+a,
+input,
+textarea {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+*::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.9), rgba(33, 115, 70, 0.9));
+    border-radius: 999px;
+    border: 2px solid rgba(15, 23, 42, 0.7);
 }
 
 img {
@@ -184,6 +230,12 @@ img {
     transform: translateY(-1px);
 }
 
+.site-nav a:focus-visible,
+.level-card__footer a:focus-visible,
+.link-inline:focus-visible {
+    border-radius: 999px;
+}
+
 .hero {
     display: grid;
     gap: 26px;
@@ -219,6 +271,60 @@ img {
     border-radius: var(--radius-xl);
     backdrop-filter: blur(18px);
     box-shadow: var(--shadow-lg);
+}
+
+.hero__copy,
+.floating-panel,
+.ribbon-card,
+.curriculum-card,
+.auth-card,
+.stat-card,
+.focus-card,
+.levels-panel,
+.side-panel section,
+.prompt-card,
+.answer-card,
+.mini-stat-card,
+.leaderboard-hero,
+.leaderboard-table-card,
+.excel-card,
+.hint-card,
+.lesson-spotlight__card,
+.bottom-banner,
+.podium-card,
+.feature-list article,
+.formula-example,
+.focus-list li,
+.lesson-spotlight__meta span {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero__copy::after,
+.floating-panel::after,
+.ribbon-card::after,
+.curriculum-card::after,
+.auth-card::after,
+.stat-card::after,
+.focus-card::after,
+.levels-panel::after,
+.side-panel section::after,
+.prompt-card::after,
+.answer-card::after,
+.mini-stat-card::after,
+.leaderboard-hero::after,
+.leaderboard-table-card::after,
+.excel-card::after,
+.hint-card::after,
+.lesson-spotlight__card::after,
+.bottom-banner::after,
+.podium-card::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    pointer-events: none;
 }
 
 .hero__copy,
@@ -598,6 +704,19 @@ img {
     transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
+.stacked-form input::placeholder,
+.chat-form textarea::placeholder {
+    color: rgba(229, 231, 235, 0.44);
+}
+
+.stacked-form input:-webkit-autofill,
+.stacked-form input:-webkit-autofill:hover,
+.stacked-form input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--ink);
+    -webkit-box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.95) inset;
+    transition: background-color 9999s ease-in-out 0s;
+}
+
 .stacked-form input:focus {
     border-color: rgba(59, 130, 246, 0.68);
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.16);
@@ -619,6 +738,10 @@ img {
 
 .button:hover {
     transform: translateY(-2px);
+}
+
+.button:active {
+    transform: translateY(0) scale(0.985);
 }
 
 .button:disabled {
@@ -954,6 +1077,15 @@ img {
 
 .level-card:hover {
     box-shadow: 0 18px 34px rgba(30, 58, 138, 0.2);
+}
+
+.ribbon-card:hover,
+.curriculum-card:hover,
+.stat-card:hover,
+.podium-card:hover,
+.feature-list article:hover {
+    transform: translateY(-3px);
+    border-color: rgba(59, 130, 246, 0.22);
 }
 
 .level-card__footer {
@@ -1451,6 +1583,23 @@ img {
     overflow: hidden;
 }
 
+.table-scroll {
+    overflow-x: auto;
+    border-radius: 24px;
+}
+
+.leaderboard-table {
+    min-width: 760px;
+}
+
+.leaderboard-table tbody tr {
+    transition: background-color 160ms ease;
+}
+
+.leaderboard-table tbody tr:hover {
+    background: rgba(59, 130, 246, 0.08);
+}
+
 .leaderboard-table tbody tr:nth-child(odd) {
     background: rgba(255, 255, 255, 0.03);
 }
@@ -1606,6 +1755,7 @@ img {
         gap: 4px;
         z-index: 20;
         animation: slideDown 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
     }
 
     .site-nav.is-open {
@@ -1735,6 +1885,7 @@ img {
 
     .bottom-nav__item--active {
         color: var(--primary-strong);
+        background: rgba(51, 196, 129, 0.1);
     }
 
     .bottom-nav__item--active i {
@@ -1744,6 +1895,10 @@ img {
     .bottom-nav__item:active {
         background: rgba(255, 255, 255, 0.06);
         transform: scale(0.94);
+    }
+
+    .table-scroll {
+        border-radius: 18px;
     }
 
     /* ────────────────────────────────────────────
@@ -2649,6 +2804,10 @@ img {
 
 .bottom-nav {
     display: none;
+}
+
+body.nav-open {
+    overflow: hidden;
 }
 
 /* ────────────────────────────────────────────
