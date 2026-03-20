@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.documentElement.classList.add('js-ready');
+    initResponsiveSheets();
     initNavToggle();
     initAuthTabs();
     initLevelForm();
@@ -9,6 +10,38 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollHints();
     initDashboardRouteToggle();
 });
+
+function initResponsiveSheets() {
+    const sheets = document.querySelectorAll('.excel-mobile-sheet');
+    const tables = document.querySelectorAll('.excel-grid-wrapper');
+
+    if (!sheets.length && !tables.length) {
+        return;
+    }
+
+    const sync = () => {
+        const isCompact = window.innerWidth <= 820 || window.matchMedia('(pointer: coarse)').matches;
+
+        document.body.classList.toggle('is-mobile-sheet', isCompact);
+
+        sheets.forEach((sheet) => {
+            if (isCompact) {
+                sheet.removeAttribute('hidden');
+                sheet.setAttribute('aria-hidden', 'false');
+            } else {
+                sheet.setAttribute('hidden', 'hidden');
+                sheet.setAttribute('aria-hidden', 'true');
+            }
+        });
+
+        tables.forEach((table) => {
+            table.hidden = isCompact;
+        });
+    };
+
+    sync();
+    window.addEventListener('resize', sync, { passive: true });
+}
 
 function initNavToggle() {
     const toggle = document.querySelector('[data-nav-toggle]');

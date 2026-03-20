@@ -722,18 +722,7 @@ function render_excel_tables(array $tables, string $targetCell): string
         echo '<span class="excel-card__target">Celda objetivo: ' . e($targetCell) . '</span>';
         echo '</div>';
 
-        echo '<div class="excel-mobile-sheet">';
-        echo '<div class="excel-mobile-sheet__legend">';
-        foreach ($table['columns'] as $column) {
-            $hint = trim((string) ($headerRow[$column] ?? ''));
-            echo '<span class="excel-mobile-sheet__chip">';
-            echo '<strong>' . e($column) . '</strong>';
-            if ($hint !== '') {
-                echo '<small>' . e($hint) . '</small>';
-            }
-            echo '</span>';
-        }
-        echo '</div>';
+        echo '<div class="excel-mobile-sheet" hidden aria-hidden="true">';
 
         foreach ($mobileRows as $row) {
             echo '<article class="excel-mobile-row">';

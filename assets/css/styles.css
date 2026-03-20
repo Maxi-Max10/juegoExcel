@@ -1471,29 +1471,12 @@ img {
     display: none;
 }
 
-.excel-mobile-sheet__legend {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
-    gap: 8px;
-    margin-bottom: 14px;
+body.is-mobile-sheet .excel-mobile-sheet {
+    display: block;
 }
 
-.excel-mobile-sheet__chip {
-    display: grid;
-    gap: 3px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    border: 1px solid rgba(229, 231, 235, 0.08);
-    background: rgba(255, 255, 255, 0.04);
-}
-
-.excel-mobile-sheet__chip strong {
-    font-size: 0.78rem;
-}
-
-.excel-mobile-sheet__chip small {
-    color: var(--muted);
-    font-size: 0.7rem;
+body.is-mobile-sheet .excel-grid-wrapper {
+    display: none;
 }
 
 .excel-mobile-row {
@@ -2581,14 +2564,6 @@ img {
         padding: 12px;
     }
 
-    .excel-mobile-sheet {
-        display: block;
-    }
-
-    .excel-grid-wrapper {
-        display: none;
-    }
-
     .excel-grid,
     .leaderboard-table {
         min-width: 0;
@@ -2645,24 +2620,6 @@ img {
 
     .excel-card__target {
         font-size: 0.72rem;
-    }
-
-    .excel-mobile-sheet__legend {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        margin-bottom: 12px;
-    }
-
-    .excel-mobile-sheet__chip {
-        padding: 8px 9px;
-        border-radius: 12px;
-    }
-
-    .excel-mobile-sheet__chip strong {
-        font-size: 0.72rem;
-    }
-
-    .excel-mobile-sheet__chip small {
-        font-size: 0.63rem;
     }
 
     .excel-mobile-row {
@@ -3017,7 +2974,6 @@ img {
 }
 
 @media (max-width: 380px) {
-    .excel-mobile-sheet__legend,
     .excel-mobile-row__cells {
         grid-template-columns: 1fr;
     }
