@@ -2473,62 +2473,115 @@ img {
     }
 
     /* ────────────────────────────────────────────
-       EXCEL GRID AND TABLE MOBILE
+       EXCEL GRID — RESPONSIVE CARD LAYOUT
        ──────────────────────────────────────────── */
 
     .excel-card {
-        padding: 12px;
-    }
-
-    .excel-grid,
-    .leaderboard-table {
-        min-width: 0;
-    }
-
-    .excel-grid {
-        width: max-content;
-        min-width: 100%;
-        table-layout: auto;
+        padding: 10px;
     }
 
     .excel-grid-wrapper {
-        overflow-x: auto;
+        overflow: visible;
+        border: none;
+        background: transparent;
         border-radius: 14px;
-        -webkit-overflow-scrolling: touch;
-        touch-action: pan-x;
-    }
-
-    .excel-grid th,
-    .excel-grid td,
-    .leaderboard-table th,
-    .leaderboard-table td {
-        padding: 9px 10px;
-        font-size: 0.78rem;
-        min-width: 64px;
-        white-space: nowrap;
-    }
-
-    .excel-grid th:first-child,
-    .excel-grid td:first-child {
-        min-width: 36px;
-        width: 36px;
-        padding-inline: 6px;
-        text-align: center;
-    }
-
-    .excel-grid td:nth-child(2),
-    .excel-grid th:nth-child(2) {
-        width: auto;
-        min-width: 86px;
     }
 
     .excel-grid-wrapper.has-overflow::after {
-        font-size: 0.64rem;
-        padding: 6px 10px;
+        display: none;
+    }
+
+    .excel-grid {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        border-collapse: separate;
+    }
+
+    .excel-grid thead {
+        display: none;
+    }
+
+    .excel-grid tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .excel-grid__header-row {
+        display: none;
+    }
+
+    .excel-grid tr {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .excel-grid tr > th {
+        grid-column: 1 / -1;
+        position: static;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 8px 14px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: var(--muted);
+        text-align: left;
+        border: none;
+        border-bottom: 1px solid var(--line);
+        min-width: 0;
+        width: auto;
+        letter-spacing: 0.06em;
+    }
+
+    .excel-grid tr > th::before {
+        content: 'Fila ';
+    }
+
+    .excel-grid td {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border: none;
+        border-bottom: 1px solid rgba(229, 231, 235, 0.06);
+        border-right: 1px solid rgba(229, 231, 235, 0.06);
+        min-width: 0;
+        white-space: normal;
+        word-break: break-word;
+        font-size: 0.88rem;
+        font-weight: 600;
+    }
+
+    .excel-grid td::before {
+        content: attr(data-label);
+        font-size: 0.62rem;
+        font-weight: 800;
+        color: var(--muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .excel-grid td:first-child {
+        position: static;
+        background: rgba(255, 255, 255, 0.03);
+        min-width: 0;
+        width: auto;
+        text-align: left;
+        padding: 10px 12px;
+    }
+
+    .excel-grid td.is-target {
+        background: linear-gradient(135deg, rgba(250, 204, 21, 0.14), rgba(249, 115, 22, 0.14));
+        box-shadow: inset 0 0 0 2px rgba(250, 204, 21, 0.18);
     }
 
     .excel-card__header {
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         gap: 8px;
         align-items: flex-start;
     }
@@ -2539,6 +2592,19 @@ img {
 
     .excel-card__target {
         font-size: 0.72rem;
+    }
+
+    /* Leaderboard table keeps horizontal scroll */
+    .leaderboard-table {
+        min-width: 0;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        padding: 9px 10px;
+        font-size: 0.78rem;
+        min-width: 64px;
+        white-space: nowrap;
     }
 
     .prompt-card,
@@ -2632,7 +2698,11 @@ img {
     }
 
     .level-page .excel-card {
-        padding: 12px;
+        padding: 10px;
+    }
+
+    .level-page .excel-grid-wrapper {
+        overflow: visible;
     }
 
     .level-page .play-panel,

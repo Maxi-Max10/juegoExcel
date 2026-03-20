@@ -712,6 +712,14 @@ function render_excel_tables(array $tables, string $targetCell): string
 {
     ob_start();
     foreach ($tables as $table) {
+        $headerLabels = [];
+        if (!empty($table['rows'])) {
+            $firstRow = $table['rows'][0];
+            foreach ($table['columns'] as $col) {
+                $headerLabels[$col] = $firstRow['cells'][$col] ?? $col;
+            }
+        }
+
         echo '<section class="excel-card">';
         echo '<div class="excel-card__header">';
         echo '<h3>' . e($table['title']) . '</h3>';
@@ -724,13 +732,16 @@ function render_excel_tables(array $tables, string $targetCell): string
             echo '<th>' . e($column) . '</th>';
         }
         echo '</tr></thead><tbody>';
-        foreach ($table['rows'] as $row) {
-            echo '<tr>';
+        foreach ($table['rows'] as $rowIndex => $row) {
+            $isHeaderRow = ($rowIndex === 0);
+            echo '<tr' . ($isHeaderRow ? ' class="excel-grid__header-row"' : '') . '>';
             echo '<th>' . e((string) $row['row']) . '</th>';
             foreach ($table['columns'] as $column) {
                 $cellId = $column . $row['row'];
                 $isTarget = $cellId === $targetCell;
-                echo '<td' . ($isTarget ? ' class="is-target"' : '') . '>' . e((string) ($row['cells'][$column] ?? '')) . '</td>';
+                $label = $column . ' · ' . ($headerLabels[$column] ?? $column);
+                $cls = $isTarget ? ' class="is-target"' : '';
+                echo '<td data-label="' . e($label) . '"' . $cls . '>' . e((string) ($row['cells'][$column] ?? '')) . '</td>';
             }
             echo '</tr>';
         }
