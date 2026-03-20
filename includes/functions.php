@@ -712,10 +712,65 @@ function render_excel_tables(array $tables, string $targetCell): string
 {
     ob_start();
     foreach ($tables as $table) {
+        $rows = $table['rows'] ?? [];
+        $headerRow = $rows[0]['cells'] ?? [];
+        $mobileRows = count($rows) > 1 ? array_slice($rows, 1) : $rows;
+
         echo '<section class="excel-card">';
         echo '<div class="excel-card__header">';
         echo '<h3>' . e($table['title']) . '</h3>';
         echo '<span class="excel-card__target">Celda objetivo: ' . e($targetCell) . '</span>';
+        echo '</div>';
+
+        echo '<div class="excel-mobile-sheet">';
+        echo '<div class="excel-mobile-sheet__legend">';
+        foreach ($table['columns'] as $column) {
+            $hint = trim((string) ($headerRow[$column] ?? ''));
+            echo '<span class="excel-mobile-sheet__chip">';
+            echo '<strong>' . e($column) . '</strong>';
+            if ($hint !== '') {
+                echo '<small>' . e($hint) . '</small>';
+            }
+            echo '</span>';
+        }
+        echo '</div>';
+
+        foreach ($mobileRows as $row) {
+            echo '<article class="excel-mobile-row">';
+            echo '<div class="excel-mobile-row__header">';
+            echo '<strong>Fila ' . e((string) $row['row']) . '</strong>';
+            echo '<span>' . e((string) ($row['cells']['A'] ?? 'Registro')) . '</span>';
+            echo '</div>';
+            echo '<div class="excel-mobile-row__cells">';
+
+            foreach ($table['columns'] as $column) {
+                $cellId = $column . $row['row'];
+                $isTarget = $cellId === $targetCell;
+                $value = (string) ($row['cells'][$column] ?? '');
+                $hint = trim((string) ($headerRow[$column] ?? $column));
+                $classes = 'excel-mobile-cell';
+
+                if ($isTarget) {
+                    $classes .= ' is-target';
+                }
+
+                if ($value === '') {
+                    $classes .= ' is-empty';
+                }
+
+                echo '<div class="' . e($classes) . '">';
+                echo '<div class="excel-mobile-cell__meta">';
+                echo '<strong>' . e($cellId) . '</strong>';
+                echo '<small>' . e($hint) . '</small>';
+                echo '</div>';
+                echo '<div class="excel-mobile-cell__value">' . e($value !== '' ? $value : 'Pendiente') . '</div>';
+                echo '</div>';
+            }
+
+            echo '</div>';
+            echo '</article>';
+        }
+
         echo '</div>';
         echo '<div class="excel-grid-wrapper">';
         echo '<table class="excel-grid">';
@@ -724,7 +779,7 @@ function render_excel_tables(array $tables, string $targetCell): string
             echo '<th>' . e($column) . '</th>';
         }
         echo '</tr></thead><tbody>';
-        foreach ($table['rows'] as $row) {
+        foreach ($rows as $row) {
             echo '<tr>';
             echo '<th>' . e((string) $row['row']) . '</th>';
             foreach ($table['columns'] as $column) {
