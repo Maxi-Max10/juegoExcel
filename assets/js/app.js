@@ -419,14 +419,28 @@ function initLevelCardTilt() {
 
 function initScrollHints() {
     document.querySelectorAll('.excel-grid-wrapper').forEach((wrapper) => {
+        wrapper.scrollLeft = 0;
+
         const update = () => {
             const hasOverflow = wrapper.scrollWidth > wrapper.clientWidth + 8;
             wrapper.classList.toggle('has-overflow', hasOverflow);
+
+            if (window.matchMedia('(max-width: 820px)').matches) {
+                wrapper.scrollLeft = 0;
+            }
         };
 
         update();
         window.addEventListener('resize', update, { passive: true });
+
+        window.addEventListener('pageshow', () => {
+            wrapper.scrollLeft = 0;
+        });
     });
+
+    if (window.scrollX !== 0) {
+        window.scrollTo({ left: 0, top: window.scrollY, behavior: 'auto' });
+    }
 }
 
 function initDashboardRouteToggle() {

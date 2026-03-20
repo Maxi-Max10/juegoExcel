@@ -35,7 +35,7 @@ html {
 
 html,
 body {
-    overflow-x: clip;
+    overflow-x: hidden;
 }
 
 ::selection {
@@ -1836,6 +1836,10 @@ img {
         padding: 12px 0 100px;
     }
 
+    .level-page .page-shell {
+        width: min(100% - 18px, 760px);
+    }
+
     .page-shell--landing {
         padding-top: 12px;
     }
@@ -2491,6 +2495,7 @@ img {
         overflow-x: auto;
         border-radius: 14px;
         -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
     }
 
     .excel-grid th,
@@ -2628,6 +2633,13 @@ img {
 
     .level-page .excel-card {
         padding: 12px;
+    }
+
+    .level-page .play-panel,
+    .level-page .excel-card,
+    .level-page .prompt-card {
+        width: 100%;
+        max-width: 100%;
     }
 
     /* ────────────────────────────────────────────
