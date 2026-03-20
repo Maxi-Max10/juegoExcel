@@ -33,7 +33,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
 <head>
     <?php render_head(APP_NAME . ' | Nivel ' . (string) $requestedLevel); ?>
 </head>
-<body class="app-page">
+<body class="app-page level-page">
     <div class="page-shell">
         <header class="site-header" data-reveal>
             <a class="brand" href="dashboard.php">
