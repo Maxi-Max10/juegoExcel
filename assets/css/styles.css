@@ -1392,6 +1392,15 @@ img {
     display: flex;
     flex-direction: column;
     gap: 0;
+    min-width: 0;
+}
+
+.play-layout > *,
+.lesson-spotlight__card > *,
+.topbar > *,
+.excel-card,
+.prompt-card {
+    min-width: 0;
 }
 
 .play-panel > * + *,
@@ -1443,6 +1452,14 @@ img {
     gap: 14px;
     align-items: center;
     margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.excel-card__header h3,
+.prompt-card h2,
+.lesson-spotlight__card h2,
+.topbar h1 {
+    overflow-wrap: anywhere;
 }
 
 .excel-card__target {
@@ -1454,6 +1471,11 @@ img {
     position: relative;
     overflow-x: auto;
     border-radius: 18px;
+    max-width: 100%;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid rgba(229, 231, 235, 0.08);
+    background: rgba(15, 23, 42, 0.28);
 }
 
 .excel-grid-wrapper.has-overflow::after {
@@ -1474,7 +1496,8 @@ img {
 
 .excel-grid,
 .leaderboard-table {
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
     min-width: 720px;
     border-collapse: collapse;
 }
@@ -1486,6 +1509,19 @@ img {
     padding: 12px 14px;
     text-align: left;
     border: 1px solid var(--line);
+    white-space: nowrap;
+}
+
+.excel-grid th:first-child,
+.excel-grid td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: #1b2436;
+}
+
+.excel-grid thead th:first-child {
+    z-index: 3;
 }
 
 .excel-grid thead th,
@@ -2442,15 +2478,32 @@ img {
 
     .excel-grid,
     .leaderboard-table {
-        min-width: 560px;
+        min-width: 0;
+    }
+
+    .excel-grid {
+        width: max-content;
     }
 
     .excel-grid th,
     .excel-grid td,
     .leaderboard-table th,
     .leaderboard-table td {
-        padding: 10px 12px;
-        font-size: 0.85rem;
+        padding: 8px 10px;
+        font-size: 0.76rem;
+        min-width: 68px;
+    }
+
+    .excel-grid th:first-child,
+    .excel-grid td:first-child {
+        min-width: 40px;
+        padding-inline: 8px;
+        text-align: center;
+    }
+
+    .excel-grid td:nth-child(2),
+    .excel-grid th:nth-child(2) {
+        min-width: 96px;
     }
 
     .excel-grid-wrapper.has-overflow::after {
@@ -2460,6 +2513,66 @@ img {
 
     .excel-card__header {
         margin-bottom: 12px;
+        gap: 8px;
+        align-items: flex-start;
+    }
+
+    .excel-card__header h3 {
+        font-size: 1rem;
+    }
+
+    .excel-card__target {
+        font-size: 0.78rem;
+    }
+
+    .prompt-card,
+    .lesson-spotlight__card,
+    .answer-card,
+    .mini-stat-card,
+    .hint-card {
+        padding: 16px;
+    }
+
+    .prompt-card h2,
+    .lesson-spotlight__card h2 {
+        font-size: 1.05rem;
+        line-height: 1.2;
+    }
+
+    .prompt-card p,
+    .lesson-spotlight__card p,
+    .topbar__lead {
+        font-size: 0.84rem;
+        line-height: 1.45;
+    }
+
+    .play-layout {
+        gap: 12px;
+    }
+
+    .play-panel > * + *,
+    .play-sidebar > * + * {
+        margin-top: 12px;
+    }
+
+    .lesson-spotlight__meta span {
+        border-radius: 14px;
+        font-size: 0.8rem;
+    }
+
+    .answer-card .stacked-form input {
+        min-height: 54px;
+        border-radius: 14px;
+    }
+
+    .answer-card .button,
+    .next-actions .button {
+        min-height: 54px;
+    }
+
+    .feedback-box {
+        min-height: 54px;
+        font-size: 0.84rem;
     }
 
     /* ────────────────────────────────────────────
