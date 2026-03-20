@@ -1832,7 +1832,7 @@ img {
     }
 
     .page-shell {
-        width: min(100% - 20px, 1400px);
+        width: min(100% - 12px, 1400px);
         padding: 12px 0 100px;
     }
 
@@ -2037,7 +2037,7 @@ img {
     }
 
     .topbar h1 {
-        font-size: 1.75rem;
+        font-size: 1.3rem;
         line-height: 1;
     }
 
@@ -2473,7 +2473,7 @@ img {
        ──────────────────────────────────────────── */
 
     .excel-card {
-        padding: 16px;
+        padding: 12px;
     }
 
     .excel-grid,
@@ -2482,33 +2482,42 @@ img {
     }
 
     .excel-grid {
-        width: max-content;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .excel-grid-wrapper {
+        overflow-x: hidden;
+        border-radius: 14px;
     }
 
     .excel-grid th,
     .excel-grid td,
     .leaderboard-table th,
     .leaderboard-table td {
-        padding: 8px 10px;
-        font-size: 0.76rem;
-        min-width: 68px;
+        padding: 7px 6px;
+        font-size: 0.68rem;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .excel-grid th:first-child,
     .excel-grid td:first-child {
-        min-width: 40px;
-        padding-inline: 8px;
+        min-width: 32px;
+        width: 32px;
+        padding-inline: 4px;
         text-align: center;
     }
 
     .excel-grid td:nth-child(2),
     .excel-grid th:nth-child(2) {
-        min-width: 96px;
+        width: 74px;
+        min-width: 74px;
     }
 
     .excel-grid-wrapper.has-overflow::after {
-        font-size: 0.66rem;
-        padding: 6px 10px;
+        display: none;
     }
 
     .excel-card__header {
@@ -2518,11 +2527,11 @@ img {
     }
 
     .excel-card__header h3 {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
     .excel-card__target {
-        font-size: 0.78rem;
+        font-size: 0.72rem;
     }
 
     .prompt-card,
@@ -2530,20 +2539,20 @@ img {
     .answer-card,
     .mini-stat-card,
     .hint-card {
-        padding: 16px;
+        padding: 14px;
     }
 
     .prompt-card h2,
     .lesson-spotlight__card h2 {
-        font-size: 1.05rem;
-        line-height: 1.2;
+        font-size: 0.98rem;
+        line-height: 1.18;
     }
 
     .prompt-card p,
     .lesson-spotlight__card p,
     .topbar__lead {
-        font-size: 0.84rem;
-        line-height: 1.45;
+        font-size: 0.78rem;
+        line-height: 1.35;
     }
 
     .play-layout {
@@ -2557,7 +2566,8 @@ img {
 
     .lesson-spotlight__meta span {
         border-radius: 14px;
-        font-size: 0.8rem;
+        font-size: 0.74rem;
+        padding: 8px 10px;
     }
 
     .answer-card .stacked-form input {
