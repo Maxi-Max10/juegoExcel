@@ -187,6 +187,13 @@ function normalize_formula(string $formula): string
     $normalized = str_replace(['；', ';'], ',', $normalized);
     $normalized = str_replace('$', '', $normalized);
 
+    // Accept English function names (order matters: longer names first)
+    $normalized = str_replace(
+        ['averageif(', 'sumif(', 'countif(', 'iferror(', 'vlookup(', 'xlookup(', 'average(', 'count(', 'product(', 'sum(', 'if(', 'false', 'true'],
+        ['promedio.si(', 'sumar.si(', 'contar.si(', 'si.error(', 'buscarv(', 'buscarx(', 'promedio(', 'contar(', 'producto(', 'suma(', 'si(', 'falso', 'verdadero'],
+        $normalized
+    );
+
     if ($normalized !== '' && $normalized[0] !== '=') {
         $normalized = '=' . $normalized;
     }
@@ -427,38 +434,106 @@ function build_level_tables(array $level): array
     $number = (int) $level['numero'];
     $formula = normalize_formula((string) $level['respuesta_correcta']);
 
-    if ($number <= 20) {
+    if ($number <= 5) {
         return [[
-            'title' => 'Hoja principal',
+            'title' => 'Inventario Tech',
             'target' => (string) $level['formula_target'],
             'columns' => ['A', 'B', 'C', 'D', 'E'],
             'rows' => [
-                ['row' => 1, 'cells' => ['A' => 'Concepto', 'B' => 'Base', 'C' => 'Extra', 'D' => 'Meta', 'E' => 'Resultado']],
-                ['row' => 2, 'cells' => ['A' => 'Enero', 'B' => '15', 'C' => '5', 'D' => '20', 'E' => ''] ],
-                ['row' => 3, 'cells' => ['A' => 'Febrero', 'B' => '18', 'C' => '7', 'D' => '21', 'E' => ''] ],
-                ['row' => 4, 'cells' => ['A' => 'Marzo', 'B' => '10', 'C' => '4', 'D' => '25', 'E' => ''] ],
-                ['row' => 5, 'cells' => ['A' => 'Abril', 'B' => '24', 'C' => '6', 'D' => '12', 'E' => ''] ],
-                ['row' => 6, 'cells' => ['A' => 'Mayo', 'B' => '14', 'C' => '3', 'D' => '8', 'E' => ''] ],
+                ['row' => 1, 'cells' => ['A' => 'Producto', 'B' => 'Precio', 'C' => 'Stock', 'D' => 'Descuento', 'E' => 'Total']],
+                ['row' => 2, 'cells' => ['A' => 'Laptop', 'B' => '899', 'C' => '15', 'D' => '50', 'E' => '']],
+                ['row' => 3, 'cells' => ['A' => 'Mouse', 'B' => '35', 'C' => '120', 'D' => '5', 'E' => '']],
+                ['row' => 4, 'cells' => ['A' => 'Teclado', 'B' => '65', 'C' => '80', 'D' => '12', 'E' => '']],
+                ['row' => 5, 'cells' => ['A' => 'Monitor', 'B' => '420', 'C' => '25', 'D' => '35', 'E' => '']],
+                ['row' => 6, 'cells' => ['A' => 'Webcam', 'B' => '55', 'C' => '60', 'D' => '8', 'E' => '']],
+            ],
+        ]];
+    }
+
+    if ($number <= 10) {
+        return [[
+            'title' => 'Notas del Trimestre',
+            'target' => (string) $level['formula_target'],
+            'columns' => ['A', 'B', 'C', 'D', 'E'],
+            'rows' => [
+                ['row' => 1, 'cells' => ['A' => 'Alumno', 'B' => 'Examen 1', 'C' => 'Examen 2', 'D' => 'Proyecto', 'E' => 'Final']],
+                ['row' => 2, 'cells' => ['A' => 'Ana', 'B' => '85', 'C' => '92', 'D' => '78', 'E' => '']],
+                ['row' => 3, 'cells' => ['A' => 'Luis', 'B' => '72', 'C' => '68', 'D' => '88', 'E' => '']],
+                ['row' => 4, 'cells' => ['A' => 'María', 'B' => '95', 'C' => '90', 'D' => '94', 'E' => '']],
+                ['row' => 5, 'cells' => ['A' => 'Carlos', 'B' => '60', 'C' => '75', 'D' => '70', 'E' => '']],
+                ['row' => 6, 'cells' => ['A' => 'Sofía', 'B' => '88', 'C' => '82', 'D' => '91', 'E' => '']],
+            ],
+        ]];
+    }
+
+    if ($number <= 15) {
+        return [[
+            'title' => 'Gastos Mensuales',
+            'target' => (string) $level['formula_target'],
+            'columns' => ['A', 'B', 'C', 'D', 'E'],
+            'rows' => [
+                ['row' => 1, 'cells' => ['A' => 'Mes', 'B' => 'Renta', 'C' => 'Servicios', 'D' => 'Comida', 'E' => 'Balance']],
+                ['row' => 2, 'cells' => ['A' => 'Enero', 'B' => '800', 'C' => '150', 'D' => '400', 'E' => '']],
+                ['row' => 3, 'cells' => ['A' => 'Febrero', 'B' => '800', 'C' => '130', 'D' => '380', 'E' => '']],
+                ['row' => 4, 'cells' => ['A' => 'Marzo', 'B' => '850', 'C' => '145', 'D' => '420', 'E' => '']],
+                ['row' => 5, 'cells' => ['A' => 'Abril', 'B' => '850', 'C' => '160', 'D' => '390', 'E' => '']],
+                ['row' => 6, 'cells' => ['A' => 'Mayo', 'B' => '900', 'C' => '155', 'D' => '410', 'E' => '']],
+            ],
+        ]];
+    }
+
+    if ($number <= 20) {
+        return [[
+            'title' => 'Liga Deportiva',
+            'target' => (string) $level['formula_target'],
+            'columns' => ['A', 'B', 'C', 'D', 'E'],
+            'rows' => [
+                ['row' => 1, 'cells' => ['A' => 'Jugador', 'B' => 'Goles', 'C' => 'Asist.', 'D' => 'Partidos', 'E' => 'Puntos']],
+                ['row' => 2, 'cells' => ['A' => 'Torres', 'B' => '14', 'C' => '8', 'D' => '22', 'E' => '']],
+                ['row' => 3, 'cells' => ['A' => 'Méndez', 'B' => '6', 'C' => '18', 'D' => '20', 'E' => '']],
+                ['row' => 4, 'cells' => ['A' => 'Rivera', 'B' => '10', 'C' => '5', 'D' => '24', 'E' => '']],
+                ['row' => 5, 'cells' => ['A' => 'Vargas', 'B' => '22', 'C' => '3', 'D' => '19', 'E' => '']],
+                ['row' => 6, 'cells' => ['A' => 'Salazar', 'B' => '4', 'C' => '12', 'D' => '17', 'E' => '']],
+            ],
+        ]];
+    }
+
+    if ($number <= 30) {
+        return [[
+            'title' => 'Encuesta de Satisfacción',
+            'target' => (string) $level['formula_target'],
+            'columns' => ['A', 'B', 'C', 'D', 'E', 'F'],
+            'rows' => [
+                ['row' => 1, 'cells' => ['A' => 'Agente', 'B' => 'Sem 1', 'C' => 'Sem 2', 'D' => 'Sem 3', 'E' => 'Sem 4', 'F' => 'Score']],
+                ['row' => 2, 'cells' => ['A' => 'Valeria', 'B' => '82', 'C' => '88', 'D' => '91', 'E' => '85', 'F' => '']],
+                ['row' => 3, 'cells' => ['A' => 'Andrés', 'B' => '75', 'C' => '70', 'D' => '78', 'E' => '80', 'F' => '']],
+                ['row' => 4, 'cells' => ['A' => 'Camila', 'B' => '90', 'C' => '94', 'D' => '87', 'E' => '92', 'F' => '']],
+                ['row' => 5, 'cells' => ['A' => 'Diego', 'B' => '68', 'C' => '72', 'D' => '65', 'E' => '74', 'F' => '']],
+                ['row' => 6, 'cells' => ['A' => 'Elena', 'B' => '95', 'C' => '89', 'D' => '93', 'E' => '96', 'F' => '']],
+                ['row' => 7, 'cells' => ['A' => 'Fabián', 'B' => '60', 'C' => '66', 'D' => '71', 'E' => '69', 'F' => '']],
+                ['row' => 8, 'cells' => ['A' => 'Gina', 'B' => '84', 'C' => '80', 'D' => '86', 'E' => '88', 'F' => '']],
+                ['row' => 9, 'cells' => ['A' => 'Héctor', 'B' => '77', 'C' => '83', 'D' => '79', 'E' => '81', 'F' => '']],
+                ['row' => 10, 'cells' => ['A' => 'Isabel', 'B' => '91', 'C' => '87', 'D' => '90', 'E' => '93', 'F' => '']],
             ],
         ]];
     }
 
     if ($number <= 40) {
         return [[
-            'title' => 'Rango de análisis',
+            'title' => 'Control de Producción',
             'target' => (string) $level['formula_target'],
             'columns' => ['A', 'B', 'C', 'D', 'E', 'F'],
             'rows' => [
-                ['row' => 1, 'cells' => ['A' => 'Ítem', 'B' => 'Semana 1', 'C' => 'Semana 2', 'D' => 'Semana 3', 'E' => 'Semana 4', 'F' => 'Resumen']],
-                ['row' => 2, 'cells' => ['A' => 'Ana', 'B' => '72', 'C' => '81', 'D' => '75', 'E' => '91', 'F' => ''] ],
-                ['row' => 3, 'cells' => ['A' => 'Luis', 'B' => '65', 'C' => '77', 'D' => '82', 'E' => '88', 'F' => ''] ],
-                ['row' => 4, 'cells' => ['A' => 'Marta', 'B' => '90', 'C' => '84', 'D' => '79', 'E' => '94', 'F' => ''] ],
-                ['row' => 5, 'cells' => ['A' => 'Raúl', 'B' => '58', 'C' => '69', 'D' => '73', 'E' => '85', 'F' => ''] ],
-                ['row' => 6, 'cells' => ['A' => 'Sara', 'B' => '88', 'C' => '91', 'D' => '86', 'E' => '93', 'F' => ''] ],
-                ['row' => 7, 'cells' => ['A' => 'Diego', 'B' => '71', 'C' => '67', 'D' => '80', 'E' => '89', 'F' => ''] ],
-                ['row' => 8, 'cells' => ['A' => 'Noa', 'B' => '62', 'C' => '75', 'D' => '77', 'E' => '81', 'F' => ''] ],
-                ['row' => 9, 'cells' => ['A' => 'Tomi', 'B' => '95', 'C' => '89', 'D' => '92', 'E' => '96', 'F' => ''] ],
-                ['row' => 10, 'cells' => ['A' => 'Lia', 'B' => '78', 'C' => '83', 'D' => '85', 'E' => '87', 'F' => ''] ],
+                ['row' => 1, 'cells' => ['A' => 'Línea', 'B' => 'Lunes', 'C' => 'Martes', 'D' => 'Miércoles', 'E' => 'Jueves', 'F' => 'Reporte']],
+                ['row' => 2, 'cells' => ['A' => 'Línea A', 'B' => '340', 'C' => '360', 'D' => '355', 'E' => '380', 'F' => '']],
+                ['row' => 3, 'cells' => ['A' => 'Línea B', 'B' => '290', 'C' => '310', 'D' => '300', 'E' => '295', 'F' => '']],
+                ['row' => 4, 'cells' => ['A' => 'Línea C', 'B' => '410', 'C' => '420', 'D' => '400', 'E' => '430', 'F' => '']],
+                ['row' => 5, 'cells' => ['A' => 'Línea D', 'B' => '250', 'C' => '265', 'D' => '270', 'E' => '285', 'F' => '']],
+                ['row' => 6, 'cells' => ['A' => 'Línea E', 'B' => '380', 'C' => '375', 'D' => '390', 'E' => '395', 'F' => '']],
+                ['row' => 7, 'cells' => ['A' => 'Línea F', 'B' => '315', 'C' => '330', 'D' => '340', 'E' => '325', 'F' => '']],
+                ['row' => 8, 'cells' => ['A' => 'Línea G', 'B' => '425', 'C' => '415', 'D' => '435', 'E' => '440', 'F' => '']],
+                ['row' => 9, 'cells' => ['A' => 'Línea H', 'B' => '265', 'C' => '280', 'D' => '275', 'E' => '290', 'F' => '']],
+                ['row' => 10, 'cells' => ['A' => 'Línea I', 'B' => '350', 'C' => '345', 'D' => '365', 'E' => '370', 'F' => '']],
             ],
         ]];
     }
