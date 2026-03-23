@@ -160,7 +160,9 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 </div>
                 <?php if (!$isVip && (int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
                     <?php
-                    $secsElapsed = max(0, time() - strtotime($progress['last_life_lost_at']));
+                    $timerStmt = getPDO()->prepare('SELECT GREATEST(0, TIMESTAMPDIFF(SECOND, ?, NOW())) AS elapsed');
+                    $timerStmt->execute([$progress['last_life_lost_at']]);
+                    $secsElapsed = (int) $timerStmt->fetchColumn();
                     $secsInCycle = $secsElapsed % 900;
                     $secsLeft = 900 - $secsInCycle;
                     if ($secsLeft > 900) { $secsLeft = 900; }

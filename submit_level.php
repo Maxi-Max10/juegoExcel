@@ -164,7 +164,12 @@ try {
         'lives' => $livesValue,
         'vip' => $vip,
         'nextLifeIn' => (!$vip && (int) $freshProgress['vidas'] < 5 && $freshProgress['last_life_lost_at'])
-            ? min(900, max(0, 900 - max(0, time() - strtotime($freshProgress['last_life_lost_at'])) % 900))
+            ? (function() use ($freshProgress) {
+                $s = getPDO()->prepare('SELECT GREATEST(0, TIMESTAMPDIFF(SECOND, ?, NOW())) AS elapsed');
+                $s->execute([$freshProgress['last_life_lost_at']]);
+                $e = (int) $s->fetchColumn();
+                return 900 - ($e % 900);
+            })()
             : null,
         'completedLevels' => (int) $freshProgress['niveles_completados'],
         'progressPercent' => number_format(progress_percentage($freshProgress), 2, '.', ''),

@@ -115,7 +115,11 @@ function is_user_vip(int $userId): bool
 function regenerate_lives(int $userId): void
 {
     $pdo = getPDO();
-    $stmt = $pdo->prepare('SELECT vidas, last_life_lost_at FROM progress WHERE user_id = ? LIMIT 1');
+    $stmt = $pdo->prepare(
+        'SELECT vidas, last_life_lost_at,
+                TIMESTAMPDIFF(SECOND, last_life_lost_at, NOW()) AS secs_elapsed
+         FROM progress WHERE user_id = ? LIMIT 1'
+    );
     $stmt->execute([$userId]);
     $row = $stmt->fetch();
 
@@ -123,10 +127,8 @@ function regenerate_lives(int $userId): void
         return;
     }
 
-    $lostAt = new DateTimeImmutable($row['last_life_lost_at']);
-    $now = new DateTimeImmutable();
-    $elapsedMinutes = (int) floor(($now->getTimestamp() - $lostAt->getTimestamp()) / 60);
-    $livesToAdd = (int) floor($elapsedMinutes / 15);
+    $elapsedSeconds = max(0, (int) $row['secs_elapsed']);
+    $livesToAdd = intdiv($elapsedSeconds, 900);
 
     if ($livesToAdd <= 0) {
         return;
@@ -134,11 +136,15 @@ function regenerate_lives(int $userId): void
 
     $currentLives = (int) $row['vidas'];
     $newLives = min(5, $currentLives + $livesToAdd);
-    $minutesUsed = $livesToAdd * 15;
-    $newLostAt = $newLives >= 5 ? null : $lostAt->modify("+{$minutesUsed} minutes")->format('Y-m-d H:i:s');
+    $secondsUsed = $livesToAdd * 900;
 
-    $update = $pdo->prepare('UPDATE progress SET vidas = ?, last_life_lost_at = ? WHERE user_id = ?');
-    $update->execute([$newLives, $newLostAt, $userId]);
+    if ($newLives >= 5) {
+        $update = $pdo->prepare('UPDATE progress SET vidas = ?, last_life_lost_at = NULL WHERE user_id = ?');
+        $update->execute([$newLives, $userId]);
+    } else {
+        $update = $pdo->prepare('UPDATE progress SET vidas = ?, last_life_lost_at = DATE_ADD(last_life_lost_at, INTERVAL ? SECOND) WHERE user_id = ?');
+        $update->execute([$newLives, $secondsUsed, $userId]);
+    }
 }
 
 function get_user_progress(int $userId): array
