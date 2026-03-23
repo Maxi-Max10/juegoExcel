@@ -24,5 +24,11 @@ function getPDO(): PDO
         ]
     );
 
+    $offset = (new DateTimeZone(date_default_timezone_get()))->getOffset(new DateTime());
+    $sign   = $offset >= 0 ? '+' : '-';
+    $hours  = str_pad((string) intdiv(abs($offset), 3600), 2, '0', STR_PAD_LEFT);
+    $mins   = str_pad((string) (intdiv(abs($offset), 60) % 60), 2, '0', STR_PAD_LEFT);
+    $pdo->exec("SET time_zone = '{$sign}{$hours}:{$mins}'");
+
     return $pdo;
 }

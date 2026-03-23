@@ -140,9 +140,10 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 </div>
                 <?php if (!$isVip && (int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
                     <?php
-                    $secsElapsed = time() - strtotime($progress['last_life_lost_at']);
+                    $secsElapsed = max(0, time() - strtotime($progress['last_life_lost_at']));
                     $secsInCycle = $secsElapsed % 900;
                     $secsLeft = 900 - $secsInCycle;
+                    if ($secsLeft > 900) { $secsLeft = 900; }
                     ?>
                     <div class="lives-timer"><i class="fa-solid fa-clock"></i> <span id="life-timer" data-seconds="<?= $secsLeft ?>"><?= sprintf('%d:%02d', intdiv($secsLeft, 60), $secsLeft % 60) ?></span></div>
                 <?php endif; ?>

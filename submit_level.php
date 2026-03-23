@@ -164,7 +164,7 @@ try {
         'lives' => $livesValue,
         'vip' => $vip,
         'nextLifeIn' => (!$vip && (int) $freshProgress['vidas'] < 5 && $freshProgress['last_life_lost_at'])
-            ? max(0, 900 - (time() - strtotime($freshProgress['last_life_lost_at'])) % 900)
+            ? min(900, max(0, 900 - max(0, time() - strtotime($freshProgress['last_life_lost_at'])) % 900))
             : null,
         'completedLevels' => (int) $freshProgress['niveles_completados'],
         'progressPercent' => number_format(progress_percentage($freshProgress), 2, '.', ''),
