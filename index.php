@@ -50,6 +50,11 @@ $flash = get_flash();
                     <a class="button button--ghost" href="#temario">Ver 100 niveles</a>
                 </div>
                 <div class="hero__metrics" data-stagger-group>
+                    <div class="metrics-bg" aria-hidden="true">
+                        <span class="metrics-blob metrics-blob--1"></span>
+                        <span class="metrics-blob metrics-blob--2"></span>
+                        <span class="metrics-blob metrics-blob--3"></span>
+                    </div>
                     <article class="metric-pill" data-reveal-item>
                         <strong>20</strong>
                         <span>Niveles básicos</span>
