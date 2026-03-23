@@ -177,7 +177,8 @@ $flash = get_flash();
 
                 <div id="login-panel" class="auth-panel is-active">
                     <h2>Retoma tu progreso</h2>
-                    <form action="login.php" method="post" class="stacked-form">
+                    <div id="login-msg" class="auth-msg" hidden></div>
+                    <form id="login-form" action="login.php" method="post" class="stacked-form">
                         <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
                         <label>
                             <span>Usuario o correo</span>
@@ -193,7 +194,8 @@ $flash = get_flash();
 
                 <div id="register-panel" class="auth-panel">
                     <h2>Crea tu perfil</h2>
-                    <form action="register.php" method="post" class="stacked-form">
+                    <div id="register-msg" class="auth-msg" hidden></div>
+                    <form id="register-form" action="register.php" method="post" class="stacked-form">
                         <input type="hidden" name="csrf_token" value="<?= e(csrf_token()) ?>">
                         <label>
                             <span>Usuario</span>
@@ -218,5 +220,51 @@ $flash = get_flash();
         </main>
     </div>
     <?php render_app_scripts(); ?>
+    <script>
+    (function(){
+        function setupForm(formId, msgId, redirectTo) {
+            var form = document.getElementById(formId);
+            var msgBox = document.getElementById(msgId);
+            if (!form || !msgBox) return;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                msgBox.hidden = true;
+                var btn = form.querySelector('button[type="submit"]');
+                var origText = btn.textContent;
+                btn.disabled = true;
+                btn.textContent = 'Procesando...';
+
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(res) { return res.json().then(function(d) { d._ok = res.ok; return d; }); })
+                .then(function(data) {
+                    msgBox.textContent = data.message;
+                    msgBox.className = 'auth-msg auth-msg--' + data.type;
+                    msgBox.hidden = false;
+                    if (data._ok && data.type === 'success') {
+                        setTimeout(function() { window.location.href = redirectTo; }, 600);
+                    } else {
+                        btn.disabled = false;
+                        btn.textContent = origText;
+                    }
+                })
+                .catch(function() {
+                    msgBox.textContent = 'Error de conexi\u00f3n. Int\u00e9ntalo de nuevo.';
+                    msgBox.className = 'auth-msg auth-msg--error';
+                    msgBox.hidden = false;
+                    btn.disabled = false;
+                    btn.textContent = origText;
+                });
+            });
+        }
+
+        setupForm('login-form', 'login-msg', 'dashboard.php');
+        setupForm('register-form', 'register-msg', 'dashboard.php');
+    })();
+    </script>
 </body>
 </html>
