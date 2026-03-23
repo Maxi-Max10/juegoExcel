@@ -1167,12 +1167,15 @@ img {
 
 /* ── Lives card highlight ── */
 .stat-card--lives {
-    background: linear-gradient(160deg, rgba(220, 38, 38, 0.12), rgba(17, 24, 39, 0.98) 60%);
-    border-color: rgba(239, 68, 68, 0.3);
+    background: linear-gradient(160deg, rgba(239, 68, 68, 0.22), rgba(249, 115, 22, 0.10) 45%, rgba(17, 24, 39, 0.96) 85%);
+    border-color: rgba(239, 68, 68, 0.35);
+    box-shadow: 0 0 28px rgba(239, 68, 68, 0.12), 0 16px 36px rgba(0, 0, 0, 0.3);
 }
 
 .stat-card--lives::before {
     background: linear-gradient(90deg, #EF4444, #F97316);
+    width: 80px;
+    height: 4px;
 }
 
 .stat-card--lives .stat-card__label {
