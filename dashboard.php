@@ -68,13 +68,12 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 
         <header class="topbar topbar--hero" data-reveal>
             <div>
-                <span class="eyebrow">Hola, <?= e($user['username'] ?? $_SESSION['username'] ?? 'Jugador') ?></span>
-                <h1>Mapa de progreso</h1>
-                <p class="topbar__lead">Tu tablero resume dónde estás, qué te falta y cuál es el siguiente reto que más impacto tiene en tu avance.</p>
+                <span class="eyebrow"><i class="fa-solid fa-bolt"></i> Hola, <?= e($user['username'] ?? $_SESSION['username'] ?? 'Jugador') ?></span>
+                <h1>Tu misión</h1>
             </div>
             <nav class="topbar__actions">
-                <a class="button button--primary" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">Jugar ahora</a>
-                <a class="button button--ghost" href="leaderboard.php">Ver ranking</a>
+                <a class="button button--primary button--glow" href="snake.php?nivel=<?= e((string) $currentLevel) ?>"><i class="fa-solid fa-play"></i> Jugar ahora</a>
+                <a class="button button--ghost" href="leaderboard.php"><i class="fa-solid fa-trophy"></i> Ranking</a>
             </nav>
         </header>
 
@@ -85,13 +84,11 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         <section class="dashboard-hero-grid">
             <article class="focus-card" data-reveal>
                 <div class="focus-card__copy">
-                    <span class="eyebrow">Siguiente misión</span>
-                    <h2>Nivel <?= e((string) $currentLevel) ?> listo para jugar</h2>
+                    <span class="eyebrow">🎯 Siguiente misión</span>
+                    <h2>Nivel <?= e((string) $currentLevel) ?></h2>
                     <p><?= e(level_band_title($currentLevel)) ?> · Mueve la snake hasta la respuesta correcta.</p>
                     <div class="focus-card__actions">
-                        <a class="button button--primary" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">🐍 Modo Snake</a>
-                        <!-- <a class="button button--ghost" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Modo clásico</a> -->
-                        <a class="button button--ghost" href="leaderboard.php">Comparar ranking</a>
+                        <a class="button button--primary button--glow button--lg" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">🐍 Jugar nivel <?= e((string) $currentLevel) ?></a>
                     </div>
                 </div>
                 <div class="focus-card__rings">
@@ -111,75 +108,62 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             </article>
         </section>
 
-        <section class="overview-grid" data-stagger-group>
-            <article class="stat-card stat-card--highlight">
-                <div class="stat-card__top">
-                    <span class="stat-card__label">Siguiente reto</span>
-                </div>
-                <strong class="stat-card__value">Nivel <?= e((string) $currentLevel) ?></strong>
-                <p><?= e(level_band_title($currentLevel)) ?> · Sigue donde te quedaste.</p>
-                <a class="button button--primary stat-card__cta" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">Continuar</a>
-            </article>
-            <article class="stat-card" data-reveal-item>
-                <div class="stat-card__top">
-                    <span class="stat-card__label">Puntos</span>
-                </div>
-                <strong class="stat-card__value"><?= e((string) $progress['puntos']) ?></strong>
-                <p>Se acumulan con cada nivel nuevo completado.</p>
-            </article>
-            <article class="stat-card" data-reveal-item>
-                <div class="stat-card__top">
-                    <span class="stat-card__label">Niveles completados</span>
-                </div>
-                <strong class="stat-card__value"><?= e((string) $progress['niveles_completados']) ?>/<?= TOTAL_LEVELS ?></strong>
-                <p>Tu dominio actual de Excel en el juego.</p>
-            </article>
-            <article class="stat-card stat-card--lives" data-reveal-item>
-                <div class="stat-card__top">
-                    <span class="stat-card__label"><i class="fa-solid fa-heart"></i> Vidas</span>
-                </div>
-                <?php if ($isVip): ?>
-                    <strong class="stat-card__value">∞</strong>
-                    <p>Vidas infinitas activas (VIP).</p>
-                <?php else: ?>
-                    <strong class="stat-card__value"><?= e((string) $progress['vidas']) ?>/5</strong>
-                    <div class="lives-bar">
-                        <?php for ($i = 1; $i <= 5; $i++): ?>
-                            <span class="lives-bar__heart <?= $i <= (int) $progress['vidas'] ? 'is-full' : 'is-empty' ?>"><i class="fa-solid fa-heart"></i></span>
-                        <?php endfor; ?>
-                    </div>
-                    <?php if ((int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
-                        <?php
-                        $secsElapsed = time() - strtotime($progress['last_life_lost_at']);
-                        $secsInCycle = $secsElapsed % 900;
-                        $secsLeft = 900 - $secsInCycle;
-                        ?>
-                        <p class="lives-timer"><i class="fa-solid fa-clock"></i> Siguiente vida en <strong id="life-timer" data-seconds="<?= $secsLeft ?>"><?= sprintf('%d:%02d', intdiv($secsLeft, 60), $secsLeft % 60) ?></strong></p>
-                    <?php else: ?>
-                        <p>Se regeneran 1 cada 15 min hasta llegar a 5.</p>
-                    <?php endif; ?>
-                <?php endif; ?>
-            </article>
-        </section>
-
-        <section class="progress-section" data-reveal>
-            <div>
-                <div class="section-heading">
-                    <h2>Progreso general</h2>
-                    <span><?= number_format(progress_percentage($progress), 0) ?>%</span>
-                </div>
-                <div class="progress-bar progress-bar--large">
-                    <div class="progress-bar__fill" style="width: <?= number_format(progress_percentage($progress), 2, '.', '') ?>%"></div>
+        <section class="quick-stats" data-stagger-group>
+            <div class="quick-stat quick-stat--xp" data-reveal-item>
+                <div class="quick-stat__icon"><i class="fa-solid fa-bolt"></i></div>
+                <div class="quick-stat__body">
+                    <span class="quick-stat__label">XP Total</span>
+                    <strong class="quick-stat__value"><?= e((string) $progress['puntos']) ?></strong>
                 </div>
             </div>
-            <div>
-                <div class="section-heading">
-                    <h2>Ruta desbloqueada</h2>
-                    <span><?= number_format(current_level_percentage($progress), 0) ?>%</span>
+            <div class="quick-stat quick-stat--levels" data-reveal-item>
+                <div class="quick-stat__icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="quick-stat__body">
+                    <span class="quick-stat__label">Niveles</span>
+                    <strong class="quick-stat__value"><?= e((string) $progress['niveles_completados']) ?><small>/<?= TOTAL_LEVELS ?></small></strong>
                 </div>
-                <div class="progress-bar progress-bar--large progress-bar--secondary">
-                    <div class="progress-bar__fill" style="width: <?= number_format(current_level_percentage($progress), 2, '.', '') ?>%"></div>
+            </div>
+            <div class="quick-stat quick-stat--lives" data-reveal-item>
+                <div class="quick-stat__icon"><i class="fa-solid fa-heart"></i></div>
+                <div class="quick-stat__body">
+                    <span class="quick-stat__label">Vidas</span>
+                    <?php if ($isVip): ?>
+                        <strong class="quick-stat__value">∞ <small>VIP</small></strong>
+                    <?php else: ?>
+                        <strong class="quick-stat__value"><?= e((string) $progress['vidas']) ?><small>/5</small></strong>
+                        <div class="lives-bar">
+                            <?php for ($i = 1; $i <= 5; $i++): ?>
+                                <span class="lives-bar__heart <?= $i <= (int) $progress['vidas'] ? 'is-full' : 'is-empty' ?>"><i class="fa-solid fa-heart"></i></span>
+                            <?php endfor; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
+                <?php if (!$isVip && (int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
+                    <?php
+                    $secsElapsed = time() - strtotime($progress['last_life_lost_at']);
+                    $secsInCycle = $secsElapsed % 900;
+                    $secsLeft = 900 - $secsInCycle;
+                    ?>
+                    <div class="lives-timer"><i class="fa-solid fa-clock"></i> <span id="life-timer" data-seconds="<?= $secsLeft ?>"><?= sprintf('%d:%02d', intdiv($secsLeft, 60), $secsLeft % 60) ?></span></div>
+                <?php endif; ?>
+            </div>
+            <a href="snake.php?nivel=<?= e((string) $currentLevel) ?>" class="quick-stat quick-stat--next" data-reveal-item>
+                <div class="quick-stat__icon"><i class="fa-solid fa-play"></i></div>
+                <div class="quick-stat__body">
+                    <span class="quick-stat__label">Siguiente</span>
+                    <strong class="quick-stat__value">Nv. <?= e((string) $currentLevel) ?></strong>
+                </div>
+                <i class="fa-solid fa-chevron-right quick-stat__arrow"></i>
+            </a>
+        </section>
+
+        <section class="xp-track" data-reveal>
+            <div class="xp-track__row">
+                <span class="xp-track__label"><i class="fa-solid fa-fire"></i> Progreso general</span>
+                <span class="xp-track__pct"><?= number_format(progress_percentage($progress), 0) ?>%</span>
+            </div>
+            <div class="progress-bar progress-bar--large progress-bar--animated">
+                <div class="progress-bar__fill" style="width: <?= number_format(progress_percentage($progress), 2, '.', '') ?>%"></div>
             </div>
         </section>
 
@@ -187,8 +171,8 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             <section class="levels-panel" data-reveal>
                 <div class="section-heading levels-panel__heading">
                     <div>
-                        <h2>Ruta de niveles</h2>
-                        <p class="levels-panel__summary">Mostrando niveles <?= e((string) $previewStart) ?> al <?= e((string) $previewEnd) ?> alrededor de tu progreso actual.</p>
+                        <h2><i class="fa-solid fa-route"></i> Ruta de niveles</h2>
+                        <p class="levels-panel__summary">Niveles <?= e((string) $previewStart) ?>–<?= e((string) $previewEnd) ?> · Tu progreso actual</p>
                     </div>
                     <button class="button button--ghost levels-panel__toggle" type="button" data-route-toggle data-label-expand="Ver los 100 niveles" data-label-collapse="Volver a resumen">
                         Ver los 100 niveles
@@ -231,24 +215,25 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             <aside class="side-panel">
                 <section class="leaderboard-card" data-reveal>
                     <div class="section-heading">
-                        <h2>Top jugadores</h2>
+                        <h2><i class="fa-solid fa-crown"></i> Top jugadores</h2>
                         <a href="leaderboard.php">Ver más</a>
                     </div>
                     <ol class="leaderboard-list">
-                        <?php foreach ($leaderboard as $entry): ?>
+                        <?php foreach ($leaderboard as $idx => $entry): ?>
                             <li>
+                                <span class="lb-rank"><?= $idx + 1 ?></span>
                                 <div>
                                     <strong><?= e($entry['username']) ?></strong>
                                     <span><?= e((string) $entry['niveles_completados']) ?> niveles</span>
                                 </div>
-                                <span><?= e((string) $entry['puntos']) ?> pts</span>
+                                <span class="lb-pts"><?= e((string) $entry['puntos']) ?></span>
                             </li>
                         <?php endforeach; ?>
                     </ol>
                 </section>
 
                 <section class="hint-card" data-reveal>
-                    <h2>Cómo avanzar más rápido</h2>
+                    <h2><i class="fa-solid fa-lightbulb"></i> Tips rápidos</h2>
                     <ul>
                         <li>Escribe la fórmula con o sin espacios: el validador normaliza el formato.</li>
                         <li>Puedes usar coma o punto y coma como separador de argumentos.</li>
