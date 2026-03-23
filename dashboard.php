@@ -205,22 +205,24 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                         $cardClass = $completed ? 'is-completed' : ($unlocked ? 'is-unlocked' : 'is-locked');
                         $hiddenInPreview = $number < $previewStart || $number > $previewEnd;
                         ?>
-                        <article class="level-card <?= e($cardClass) ?><?= $hiddenInPreview ? ' level-card--preview-hidden' : '' ?>" data-level-card>
+                        <?php $href = $unlocked ? 'snake.php?nivel=' . e((string) $number) : '#'; ?>
+                        <a href="<?= $href ?>" class="level-card <?= e($cardClass) ?><?= $hiddenInPreview ? ' level-card--preview-hidden' : '' ?>" data-level-card <?= !$unlocked ? 'tabindex="-1" aria-disabled="true"' : '' ?>>
                             <div class="level-card__header">
                                 <span class="level-card__number">Nivel <?= e((string) $number) ?></span>
                                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
                             </div>
                             <h3><?= e($level['titulo']) ?></h3>
-                            <p><?= e($level['categoria']) ?></p>
+                            <p class="level-card__category"><?= e($level['categoria']) ?></p>
                             <div class="level-card__footer">
-                                <span><?= $completed ? 'Completado' : ($unlocked ? 'Disponible' : 'Bloqueado') ?></span>
-                                <?php if ($unlocked): ?>
-                                    <a href="snake.php?nivel=<?= e((string) $number) ?>">Abrir</a>
+                                <?php if ($completed): ?>
+                                    <span class="level-card__status level-card__status--done"><i class="fa-solid fa-circle-check"></i> Completado</span>
+                                <?php elseif ($unlocked): ?>
+                                    <span class="level-card__status level-card__status--open"><i class="fa-solid fa-play"></i> Disponible</span>
                                 <?php else: ?>
-                                    <span>Supera el nivel anterior</span>
+                                    <span class="level-card__status level-card__status--locked"><i class="fa-solid fa-lock"></i> Bloqueado</span>
                                 <?php endif; ?>
                             </div>
-                        </article>
+                        </a>
                     <?php endforeach; ?>
                     </div>
                 </div>
