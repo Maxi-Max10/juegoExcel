@@ -73,7 +73,7 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
     <div class="page-shell">
         <header class="site-header" data-reveal>
             <a class="brand" href="dashboard.php">
-                <span class="brand__mark"><i class="fa-solid fa-table-cells-large"></i></span>
+                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="28" height="28"></span>
                 <span>
                     <strong>Excel Quest</strong>
                     <small>Modo Víbora</small>
