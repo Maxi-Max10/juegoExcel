@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initLevelCardTilt();
     initScrollHints();
     initDashboardRouteToggle();
+    initHeroParticles();
+    initHeroParallax();
+    initCounterAnimation();
+    initMagneticButtons();
+    initScrollHideIndicator();
 });
 
 function initNavToggle() {
@@ -458,4 +463,155 @@ function initDashboardRouteToggle() {
             ? button.dataset.labelExpand || 'Ver ruta completa'
             : button.dataset.labelCollapse || 'Ver menos';
     });
+}
+
+/* ═══════════════════════════════════════════════════
+   EFECTOS VISUALES ADICIONALES
+   ═══════════════════════════════════════════════════ */
+
+function initHeroParticles() {
+    const container = document.querySelector('.hero-particles');
+    if (!container) return;
+
+    const types = ['dot', 'ring', 'cross'];
+    const colors = [
+        'rgba(51, 196, 129, 0.5)',
+        'rgba(59, 130, 246, 0.4)',
+        'rgba(250, 204, 21, 0.4)',
+        'rgba(249, 115, 22, 0.35)',
+        'rgba(139, 92, 246, 0.35)',
+    ];
+
+    const count = 22;
+    for (let i = 0; i < count; i++) {
+        const el = document.createElement('div');
+        const type = types[i % types.length];
+        el.className = `hero-particle hero-particle--${type}`;
+
+        const size = type === 'dot' ? (3 + Math.random() * 5) : (10 + Math.random() * 14);
+        el.style.setProperty('--size', size + 'px');
+        el.style.setProperty('--clr', colors[Math.floor(Math.random() * colors.length)]);
+        el.style.setProperty('--dur', (6 + Math.random() * 8) + 's');
+        el.style.setProperty('--delay', (Math.random() * 6) + 's');
+        el.style.setProperty('--dx', (Math.random() * 60 - 30) + 'px');
+        el.style.setProperty('--dy', (-40 - Math.random() * 80) + 'px');
+        el.style.setProperty('--peak-opacity', (0.3 + Math.random() * 0.5).toFixed(2));
+        el.style.left = (Math.random() * 100) + '%';
+        el.style.top = (Math.random() * 100) + '%';
+
+        container.appendChild(el);
+    }
+}
+
+function initHeroParallax() {
+    const hero = document.querySelector('.hero--enhanced');
+    if (!hero || window.matchMedia('(pointer: coarse)').matches) return;
+
+    const copy = hero.querySelector('.hero__copy');
+    const stage = hero.querySelector('.hero-stage');
+    const orbits = hero.querySelectorAll('.hero-orbit');
+
+    hero.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width - 0.5;
+        const py = (e.clientY - rect.top) / rect.height - 0.5;
+
+        if (copy) {
+            copy.style.transform = `translateX(${px * -6}px) translateY(${py * -6}px)`;
+        }
+        if (stage) {
+            stage.style.transform = `translateX(${px * 10}px) translateY(${py * 8}px)`;
+        }
+
+        orbits.forEach((orb, i) => {
+            const factor = (i + 1) * 8;
+            orb.style.transform = `translateX(${px * factor}px) translateY(${py * factor}px)`;
+        });
+    });
+
+    hero.addEventListener('mouseleave', () => {
+        [copy, stage].forEach((el) => {
+            if (el) el.style.transform = '';
+        });
+        orbits.forEach((orb) => {
+            orb.style.transform = '';
+        });
+    });
+}
+
+function initCounterAnimation() {
+    const pills = document.querySelectorAll('.metric-pill strong');
+    if (!pills.length) return;
+
+    const animateValue = (el) => {
+        const text = el.textContent.trim();
+        const match = text.match(/^(\d+)(.*)$/);
+        if (!match) return;
+
+        const target = parseInt(match[1], 10);
+        const suffix = match[2];
+        const duration = 1400;
+        const start = performance.now();
+        el.textContent = '0' + suffix;
+
+        const tick = (now) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = Math.round(target * eased);
+            el.textContent = current + suffix;
+            if (progress < 1) requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
+    };
+
+    if (window.IntersectionObserver) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    animateValue(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        pills.forEach((pill) => observer.observe(pill));
+    } else {
+        pills.forEach(animateValue);
+    }
+}
+
+function initMagneticButtons() {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+
+    document.querySelectorAll('.hero__actions .button').forEach((btn) => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translateY(-2px) translateX(${x * 0.15}px) translateY(${y * 0.15}px)`;
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = '';
+        });
+    });
+}
+
+function initScrollHideIndicator() {
+    const indicator = document.querySelector('.scroll-indicator');
+    if (!indicator) return;
+
+    let hidden = false;
+    const onScroll = () => {
+        if (!hidden && window.scrollY > 80) {
+            hidden = true;
+            indicator.style.transition = 'opacity 0.4s ease';
+            indicator.style.opacity = '0';
+            window.removeEventListener('scroll', onScroll);
+        }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
 }

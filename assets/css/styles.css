@@ -3157,3 +3157,420 @@ body.nav-open {
         transform: scale(0.96);
     }
 }
+
+/* ═══════════════════════════════════════════════════
+   EFECTOS VISUALES AVANZADOS
+   ═══════════════════════════════════════════════════ */
+
+/* ── Partículas flotantes en el hero ── */
+.hero-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.hero-particle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0;
+    animation: particle-float var(--dur, 8s) var(--delay, 0s) ease-in-out infinite;
+}
+
+.hero-particle--dot {
+    width: var(--size, 4px);
+    height: var(--size, 4px);
+    background: var(--clr, rgba(51, 196, 129, 0.5));
+}
+
+.hero-particle--ring {
+    width: var(--size, 18px);
+    height: var(--size, 18px);
+    border: 2px solid var(--clr, rgba(59, 130, 246, 0.3));
+    background: transparent;
+}
+
+.hero-particle--cross {
+    width: var(--size, 10px);
+    height: var(--size, 10px);
+    background: transparent;
+}
+
+.hero-particle--cross::before,
+.hero-particle--cross::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: var(--clr, rgba(250, 204, 21, 0.4));
+    border-radius: 1px;
+}
+
+.hero-particle--cross::before {
+    width: 100%;
+    height: 2px;
+    transform: translate(-50%, -50%);
+}
+
+.hero-particle--cross::after {
+    width: 2px;
+    height: 100%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes particle-float {
+    0%, 100% {
+        opacity: 0;
+        transform: translateY(0) translateX(0) scale(0.5) rotate(0deg);
+    }
+    15% {
+        opacity: var(--peak-opacity, 0.7);
+    }
+    50% {
+        opacity: var(--peak-opacity, 0.7);
+        transform: translateY(var(--dy, -80px)) translateX(var(--dx, 20px)) scale(1) rotate(180deg);
+    }
+    85% {
+        opacity: var(--peak-opacity, 0.7);
+    }
+}
+
+/* ── Órbitas decorativas ── */
+.hero-orbit {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hero-orbit--1 {
+    width: 340px;
+    height: 340px;
+    top: -60px;
+    right: -80px;
+    border: 1px solid rgba(59, 130, 246, 0.12);
+    animation: orbit-spin 25s linear infinite;
+}
+
+.hero-orbit--2 {
+    width: 220px;
+    height: 220px;
+    bottom: 10%;
+    left: -40px;
+    border: 1px dashed rgba(51, 196, 129, 0.1);
+    animation: orbit-spin 18s linear infinite reverse;
+}
+
+.hero-orbit--3 {
+    width: 120px;
+    height: 120px;
+    top: 35%;
+    right: 15%;
+    border: 1px solid rgba(250, 204, 21, 0.08);
+    animation: orbit-spin 12s linear infinite;
+}
+
+.hero-orbit::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.hero-orbit--1::after {
+    background: rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.hero-orbit--2::after {
+    background: rgba(51, 196, 129, 0.6);
+    box-shadow: 0 0 12px rgba(51, 196, 129, 0.4);
+    width: 6px;
+    height: 6px;
+}
+
+.hero-orbit--3::after {
+    background: rgba(250, 204, 21, 0.5);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+    width: 5px;
+    height: 5px;
+}
+
+@keyframes orbit-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* ── Resplandor pulsante en el floating-panel ── */
+.floating-panel {
+    animation: panel-glow 4s ease-in-out infinite alternate;
+}
+
+@keyframes panel-glow {
+    0%   { box-shadow: var(--shadow-lg), 0 0 40px rgba(59, 130, 246, 0.08); }
+    100% { box-shadow: var(--shadow-lg), 0 0 60px rgba(51, 196, 129, 0.15), 0 0 120px rgba(59, 130, 246, 0.06); }
+}
+
+/* ── Borde gradiente animado en hero__copy ── */
+.hero__copy {
+    background-clip: padding-box;
+}
+
+.hero__copy::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(51, 196, 129, 0.3), rgba(59, 130, 246, 0.3), rgba(250, 204, 21, 0.2), rgba(51, 196, 129, 0.3));
+    background-size: 300% 300%;
+    animation: gradient-rotate 6s ease infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes gradient-rotate {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ── Efecto shine en cards al hover ── */
+.ribbon-card::before,
+.curriculum-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+    transform: skewX(-25deg);
+    transition: none;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.ribbon-card:hover::before,
+.curriculum-card:hover::before {
+    animation: card-shine 0.65s ease forwards;
+}
+
+@keyframes card-shine {
+    from { left: -75%; }
+    to   { left: 125%; }
+}
+
+/* ── Cards con transición más jugosa ── */
+.ribbon-card,
+.curriculum-card,
+.metric-pill {
+    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 320ms ease, border-color 320ms ease;
+}
+
+.ribbon-card:hover,
+.curriculum-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg), 0 0 30px rgba(59, 130, 246, 0.1);
+}
+
+.metric-pill {
+    cursor: default;
+}
+
+.metric-pill:hover {
+    transform: translateY(-4px) scale(1.03);
+    border-color: rgba(51, 196, 129, 0.3);
+    box-shadow: 0 12px 30px rgba(33, 115, 70, 0.2);
+}
+
+/* ── Botones con pulso sutil ── */
+.button--primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.button--primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+    opacity: 0;
+    transition: opacity 300ms ease;
+}
+
+.button--primary:hover::before {
+    opacity: 1;
+}
+
+.hero__actions .button--primary {
+    animation: btn-breathe 3s ease-in-out infinite;
+}
+
+@keyframes btn-breathe {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.35); }
+    50%      { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+}
+
+/* ── Cursor parpadeante en h1 ── */
+.hero__copy h1::after {
+    content: '|';
+    display: inline;
+    margin-left: 4px;
+    font-weight: 300;
+    color: var(--primary-strong);
+    animation: blink-cursor 1s step-end infinite;
+}
+
+@keyframes blink-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* ── Auth tabs transición suave ── */
+.auth-tab {
+    transition: background 280ms ease, color 280ms ease, transform 200ms ease;
+}
+
+.auth-tab:hover:not(.is-active) {
+    background: rgba(255, 255, 255, 0.06);
+    transform: scale(1.03);
+}
+
+.auth-tab.is-active {
+    animation: tab-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tab-pop {
+    0%   { transform: scale(0.92); }
+    60%  { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ── Inputs con glow animado al focus ── */
+.stacked-form input:focus {
+    animation: input-glow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes input-glow {
+    0%   { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.16); }
+    100% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.1), 0 0 20px rgba(59, 130, 246, 0.08); }
+}
+
+/* ── Eyebrow con línea animada ── */
+.eyebrow::before {
+    animation: eyebrow-grow 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes eyebrow-grow {
+    from { width: 0; }
+    to   { width: 32px; }
+}
+
+/* ── Ribbon card iconos con rebote ── */
+.ribbon-card i {
+    transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), color 300ms ease;
+}
+
+.ribbon-card:hover i {
+    transform: scale(1.25) rotate(-8deg);
+    color: var(--primary-strong);
+}
+
+/* ── Scroll indicator ── */
+.scroll-indicator {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+.scroll-indicator i {
+    font-size: 1.1rem;
+    animation: scroll-arrow 2s ease-in-out infinite;
+}
+
+@keyframes scroll-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(6px); }
+}
+
+@keyframes scroll-arrow {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+}
+
+/* ── Tilt parallax sutil en el hero al mover mouse ── */
+.hero--enhanced {
+    perspective: 1200px;
+}
+
+/* ── Flash message animada ── */
+.flash {
+    animation: flash-slide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes flash-slide {
+    from { opacity: 0; transform: translateY(-16px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Número animado en metric-pill ── */
+.metric-pill strong {
+    display: inline-block;
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.metric-pill:hover strong {
+    transform: scale(1.15);
+    color: var(--primary-strong);
+}
+
+/* ── Navbar glassmorphism mejorada con hover glow ── */
+.site-header--landing {
+    transition: box-shadow 400ms ease, border-color 400ms ease;
+}
+
+.site-header--landing:hover {
+    border-color: rgba(59, 130, 246, 0.18);
+    box-shadow: var(--shadow-soft), 0 0 40px rgba(59, 130, 246, 0.06);
+}
+
+/* ── Brand mark rotación sutil al hover ── */
+.brand__mark {
+    transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 400ms ease;
+}
+
+.brand:hover .brand__mark {
+    transform: rotate(12deg) scale(1.1);
+    box-shadow: 0 0 0 1px rgba(51, 196, 129, 0.2), 0 14px 28px rgba(33, 115, 70, 0.35), 0 0 20px rgba(51, 196, 129, 0.15);
+}
+
+/* ── Curriculum card pill colores vibrantes ── */
+.curriculum-card .pill {
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.curriculum-card:hover .pill {
+    transform: scale(1.08);
+}
