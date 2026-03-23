@@ -30,9 +30,18 @@ if ($exists->fetch()) {
     redirect('index.php');
 }
 
-$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, is_vip) VALUES (?, ?, ?, ?)');
 $inviteCode = strtoupper(trim((string) ($_POST['invite_code'] ?? '')));
-$isVip = ($inviteCode === 'CTRLZ') ? 1 : 0;
+$isVip = 0;
+
+if ($inviteCode !== '') {
+    if ($inviteCode !== 'CTRLZ') {
+        set_flash('error', 'El código especial que ingresaste no existe.');
+        redirect('index.php');
+    }
+    $isVip = 1;
+}
+
+$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, is_vip) VALUES (?, ?, ?, ?)');
 $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $isVip]);
 
 $userId = (int) $pdo->lastInsertId();
