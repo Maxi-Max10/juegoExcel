@@ -245,6 +245,7 @@ img {
 .hero--enhanced {
     grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
     align-items: stretch;
+    position: relative;
 }
 
 .hero__copy,
@@ -298,6 +299,14 @@ img {
 .lesson-spotlight__meta span {
     position: relative;
     overflow: hidden;
+}
+
+.hero__copy {
+    overflow: visible;
+}
+
+.hero--enhanced {
+    overflow: visible;
 }
 
 .hero__copy::after,
@@ -464,11 +473,10 @@ img {
 
 .metrics-bg {
     position: absolute;
-    inset: -30px -20px;
+    inset: -60px -50px;
     pointer-events: none;
     z-index: 0;
-    overflow: hidden;
-    filter: blur(40px);
+    filter: blur(50px);
 }
 
 .metrics-blob {
@@ -477,29 +485,29 @@ img {
 }
 
 .metrics-blob--1 {
-    width: 120px;
-    height: 120px;
-    left: 5%;
-    top: -20%;
-    background: rgba(51, 196, 129, 0.25);
+    width: 180px;
+    height: 180px;
+    left: 0;
+    top: -50%;
+    background: rgba(51, 196, 129, 0.45);
     animation: blob-drift-1 7s ease-in-out infinite alternate;
 }
 
 .metrics-blob--2 {
-    width: 100px;
-    height: 100px;
-    left: 40%;
-    top: 10%;
-    background: rgba(59, 130, 246, 0.25);
+    width: 160px;
+    height: 160px;
+    left: 35%;
+    top: -30%;
+    background: rgba(59, 130, 246, 0.4);
     animation: blob-drift-2 9s ease-in-out infinite alternate;
 }
 
 .metrics-blob--3 {
-    width: 90px;
-    height: 90px;
-    right: 5%;
-    top: -10%;
-    background: rgba(250, 204, 21, 0.2);
+    width: 150px;
+    height: 150px;
+    right: 0;
+    top: -40%;
+    background: rgba(250, 204, 21, 0.35);
     animation: blob-drift-3 8s ease-in-out infinite alternate;
 }
 
@@ -3251,9 +3259,9 @@ body.nav-open {
 /* ── Partículas flotantes en el hero ── */
 .hero-particles {
     position: absolute;
-    inset: 0;
+    inset: -40px;
     pointer-events: none;
-    overflow: hidden;
+    overflow: visible;
     z-index: 0;
 }
 

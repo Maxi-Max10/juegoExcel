@@ -41,7 +41,8 @@ $flash = get_flash();
             <div class="hero-particles" aria-hidden="true"></div>
             <div class="hero-orbit hero-orbit--1"></div>
             <div class="hero-orbit hero-orbit--2"></div>
-            <div class="hero-orbit hero-orbit--3"></div>            <div class="hero__copy" data-reveal>
+            <div class="hero-orbit hero-orbit--3"></div>
+            <div class="hero__copy" data-reveal>
                 <span class="eyebrow">100 niveles progresivos</span>
                 <h1>Convierte Excel en un juego diario.</h1>
                 <p>Practica fórmulas reales con ritmo de videojuego, tablero tipo Excel, corrección instantánea, ranking y una ruta guiada desde SUMA hasta búsquedas avanzadas y casos reales.</p>
