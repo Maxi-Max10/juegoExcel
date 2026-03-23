@@ -30,8 +30,10 @@ if ($exists->fetch()) {
     redirect('index.php');
 }
 
-$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)');
-$stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT)]);
+$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, is_vip) VALUES (?, ?, ?, ?)');
+$inviteCode = strtoupper(trim((string) ($_POST['invite_code'] ?? '')));
+$isVip = ($inviteCode === 'CTRLZ') ? 1 : 0;
+$stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $isVip]);
 
 $userId = (int) $pdo->lastInsertId();
 initialize_progress($userId);
@@ -39,5 +41,5 @@ initialize_progress($userId);
 $_SESSION['user_id'] = $userId;
 $_SESSION['username'] = $username;
 
-set_flash('success', 'Tu cuenta está lista. Comienza con el nivel 1.');
+set_flash('success', $isVip ? '¡Código VIP activado! Tienes vidas infinitas. A jugar.' : 'Tu cuenta está lista. Comienza con el nivel 1.');
 redirect('dashboard.php');

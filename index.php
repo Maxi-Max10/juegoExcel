@@ -207,6 +207,10 @@ $flash = get_flash();
                             <span>Contraseña</span>
                             <input type="password" name="password" minlength="6" required>
                         </label>
+                        <label>
+                            <span>Código especial <small>(opcional)</small></span>
+                            <input type="text" name="invite_code" maxlength="20" autocomplete="off" placeholder="¿Tienes un código?">
+                        </label>
                         <button class="button button--secondary" type="submit">Empezar ahora</button>
                     </form>
                 </div>

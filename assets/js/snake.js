@@ -34,6 +34,7 @@
     let lives = level.lives;
     let points = level.points;
     let submitting = false;
+    const isVip = !!level.vip;
 
     /* -------- init -------- */
 
@@ -196,7 +197,7 @@
             submitting = false;
         }
 
-        if (lives <= 0) {
+        if (!isVip && lives <= 0) {
             flashFeedback('error', 'Sin vidas. Vuelve al mapa para recuperarte.');
             setTimeout(() => { window.location.href = 'dashboard.php'; }, 2000);
             return;
@@ -225,7 +226,7 @@
             const data = await res.json();
             if (data.lives !== undefined) {
                 lives = data.lives;
-                livesNode.innerHTML = '<i class="fa-solid fa-heart"></i> ' + lives;
+                livesNode.innerHTML = '<i class="fa-solid fa-heart"></i> ' + (isVip ? '∞' : lives);
             }
             if (data.points !== undefined) {
                 points = data.points;

@@ -9,6 +9,7 @@ require_login();
 $userId = (int) current_user_id();
 $requestedLevel = isset($_GET['nivel']) ? max(1, min(TOTAL_LEVELS, (int) $_GET['nivel'])) : 1;
 $progress = get_user_progress($userId);
+$isVip = is_user_vip($userId);
 
 if (!level_is_unlocked($progress, $requestedLevel)) {
     set_flash('error', 'Ese nivel aún está bloqueado.');
@@ -140,7 +141,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                     <h3>Tu progreso</h3>
                     <p>Nivel actual desbloqueado: <?= e((string) $progress['nivel_actual']) ?></p>
                     <p>Puntos acumulados: <strong id="player-points"><?= e((string) $progress['puntos']) ?></strong></p>
-                    <p>Vidas: <strong id="player-lives"><?= e((string) $progress['vidas']) ?></strong>/5</p>
+                    <p>Vidas: <strong id="player-lives"><?= $isVip ? '∞' : e((string) $progress['vidas']) ?></strong><?= $isVip ? ' <small>(VIP)</small>' : '/5' ?></p>
                     <div class="progress-bar">
                         <div id="level-progress-fill" class="progress-bar__fill" style="width: <?= number_format(progress_percentage($progress), 2, '.', '') ?>%"></div>
                     </div>

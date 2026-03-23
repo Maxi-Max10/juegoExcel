@@ -35,6 +35,8 @@ foreach ($distractors as $d) {
 }
 shuffle($answers);
 
+$isVip = is_user_vip($userId);
+
 $snakeData = [
     'levelId'    => (int) $level['id'],
     'numero'     => (int) $level['numero'],
@@ -47,8 +49,9 @@ $snakeData = [
     'answers'    => $answers,
     'csrfToken'  => csrf_token(),
     'nextLevel'  => $nextLevel,
-    'lives'      => (int) $progress['vidas'],
+    'lives'      => $isVip ? -1 : (int) $progress['vidas'],
     'points'     => (int) $progress['puntos'],
+    'vip'        => $isVip,
 ];
 
 $speedMap = [
@@ -119,7 +122,7 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
             <div class="snake-header__stats">
                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
                 <span class="pill pill--neutral">+<?= e((string) $level['points_reward']) ?> pts</span>
-                <span class="pill pill--neutral" id="snake-lives"><i class="fa-solid fa-heart"></i> <?= e((string) $progress['vidas']) ?></span>
+                <span class="pill pill--neutral" id="snake-lives"><i class="fa-solid fa-heart"></i> <?= $isVip ? '∞' : e((string) $progress['vidas']) ?></span>
                 <span class="pill pill--neutral" id="snake-points"><i class="fa-solid fa-star"></i> <?= e((string) $progress['puntos']) ?></span>
             </div>
         </header>

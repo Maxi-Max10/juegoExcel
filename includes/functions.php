@@ -96,9 +96,50 @@ function initialize_progress(int $userId): void
     $stmt->execute([$userId]);
 }
 
+function is_user_vip(int $userId): bool
+{
+    $stmt = getPDO()->prepare('SELECT is_vip FROM users WHERE id = ? LIMIT 1');
+    $stmt->execute([$userId]);
+    $row = $stmt->fetch();
+    return $row && (int) $row['is_vip'] === 1;
+}
+
+function regenerate_lives(int $userId): void
+{
+    $pdo = getPDO();
+    $stmt = $pdo->prepare('SELECT vidas, last_life_lost_at FROM progress WHERE user_id = ? LIMIT 1');
+    $stmt->execute([$userId]);
+    $row = $stmt->fetch();
+
+    if (!$row || (int) $row['vidas'] >= 5 || $row['last_life_lost_at'] === null) {
+        return;
+    }
+
+    $lostAt = new DateTimeImmutable($row['last_life_lost_at']);
+    $now = new DateTimeImmutable();
+    $elapsedMinutes = (int) floor(($now->getTimestamp() - $lostAt->getTimestamp()) / 60);
+    $livesToAdd = (int) floor($elapsedMinutes / 15);
+
+    if ($livesToAdd <= 0) {
+        return;
+    }
+
+    $currentLives = (int) $row['vidas'];
+    $newLives = min(5, $currentLives + $livesToAdd);
+    $minutesUsed = $livesToAdd * 15;
+    $newLostAt = $newLives >= 5 ? null : $lostAt->modify("+{$minutesUsed} minutes")->format('Y-m-d H:i:s');
+
+    $update = $pdo->prepare('UPDATE progress SET vidas = ?, last_life_lost_at = ? WHERE user_id = ?');
+    $update->execute([$newLives, $newLostAt, $userId]);
+}
+
 function get_user_progress(int $userId): array
 {
     initialize_progress($userId);
+
+    if (!is_user_vip($userId)) {
+        regenerate_lives($userId);
+    }
 
     $stmt = getPDO()->prepare('SELECT * FROM progress WHERE user_id = ? LIMIT 1');
     $stmt->execute([$userId]);
@@ -111,6 +152,7 @@ function get_user_progress(int $userId): array
             'vidas' => 5,
             'racha_actual' => 0,
             'niveles_completados' => 0,
+            'last_life_lost_at' => null,
         ];
     }
 

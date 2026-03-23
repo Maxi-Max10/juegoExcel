@@ -9,6 +9,7 @@ require_login();
 $userId = current_user_id();
 $user = fetch_user_by_id((int) $userId);
 $progress = get_user_progress((int) $userId);
+$isVip = is_user_vip((int) $userId);
 $levels = get_all_levels();
 $statusMap = get_user_level_status_map((int) $userId);
 $flash = get_flash();
@@ -103,7 +104,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                     </div>
                     <ul class="focus-list">
                         <li><i class="fa-solid fa-star"></i> <?= e((string) $progress['puntos']) ?> puntos</li>
-                        <li><i class="fa-solid fa-heart"></i> <?= e((string) $progress['vidas']) ?>/5 vidas</li>
+                        <li><i class="fa-solid fa-heart"></i> <?= $isVip ? '∞ vidas <small>(VIP)</small>' : e((string) $progress['vidas']) . '/5 vidas' ?></li>
                         <li><i class="fa-solid fa-layer-group"></i> <?= e((string) $progress['niveles_completados']) ?> niveles resueltos</li>
                     </ul>
                 </div>
@@ -137,8 +138,22 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 <div class="stat-card__top">
                     <span class="stat-card__label">Vidas</span>
                 </div>
-                <strong class="stat-card__value"><?= e((string) $progress['vidas']) ?>/5</strong>
-                <p>Se recuperan poco a poco cuando respondes bien.</p>
+                <?php if ($isVip): ?>
+                    <strong class="stat-card__value">∞</strong>
+                    <p>Vidas infinitas activas (VIP).</p>
+                <?php else: ?>
+                    <strong class="stat-card__value"><?= e((string) $progress['vidas']) ?>/5</strong>
+                    <?php if ((int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
+                        <?php
+                        $secsElapsed = time() - strtotime($progress['last_life_lost_at']);
+                        $secsInCycle = $secsElapsed % 900;
+                        $secsLeft = 900 - $secsInCycle;
+                        ?>
+                        <p>Siguiente vida en <span id="life-timer" data-seconds="<?= $secsLeft ?>"><?= sprintf('%d:%02d', intdiv($secsLeft, 60), $secsLeft % 60) ?></span></p>
+                    <?php else: ?>
+                        <p>Se regeneran 1 cada 15 min hasta llegar a 5.</p>
+                    <?php endif; ?>
+                <?php endif; ?>
             </article>
         </section>
 
@@ -237,5 +252,17 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         </main>
     </div>
     <?php render_app_scripts(); ?>
+    <script>
+    (function(){
+        var el = document.getElementById('life-timer');
+        if (!el) return;
+        var secs = parseInt(el.dataset.seconds, 10);
+        var iv = setInterval(function(){
+            secs--;
+            if (secs <= 0) { clearInterval(iv); location.reload(); return; }
+            el.textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
+        }, 1000);
+    })();
+    </script>
 </body>
 </html>

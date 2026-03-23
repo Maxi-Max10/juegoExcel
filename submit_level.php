@@ -101,6 +101,8 @@ try {
         ]);
     }
 
+    $vip = is_user_vip($userId);
+
     if ($correct && !$alreadyCompleted) {
         $newCurrentLevel = min(TOTAL_LEVELS, max((int) $progressRow['nivel_actual'], (int) $level['numero'] + 1));
         $updateProgress = $pdo->prepare(
@@ -110,17 +112,29 @@ try {
                  vidas = LEAST(vidas + 1, 5),
                  racha_actual = racha_actual + 1,
                  niveles_completados = niveles_completados + 1,
+                 last_life_lost_at = CASE WHEN vidas + 1 >= 5 THEN NULL ELSE last_life_lost_at END,
                  updated_at = NOW()
              WHERE user_id = ?'
         );
         $updateProgress->execute([(int) $level['points_reward'], $newCurrentLevel, $userId]);
     }
 
-    if (!$correct) {
+    if (!$correct && !$vip) {
         $updateProgress = $pdo->prepare(
             'UPDATE progress
              SET vidas = GREATEST(vidas - 1, 0),
                  racha_actual = 0,
+                 last_life_lost_at = CASE WHEN last_life_lost_at IS NULL THEN NOW() ELSE last_life_lost_at END,
+                 updated_at = NOW()
+             WHERE user_id = ?'
+        );
+        $updateProgress->execute([$userId]);
+    }
+
+    if (!$correct && $vip) {
+        $updateProgress = $pdo->prepare(
+            'UPDATE progress
+             SET racha_actual = 0,
                  updated_at = NOW()
              WHERE user_id = ?'
         );
@@ -130,6 +144,7 @@ try {
     $pdo->commit();
 
     $freshProgress = get_user_progress($userId);
+    $livesValue = $vip ? -1 : (int) $freshProgress['vidas'];
     echo json_encode([
         'success' => true,
         'correct' => $correct,
@@ -139,7 +154,11 @@ try {
             : motivational_message(false),
         'expected' => !$correct ? $level['respuesta_correcta'] : null,
         'points' => (int) $freshProgress['puntos'],
-        'lives' => (int) $freshProgress['vidas'],
+        'lives' => $livesValue,
+        'vip' => $vip,
+        'nextLifeIn' => (!$vip && (int) $freshProgress['vidas'] < 5 && $freshProgress['last_life_lost_at'])
+            ? max(0, 900 - (time() - strtotime($freshProgress['last_life_lost_at'])) % 900)
+            : null,
         'completedLevels' => (int) $freshProgress['niveles_completados'],
         'progressPercent' => number_format(progress_percentage($freshProgress), 2, '.', ''),
         'nextLevel' => min(TOTAL_LEVELS, (int) $level['numero'] + 1),
