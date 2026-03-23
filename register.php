@@ -55,16 +55,22 @@ if ($inviteCode !== '') {
     $isVip = 1;
 }
 
-$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, is_vip) VALUES (?, ?, ?, ?)');
+$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, is_vip, email_verified) VALUES (?, ?, ?, ?, 0)');
 $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $isVip]);
 
 $userId = (int) $pdo->lastInsertId();
 initialize_progress($userId);
 
+// Send email verification
+$token = create_email_verification($userId);
+send_verification_email($email, $username, $token);
+
 $_SESSION['user_id'] = $userId;
 $_SESSION['username'] = $username;
 
-$msg = $isVip ? '¡Código VIP activado! Tienes vidas infinitas. A jugar.' : 'Tu cuenta está lista. Comienza con el nivel 1.';
+$msg = $isVip
+    ? '¡Código VIP activado! Te enviamos un correo para verificar tu email.'
+    : 'Tu cuenta está lista. Te enviamos un correo para verificar tu email. Revisa tu bandeja de entrada.';
 if ($isAjax) json_out(200, 'success', $msg);
 set_flash('success', $msg);
 redirect('dashboard.php');

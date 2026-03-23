@@ -112,6 +112,135 @@ function is_user_vip(int $userId): bool
     return $row && (int) $row['is_vip'] === 1;
 }
 
+/* ── Email verification ── */
+
+function create_email_verification(int $userId): string
+{
+    $token = bin2hex(random_bytes(32));
+    $pdo = getPDO();
+
+    $pdo->prepare('DELETE FROM email_verifications WHERE user_id = ?')->execute([$userId]);
+
+    $stmt = $pdo->prepare(
+        'INSERT INTO email_verifications (user_id, token, expires_at)
+         VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 24 HOUR))'
+    );
+    $stmt->execute([$userId, $token]);
+
+    return $token;
+}
+
+function send_verification_email(string $email, string $username, string $token): bool
+{
+    $link = rtrim(APP_URL, '/') . '/verify_email.php?token=' . urlencode($token);
+    $subject = '=?UTF-8?B?' . base64_encode('Verifica tu correo en ' . APP_NAME) . '?=';
+    $body = "Hola {$username},\r\n\r\n"
+          . "Gracias por registrarte en " . APP_NAME . ".\r\n"
+          . "Haz clic en el siguiente enlace para verificar tu correo:\r\n\r\n"
+          . "{$link}\r\n\r\n"
+          . "Este enlace expira en 24 horas.\r\n\r\n"
+          . "Si no creaste esta cuenta, ignora este mensaje.\r\n";
+    $headers = "From: " . MAIL_FROM . "\r\n"
+             . "Reply-To: " . MAIL_FROM . "\r\n"
+             . "Content-Type: text/plain; charset=UTF-8\r\n"
+             . "MIME-Version: 1.0\r\n";
+
+    return @mail($email, $subject, $body, $headers);
+}
+
+function verify_email_token(string $token): ?array
+{
+    $pdo = getPDO();
+    $stmt = $pdo->prepare(
+        'SELECT ev.user_id, u.email
+         FROM email_verifications ev
+         JOIN users u ON u.id = ev.user_id
+         WHERE ev.token = ? AND ev.expires_at > NOW()
+         LIMIT 1'
+    );
+    $stmt->execute([$token]);
+    $row = $stmt->fetch();
+
+    if (!$row) {
+        return null;
+    }
+
+    $pdo->prepare('UPDATE users SET email_verified = 1 WHERE id = ?')->execute([$row['user_id']]);
+    $pdo->prepare('DELETE FROM email_verifications WHERE user_id = ?')->execute([$row['user_id']]);
+
+    return $row;
+}
+
+/* ── OAuth helpers ── */
+
+function find_or_create_oauth_user(string $provider, string $oauthId, string $email, string $name): int
+{
+    $pdo = getPDO();
+
+    // 1) Check by OAuth provider+id
+    $stmt = $pdo->prepare('SELECT id FROM users WHERE oauth_provider = ? AND oauth_id = ? LIMIT 1');
+    $stmt->execute([$provider, $oauthId]);
+    $existing = $stmt->fetch();
+
+    if ($existing) {
+        return (int) $existing['id'];
+    }
+
+    // 2) Check by email — link OAuth to existing account
+    $stmt = $pdo->prepare('SELECT id FROM users WHERE email = ? LIMIT 1');
+    $stmt->execute([$email]);
+    $byEmail = $stmt->fetch();
+
+    if ($byEmail) {
+        $pdo->prepare('UPDATE users SET oauth_provider = ?, oauth_id = ?, email_verified = 1 WHERE id = ?')
+            ->execute([$provider, $oauthId, $byEmail['id']]);
+        return (int) $byEmail['id'];
+    }
+
+    // 3) Create new user (no password since it's OAuth)
+    $username = generate_unique_username($name);
+    $stmt = $pdo->prepare(
+        'INSERT INTO users (username, email, password_hash, email_verified, oauth_provider, oauth_id)
+         VALUES (?, ?, ?, 1, ?, ?)'
+    );
+    $stmt->execute([$username, $email, '', $provider, $oauthId]);
+
+    $userId = (int) $pdo->lastInsertId();
+    initialize_progress($userId);
+
+    return $userId;
+}
+
+function generate_unique_username(string $name): string
+{
+    $base = preg_replace('/[^a-zA-Z0-9]/', '', $name) ?: 'user';
+    $base = mb_strtolower(mb_substr($base, 0, 30));
+    $pdo = getPDO();
+
+    $candidate = $base;
+    $i = 1;
+    while (true) {
+        $stmt = $pdo->prepare('SELECT id FROM users WHERE username = ? LIMIT 1');
+        $stmt->execute([$candidate]);
+        if (!$stmt->fetch()) {
+            return $candidate;
+        }
+        $candidate = $base . $i;
+        $i++;
+    }
+}
+
+function oauth_login(int $userId): void
+{
+    $user = fetch_user_by_id($userId);
+    if (!$user) {
+        return;
+    }
+    session_regenerate_id(true);
+    $_SESSION['user_id'] = (int) $user['id'];
+    $_SESSION['username'] = (string) $user['username'];
+}
+
 function regenerate_lives(int $userId): void
 {
     $pdo = getPDO();

@@ -10,6 +10,16 @@ $userId = current_user_id();
 $user = fetch_user_by_id((int) $userId);
 $progress = get_user_progress((int) $userId);
 $isVip = is_user_vip((int) $userId);
+
+// Check email verification status
+$emailVerified = true;
+$stmtVerif = getPDO()->prepare('SELECT email_verified FROM users WHERE id = ? LIMIT 1');
+$stmtVerif->execute([$userId]);
+$verifRow = $stmtVerif->fetch();
+if ($verifRow && (int) $verifRow['email_verified'] === 0) {
+    $emailVerified = false;
+}
+
 $levels = get_all_levels();
 $statusMap = get_user_level_status_map((int) $userId);
 $flash = get_flash();
@@ -99,6 +109,14 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 
         <?php if ($flash): ?>
             <div class="flash flash--<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
+        <?php endif; ?>
+
+        <?php if (!$emailVerified): ?>
+            <div class="verification-banner">
+                <i class="fa-solid fa-envelope-circle-check"></i>
+                <span>Tu correo aún no está verificado. Revisa tu bandeja de entrada.</span>
+                <a href="#" id="resend-verification">Reenviar correo</a>
+            </div>
         <?php endif; ?>
 
         <section class="dashboard-hero-grid">
@@ -277,6 +295,36 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             if (secs <= 0) { clearInterval(iv); location.reload(); return; }
             el.textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
         }, 1000);
+    })();
+
+    (function(){
+        var resendLink = document.getElementById('resend-verification');
+        if (!resendLink) return;
+        resendLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            resendLink.textContent = 'Enviando...';
+            resendLink.style.pointerEvents = 'none';
+            var fd = new FormData();
+            fd.append('csrf_token', '<?= e(csrf_token()) ?>');
+            fetch('resend_verification.php', {
+                method: 'POST',
+                body: fd,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(d) {
+                var banner = resendLink.closest('.verification-banner');
+                if (banner) {
+                    banner.querySelector('span').textContent = d.message;
+                }
+                resendLink.textContent = 'Reenviar correo';
+                setTimeout(function() { resendLink.style.pointerEvents = ''; }, 120000);
+            })
+            .catch(function() {
+                resendLink.textContent = 'Reenviar correo';
+                resendLink.style.pointerEvents = '';
+            });
+        });
     })();
     </script>
 </body>

@@ -956,6 +956,107 @@ img {
     transform: translateY(-1px);
 }
 
+/* ── OAuth Buttons ── */
+.oauth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 0;
+}
+
+.button--oauth {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+    border: 1px solid var(--border);
+}
+
+.button--oauth:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+.button--oauth svg {
+    flex-shrink: 0;
+}
+
+.button--google {
+    background: #fff;
+    color: #3c4043;
+}
+
+.button--google:hover {
+    box-shadow: 0 4px 16px rgba(66, 133, 244, 0.25);
+}
+
+.button--apple {
+    background: #000;
+    color: #fff;
+}
+
+.button--apple:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Auth Divider ── */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    opacity: 0.6;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+/* ── Email verification banner ── */
+.verification-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    color: #fbbf24;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.verification-banner i {
+    font-size: 1.1rem;
+}
+
+.verification-banner a {
+    color: #fbbf24;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.verification-banner a:hover {
+    color: #f59e0b;
+}
+
 .button {
     appearance: none;
     display: inline-flex;
