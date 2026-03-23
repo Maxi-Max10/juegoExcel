@@ -26,7 +26,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 <head>
     <?php render_head(APP_NAME . ' | Panel'); ?>
     <style>
-        .quick-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+        .quick-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:28px}
         .quick-stat{display:flex;align-items:center;gap:14px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,rgba(30,41,59,.95),rgba(15,23,42,.95));border:1px solid rgba(148,163,184,.12);box-shadow:0 4px 16px rgba(0,0,0,.2);position:relative;overflow:hidden}
         .quick-stat__icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;font-size:1.15rem;flex-shrink:0}
         .quick-stat--xp{border-left:3px solid #FBBF24}.quick-stat--xp .quick-stat__icon{background:rgba(250,204,21,.15);color:#FBBF24}
@@ -38,7 +38,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         .quick-stat__label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(148,163,184,.7)}
         .quick-stat__value{font-size:1.5rem;line-height:1;font-weight:800}
         .quick-stat__arrow{margin-left:auto;color:rgba(148,163,184,.5);font-size:.9rem}
-        .xp-track{margin-bottom:24px;padding:16px 22px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(148,163,184,.08)}
+        .xp-track{margin-bottom:32px;padding:16px 22px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(148,163,184,.08)}
         .xp-track__row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
         .xp-track__label{font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(148,163,184,.7)}
         .xp-track__pct{font-size:1.1rem;font-weight:800}
