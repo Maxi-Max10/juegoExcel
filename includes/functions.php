@@ -63,6 +63,14 @@ function require_login(): void
         set_flash('error', 'Debes iniciar sesión para continuar.');
         redirect('index.php');
     }
+
+    $user = fetch_user_by_id((int) $_SESSION['user_id']);
+    if (!$user) {
+        session_destroy();
+        session_start();
+        set_flash('error', 'Tu sesión ha expirado. Inicia sesión de nuevo.');
+        redirect('index.php');
+    }
 }
 
 function fetch_user_by_login(string $login): ?array
