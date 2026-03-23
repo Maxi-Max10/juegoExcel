@@ -508,7 +508,6 @@ function initHeroParallax() {
     if (!hero || window.matchMedia('(pointer: coarse)').matches) return;
 
     const copy = hero.querySelector('.hero__copy');
-    const stage = hero.querySelector('.hero-stage');
     const orbits = hero.querySelectorAll('.hero-orbit');
 
     hero.addEventListener('mousemove', (e) => {
@@ -519,9 +518,6 @@ function initHeroParallax() {
         if (copy) {
             copy.style.transform = `translateX(${px * -6}px) translateY(${py * -6}px)`;
         }
-        if (stage) {
-            stage.style.transform = `translateX(${px * 10}px) translateY(${py * 8}px)`;
-        }
 
         orbits.forEach((orb, i) => {
             const factor = (i + 1) * 8;
@@ -530,9 +526,7 @@ function initHeroParallax() {
     });
 
     hero.addEventListener('mouseleave', () => {
-        [copy, stage].forEach((el) => {
-            if (el) el.style.transform = '';
-        });
+        if (copy) copy.style.transform = '';
         orbits.forEach((orb) => {
             orb.style.transform = '';
         });
