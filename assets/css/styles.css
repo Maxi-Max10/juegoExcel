@@ -361,6 +361,10 @@ img {
     padding: 26px;
 }
 
+.side-panel section {
+    padding: 30px;
+}
+
 .hero__copy h1,
 .hero__copy h2,
 .topbar h1,
@@ -699,6 +703,11 @@ img {
 .podium-grid {
     display: grid;
     gap: 22px;
+}
+
+.side-panel {
+    display: grid;
+    gap: 28px;
 }
 
 .feature-ribbon {
@@ -1267,7 +1276,7 @@ img {
     margin: 0;
     padding: 0;
     display: grid;
-    gap: 12px;
+    gap: 6px;
 }
 
 .leaderboard-list li {
@@ -1275,12 +1284,15 @@ img {
     justify-content: space-between;
     gap: 12px;
     align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
+    padding: 12px 14px;
+    border-bottom: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    transition: background 0.2s ease;
 }
 
-.leaderboard-list li:last-child {
-    border-bottom: 0;
+.leaderboard-list li:hover {
+    background: rgba(255, 255, 255, 0.07);
 }
 
 .hint-card ul,
@@ -1288,7 +1300,7 @@ img {
     margin: 14px 0 0;
     padding-left: 20px;
     display: grid;
-    gap: 10px;
+    gap: 14px;
 }
 
 .hint-card__explanation {
@@ -1567,6 +1579,11 @@ img {
 .mini-stat-card h3,
 .hint-card h3,
 .hint-card h2 {
+    margin-bottom: 20px;
+}
+
+.leaderboard-card .section-heading,
+.hint-card > h2 {
     margin-bottom: 18px;
 }
 
