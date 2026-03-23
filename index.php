@@ -19,7 +19,7 @@ $flash = get_flash();
     <div class="page-shell page-shell--landing">
         <header class="site-header site-header--landing" data-reveal>
             <a class="brand" href="index.php">
-                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="28" height="28"></span>
+                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="46" height="46"></span>
                 <span>
                     <strong>Excel Quest</strong>
                     <small>Aprende jugando</small>

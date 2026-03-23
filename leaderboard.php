@@ -17,7 +17,7 @@ $podium = array_slice($leaderboard, 0, 3);
     <div class="page-shell">
         <header class="site-header" data-reveal>
             <a class="brand" href="index.php">
-                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="28" height="28"></span>
+                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="46" height="46"></span>
                 <span>
                     <strong>Excel Quest</strong>
                     <small>Ranking global</small>
