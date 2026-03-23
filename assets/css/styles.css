@@ -489,6 +489,33 @@ img {
     width: 100%;
 }
 
+.floating-panel .auth-tabs {
+    margin-bottom: 18px;
+}
+
+.floating-panel .auth-panel h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    margin-bottom: 16px;
+}
+
+.floating-panel .stacked-form {
+    gap: 14px;
+}
+
+.floating-panel .stacked-form label span {
+    font-size: 0.9rem;
+}
+
+.floating-panel .stacked-form input {
+    padding: 12px 14px;
+}
+
+.floating-panel .button {
+    margin-top: 4px;
+    width: 100%;
+}
+
 .floating-panel::before {
     content: '';
     position: absolute;
