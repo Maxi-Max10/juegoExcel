@@ -507,17 +507,12 @@ function initHeroParallax() {
     const hero = document.querySelector('.hero--enhanced');
     if (!hero || window.matchMedia('(pointer: coarse)').matches) return;
 
-    const copy = hero.querySelector('.hero__copy');
     const orbits = hero.querySelectorAll('.hero-orbit');
 
     hero.addEventListener('mousemove', (e) => {
         const rect = hero.getBoundingClientRect();
         const px = (e.clientX - rect.left) / rect.width - 0.5;
         const py = (e.clientY - rect.top) / rect.height - 0.5;
-
-        if (copy) {
-            copy.style.transform = `translateX(${px * -6}px) translateY(${py * -6}px)`;
-        }
 
         orbits.forEach((orb, i) => {
             const factor = (i + 1) * 8;
@@ -526,7 +521,6 @@ function initHeroParallax() {
     });
 
     hero.addEventListener('mouseleave', () => {
-        if (copy) copy.style.transform = '';
         orbits.forEach((orb) => {
             orb.style.transform = '';
         });
