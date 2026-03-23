@@ -1127,8 +1127,9 @@ img {
     gap: 14px;
     padding: 18px 20px;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--line);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
@@ -1148,14 +1149,26 @@ img {
     flex-shrink: 0;
 }
 
+.quick-stat--xp {
+    border-left: 3px solid #FBBF24;
+}
+
 .quick-stat--xp .quick-stat__icon {
     background: rgba(250, 204, 21, 0.15);
     color: #FBBF24;
 }
 
+.quick-stat--levels {
+    border-left: 3px solid #60A5FA;
+}
+
 .quick-stat--levels .quick-stat__icon {
     background: rgba(59, 130, 246, 0.15);
     color: #60A5FA;
+}
+
+.quick-stat--lives {
+    border-left: 3px solid #F87171;
 }
 
 .quick-stat--lives .quick-stat__icon {
@@ -1167,8 +1180,9 @@ img {
 .quick-stat--next {
     text-decoration: none;
     color: inherit;
-    background: linear-gradient(135deg, rgba(51, 196, 129, 0.12), rgba(34, 197, 94, 0.06));
+    background: linear-gradient(135deg, rgba(33, 115, 70, 0.25), rgba(15, 23, 42, 0.95));
     border-color: rgba(51, 196, 129, 0.3);
+    border-left: 3px solid #34D399;
     cursor: pointer;
 }
 
@@ -2626,11 +2640,14 @@ img {
     .feature-ribbon,
     .curriculum-grid,
     .overview-grid,
-    .quick-stats,
     .progress-section,
     .podium-grid,
     .levels-grid {
         grid-template-columns: 1fr;
+    }
+
+    .quick-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .quick-stat {
