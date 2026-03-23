@@ -4308,3 +4308,150 @@ body.nav-open {
 .curriculum-card:hover .pill {
     transform: scale(1.08);
 }
+
+/* ══════════════════════════════════════════════════════════
+   LEGAL PAGES (privacy / cookies)
+   ══════════════════════════════════════════════════════════ */
+.page-shell--legal {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 4vw, 2.5rem) 3rem;
+}
+
+.legal-content {
+    margin-top: 2rem;
+}
+
+.legal-content h1 {
+    font-family: var(--ff-display);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.legal-updated {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+.legal-content section {
+    margin-bottom: 2rem;
+}
+
+.legal-content h2 {
+    font-family: var(--ff-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.legal-content h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 1rem 0 0.4rem;
+}
+
+.legal-content p,
+.legal-content li {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.legal-content ul {
+    padding-left: 1.25rem;
+    margin: 0.5rem 0;
+}
+
+.legal-content li {
+    margin-bottom: 0.35rem;
+}
+
+.legal-content a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.legal-content a:hover {
+    color: var(--accent-hover);
+}
+
+/* Table for cookies listing */
+.legal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.75rem 0 1rem;
+    font-size: 0.9rem;
+}
+
+.legal-table th,
+.legal-table td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.legal-table th {
+    font-weight: 600;
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.legal-table td {
+    color: var(--text-secondary);
+}
+
+.legal-table code {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+/* Footer */
+.legal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    justify-content: center;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+}
+
+.legal-footer a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 200ms;
+}
+
+.legal-footer a:hover {
+    color: var(--accent);
+}
+
+/* Landing footer links */
+.landing-legal-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    justify-content: center;
+    padding: 2rem 0 1rem;
+    font-size: 0.8rem;
+}
+
+.landing-legal-footer a {
+    color: var(--text-secondary);
+    opacity: 0.6;
+    text-decoration: none;
+    transition: opacity 200ms, color 200ms;
+}
+
+.landing-legal-footer a:hover {
+    opacity: 1;
+    color: var(--accent);
+}

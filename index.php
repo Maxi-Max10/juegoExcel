@@ -183,6 +183,11 @@ $flash = get_flash();
         <?php if ($flash): ?>
             <div class="flash flash--<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
         <?php endif; ?>
+
+        <footer class="landing-legal-footer">
+            <a href="privacy.php">Política de Privacidad</a>
+            <a href="cookies.php">Política de Cookies</a>
+        </footer>
     </div>
     <?php render_app_scripts(); ?>
     <script>
