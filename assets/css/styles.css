@@ -1689,28 +1689,29 @@ img {
 .confetti-piece {
     position: absolute;
     left: var(--x);
-    top: 20%;
-    width: 10px;
-    height: 18px;
-    border-radius: 4px;
-    background: linear-gradient(180deg, var(--accent), var(--reward));
-    animation: confetti-fall 1.2s ease-out forwards;
-    animation-delay: var(--delay);
+    top: -5%;
+    width: var(--w, 10px);
+    height: var(--h, 16px);
+    border-radius: var(--br, 3px);
+    background: var(--clr, #fbbf24);
+    opacity: 0;
+    animation:
+        confetti-fall var(--dur, 2.2s) cubic-bezier(.23,1,.32,1) forwards,
+        confetti-sway var(--sway, 1.6s) ease-in-out infinite alternate;
+    animation-delay: var(--delay), var(--delay);
     transform: rotate(var(--rotate));
 }
 
 @keyframes confetti-fall {
-    0% {
-        opacity: 0;
-        transform: translateY(-30px) rotate(0deg);
-    }
-    12% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(74vh) rotate(540deg);
-    }
+    0%   { opacity: 0; transform: translateY(-20px) rotate(0deg) scale(.6); }
+    8%   { opacity: 1; transform: translateY(0) rotate(30deg) scale(1); }
+    75%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(var(--fall, 90vh)) rotate(var(--spin, 720deg)) scale(.4); }
+}
+
+@keyframes confetti-sway {
+    0%   { margin-left: 0; }
+    100% { margin-left: var(--drift, 30px); }
 }
 
 @media (max-width: 1240px) {

@@ -422,15 +422,28 @@
         const burst = document.createElement('div');
         burst.className = 'confetti-burst';
         document.body.appendChild(burst);
-        for (let i = 0; i < 22; i++) {
+        const colors = ['#fbbf24','#34d399','#60a5fa','#f472b6','#a78bfa','#fb923c','#e879f9','#facc15'];
+        const count = 50;
+        for (let i = 0; i < count; i++) {
             const p = document.createElement('span');
             p.className = 'confetti-piece';
+            const isCircle = Math.random() > 0.65;
+            const size = 6 + Math.random() * 10;
             p.style.setProperty('--x', Math.random() * 100 + '%');
-            p.style.setProperty('--delay', Math.random() * 0.25 + 's');
+            p.style.setProperty('--delay', Math.random() * 0.5 + 's');
             p.style.setProperty('--rotate', Math.random() * 360 + 'deg');
+            p.style.setProperty('--clr', colors[Math.floor(Math.random() * colors.length)]);
+            p.style.setProperty('--w', (isCircle ? size : size * 0.6) + 'px');
+            p.style.setProperty('--h', (isCircle ? size : size * 1.4) + 'px');
+            p.style.setProperty('--br', isCircle ? '50%' : (2 + Math.random() * 3) + 'px');
+            p.style.setProperty('--dur', (1.8 + Math.random() * 1.2) + 's');
+            p.style.setProperty('--fall', (70 + Math.random() * 30) + 'vh');
+            p.style.setProperty('--spin', (500 + Math.random() * 400) + 'deg');
+            p.style.setProperty('--drift', (-35 + Math.random() * 70) + 'px');
+            p.style.setProperty('--sway', (0.8 + Math.random() * 1.2) + 's');
             burst.appendChild(p);
         }
-        setTimeout(() => burst.remove(), 1400);
+        setTimeout(() => burst.remove(), 3500);
     }
 
     function key(x, y) { return x + ',' + y; }

@@ -303,18 +303,32 @@ function celebrate() {
     burst.className = 'confetti-burst';
     document.body.appendChild(burst);
 
-    for (let i = 0; i < 22; i += 1) {
+    const colors = ['#fbbf24','#34d399','#60a5fa','#f472b6','#a78bfa','#fb923c','#e879f9','#facc15'];
+    const count = 50;
+
+    for (let i = 0; i < count; i += 1) {
         const piece = document.createElement('span');
         piece.className = 'confetti-piece';
+        const isCircle = Math.random() > 0.65;
+        const size = 6 + Math.random() * 10;
         piece.style.setProperty('--x', `${Math.random() * 100}%`);
-        piece.style.setProperty('--delay', `${Math.random() * 0.25}s`);
+        piece.style.setProperty('--delay', `${Math.random() * 0.5}s`);
         piece.style.setProperty('--rotate', `${Math.random() * 360}deg`);
+        piece.style.setProperty('--clr', colors[Math.floor(Math.random() * colors.length)]);
+        piece.style.setProperty('--w', `${isCircle ? size : size * 0.6}px`);
+        piece.style.setProperty('--h', `${isCircle ? size : size * 1.4}px`);
+        piece.style.setProperty('--br', isCircle ? '50%' : `${2 + Math.random() * 3}px`);
+        piece.style.setProperty('--dur', `${1.8 + Math.random() * 1.2}s`);
+        piece.style.setProperty('--fall', `${70 + Math.random() * 30}vh`);
+        piece.style.setProperty('--spin', `${500 + Math.random() * 400}deg`);
+        piece.style.setProperty('--drift', `${-35 + Math.random() * 70}px`);
+        piece.style.setProperty('--sway', `${0.8 + Math.random() * 1.2}s`);
         burst.appendChild(piece);
     }
 
     window.setTimeout(() => {
         burst.remove();
-    }, 1400);
+    }, 3500);
 }
 
 function initMotion() {
