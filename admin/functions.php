@@ -54,6 +54,16 @@ function ensure_admin_table(): void
         $hash = password_hash('admin123', PASSWORD_DEFAULT);
         $ins = $pdo->prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)');
         $ins->execute(['admin', $hash]);
+    } else {
+        // Verificar que el admin por defecto tenga un hash válido
+        $check = $pdo->prepare('SELECT id, password_hash FROM admins WHERE username = ? LIMIT 1');
+        $check->execute(['admin']);
+        $row = $check->fetch();
+        if ($row && !password_verify('admin123', (string) $row['password_hash'])) {
+            $hash = password_hash('admin123', PASSWORD_DEFAULT);
+            $upd = $pdo->prepare('UPDATE admins SET password_hash = ? WHERE id = ?');
+            $upd->execute([$hash, $row['id']]);
+        }
     }
 }
 
