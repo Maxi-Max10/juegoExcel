@@ -73,6 +73,7 @@ $flash = get_flash();
 
             <div class="hero-stage" data-reveal>
                 <div class="hero__panel floating-panel" id="acceso">
+                    <div class="panel-accent" aria-hidden="true"></div>
                     <div class="auth-tabs">
                         <button class="auth-tab is-active" type="button" data-auth-target="login-panel">Entrar</button>
                         <button class="auth-tab" type="button" data-auth-target="register-panel">Crear cuenta</button>
