@@ -51,9 +51,9 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 <i class="fa-solid fa-map"></i>
                 <span>Mapa</span>
             </a>
-            <a href="level.php?nivel=<?= e((string) $currentLevel) ?>" class="bottom-nav__item">
+            <a href="snake.php?nivel=<?= e((string) $currentLevel) ?>" class="bottom-nav__item">
                 <i class="fa-solid fa-gamepad"></i>
-                <span>Jugar</span>
+                <span>Víbora</span>
             </a>
             <a href="leaderboard.php" class="bottom-nav__item">
                 <i class="fa-solid fa-trophy"></i>
@@ -72,7 +72,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 <p class="topbar__lead">Tu tablero resume dónde estás, qué te falta y cuál es el siguiente reto que más impacto tiene en tu avance.</p>
             </div>
             <nav class="topbar__actions">
-                <a class="button button--primary" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Jugar ahora</a>
+                <a class="button button--primary" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">Jugar ahora</a>
                 <a class="button button--ghost" href="leaderboard.php">Ver ranking</a>
             </nav>
         </header>
@@ -86,9 +86,10 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 <div class="focus-card__copy">
                     <span class="eyebrow">Siguiente misión</span>
                     <h2>Nivel <?= e((string) $currentLevel) ?> listo para jugar</h2>
-                    <p><?= e(level_band_title($currentLevel)) ?> · Mantén el ritmo, suma puntos y desbloquea la siguiente zona.</p>
+                    <p><?= e(level_band_title($currentLevel)) ?> · Mueve la víbora hasta la respuesta correcta.</p>
                     <div class="focus-card__actions">
-                        <a class="button button--primary" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Continuar partida</a>
+                        <a class="button button--primary" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">🐍 Modo Víbora</a>
+                        <a class="button button--ghost" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Modo clásico</a>
                         <a class="button button--ghost" href="leaderboard.php">Comparar ranking</a>
                     </div>
                 </div>
@@ -116,7 +117,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 </div>
                 <strong class="stat-card__value">Nivel <?= e((string) $currentLevel) ?></strong>
                 <p><?= e(level_band_title($currentLevel)) ?> · Sigue donde te quedaste.</p>
-                <a class="button button--primary stat-card__cta" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Continuar</a>
+                <a class="button button--primary stat-card__cta" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">Continuar</a>
             </article>
             <article class="stat-card" data-reveal-item>
                 <div class="stat-card__top">
@@ -194,7 +195,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                             <div class="level-card__footer">
                                 <span><?= $completed ? 'Completado' : ($unlocked ? 'Disponible' : 'Bloqueado') ?></span>
                                 <?php if ($unlocked): ?>
-                                    <a href="level.php?nivel=<?= e((string) $number) ?>">Abrir</a>
+                                    <a href="snake.php?nivel=<?= e((string) $number) ?>">Abrir</a>
                                 <?php else: ?>
                                     <span>Supera el nivel anterior</span>
                                 <?php endif; ?>

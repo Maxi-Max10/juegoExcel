@@ -783,6 +783,68 @@ function build_level_tables(array $level): array
     ]];
 }
 
+function generate_distractors(array $level, int $count = 3): array
+{
+    $correct = (string) $level['respuesta_correcta'];
+    $pool = [];
+    $normCorrect = normalize_formula($correct);
+
+    $fnSwaps = [
+        'SUMA' => 'PROMEDIO', 'PROMEDIO' => 'SUMA',
+        'MAX' => 'MIN', 'MIN' => 'MAX',
+        'BUSCARV' => 'BUSCARX', 'BUSCARX' => 'BUSCARV',
+        'CONTAR' => 'SUMA',
+        'SUMAR.SI' => 'CONTAR.SI', 'PROMEDIO.SI' => 'SUMAR.SI',
+    ];
+    foreach ($fnSwaps as $from => $to) {
+        if (mb_stripos($correct, $from) !== false) {
+            $pool[] = str_ireplace($from, $to, $correct);
+            break;
+        }
+    }
+
+    $pool[] = preg_replace_callback('/([A-E])(\d+)/', static function (array $m): string {
+        return $m[1] . ((int) $m[2] + 1);
+    }, $correct) ?? $correct;
+
+    $pool[] = preg_replace_callback('/([A-E])(\d+)/', static function (array $m): string {
+        $col = chr(min(ord('F'), ord($m[1]) + 1));
+        return $col . $m[2];
+    }, $correct) ?? $correct;
+
+    $pool[] = preg_replace_callback('/(:)([A-Z])(\d+)/', static function (array $m): string {
+        return $m[1] . $m[2] . max(2, (int) $m[3] - 1);
+    }, $correct) ?? $correct;
+
+    if (!empty($level['respuestas_alternativas'])) {
+        foreach (explode('||', (string) $level['respuestas_alternativas']) as $alt) {
+            $alt = trim($alt);
+            if ($alt !== '' && normalize_formula($alt) !== $normCorrect) {
+                $pool[] = $alt;
+            }
+        }
+    }
+
+    $distractors = [];
+    foreach ($pool as $candidate) {
+        if (normalize_formula($candidate) !== $normCorrect && !in_array($candidate, $distractors, true)) {
+            $distractors[] = $candidate;
+        }
+        if (count($distractors) >= $count) {
+            break;
+        }
+    }
+
+    $fallbacks = ['=ERROR()', '=FALSO()', '=NULO()'];
+    $fi = 0;
+    while (count($distractors) < $count) {
+        $distractors[] = $fallbacks[$fi % count($fallbacks)];
+        $fi++;
+    }
+
+    return array_slice($distractors, 0, $count);
+}
+
 function render_excel_tables(array $tables, string $targetCell): string
 {
     ob_start();

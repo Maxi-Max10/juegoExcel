@@ -80,6 +80,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                 <p class="topbar__lead">El objetivo es escribir una fórmula válida en la celda marcada. La hoja se adapta a móvil con desplazamiento seguro y feedback inmediato.</p>
             </div>
             <div class="topbar__actions">
+                <a class="button button--ghost" href="snake.php?nivel=<?= e((string) $requestedLevel) ?>">🐍 Modo Víbora</a>
                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
                 <span class="pill pill--neutral">+<?= e((string) $level['points_reward']) ?> pts</span>
             </div>
