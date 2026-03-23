@@ -134,22 +134,27 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 <strong class="stat-card__value"><?= e((string) $progress['niveles_completados']) ?>/<?= TOTAL_LEVELS ?></strong>
                 <p>Tu dominio actual de Excel en el juego.</p>
             </article>
-            <article class="stat-card" data-reveal-item>
+            <article class="stat-card stat-card--lives" data-reveal-item>
                 <div class="stat-card__top">
-                    <span class="stat-card__label">Vidas</span>
+                    <span class="stat-card__label"><i class="fa-solid fa-heart"></i> Vidas</span>
                 </div>
                 <?php if ($isVip): ?>
                     <strong class="stat-card__value">∞</strong>
                     <p>Vidas infinitas activas (VIP).</p>
                 <?php else: ?>
                     <strong class="stat-card__value"><?= e((string) $progress['vidas']) ?>/5</strong>
+                    <div class="lives-bar">
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <span class="lives-bar__heart <?= $i <= (int) $progress['vidas'] ? 'is-full' : 'is-empty' ?>"><i class="fa-solid fa-heart"></i></span>
+                        <?php endfor; ?>
+                    </div>
                     <?php if ((int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
                         <?php
                         $secsElapsed = time() - strtotime($progress['last_life_lost_at']);
                         $secsInCycle = $secsElapsed % 900;
                         $secsLeft = 900 - $secsInCycle;
                         ?>
-                        <p>Siguiente vida en <span id="life-timer" data-seconds="<?= $secsLeft ?>"><?= sprintf('%d:%02d', intdiv($secsLeft, 60), $secsLeft % 60) ?></span></p>
+                        <p class="lives-timer"><i class="fa-solid fa-clock"></i> Siguiente vida en <strong id="life-timer" data-seconds="<?= $secsLeft ?>"><?= sprintf('%d:%02d', intdiv($secsLeft, 60), $secsLeft % 60) ?></strong></p>
                     <?php else: ?>
                         <p>Se regeneran 1 cada 15 min hasta llegar a 5.</p>
                     <?php endif; ?>
