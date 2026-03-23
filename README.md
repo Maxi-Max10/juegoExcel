@@ -1,4 +1,4 @@
-# Excel Quest
+# Excel Snake
 
 Aplicación web educativa para aprender Excel con 100 niveles progresivos, autenticación simple, progreso persistente, ranking y validación automática de fórmulas.
 

@@ -30,9 +30,9 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
     <div class="page-shell">
         <header class="site-header" data-reveal>
             <a class="brand" href="dashboard.php">
-                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="46" height="46"></span>
+                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Snake" width="46" height="46"></span>
                 <span>
-                    <strong>Excel Quest</strong>
+                    <strong>Excel Snake</strong>
                     <small>Panel de progreso</small>
                 </span>
             </a>
@@ -54,7 +54,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             </a>
             <a href="snake.php?nivel=<?= e((string) $currentLevel) ?>" class="bottom-nav__item">
                 <i class="fa-solid fa-gamepad"></i>
-                <span>Víbora</span>
+                <span>Snake</span>
             </a>
             <a href="leaderboard.php" class="bottom-nav__item">
                 <i class="fa-solid fa-trophy"></i>
@@ -87,9 +87,9 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 <div class="focus-card__copy">
                     <span class="eyebrow">Siguiente misión</span>
                     <h2>Nivel <?= e((string) $currentLevel) ?> listo para jugar</h2>
-                    <p><?= e(level_band_title($currentLevel)) ?> · Mueve la víbora hasta la respuesta correcta.</p>
+                    <p><?= e(level_band_title($currentLevel)) ?> · Mueve la snake hasta la respuesta correcta.</p>
                     <div class="focus-card__actions">
-                        <a class="button button--primary" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">🐍 Modo Víbora</a>
+                        <a class="button button--primary" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">🐍 Modo Snake</a>
                         <!-- <a class="button button--ghost" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Modo clásico</a> -->
                         <a class="button button--ghost" href="leaderboard.php">Comparar ranking</a>
                     </div>

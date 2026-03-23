@@ -12,7 +12,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 date_default_timezone_set('America/Mexico_City');
 
-define('APP_NAME', 'Excel Quest');
+define('APP_NAME', 'Excel Snake');
 define('TOTAL_LEVELS', 100);
 
 define('DB_HOST', getenv('DB_HOST') ?: 'localhost');

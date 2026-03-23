@@ -39,10 +39,17 @@ if (!$level) {
 }
 
 $progress = get_user_progress($userId);
+$vipCheck = is_user_vip($userId);
 
 if (!level_is_unlocked($progress, (int) $level['numero'])) {
     http_response_code(403);
     echo json_encode(['success' => false, 'message' => 'Ese nivel todavía está bloqueado.']);
+    exit;
+}
+
+if (!$vipCheck && (int) $progress['vidas'] <= 0) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'correct' => false, 'message' => 'No tienes vidas. Espera a que se regeneren.', 'lives' => 0, 'noLives' => true]);
     exit;
 }
 

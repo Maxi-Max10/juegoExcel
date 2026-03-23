@@ -22,6 +22,13 @@ if (!$level) {
     redirect('dashboard.php');
 }
 
+$isVip = is_user_vip($userId);
+
+if (!$isVip && (int) $progress['vidas'] <= 0) {
+    set_flash('error', 'No tienes vidas. Espera a que se regeneren (1 cada 15 min).');
+    redirect('dashboard.php');
+}
+
 $status = get_single_level_status($userId, (int) $level['id']);
 $flash = get_flash();
 $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
@@ -66,17 +73,17 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <?php render_head(APP_NAME . ' | Víbora · Nivel ' . (string) $requestedLevel); ?>
+    <?php render_head(APP_NAME . ' | Snake · Nivel ' . (string) $requestedLevel); ?>
     <link rel="stylesheet" href="assets/css/snake.css">
 </head>
 <body class="app-page snake-page">
     <div class="page-shell">
         <header class="site-header" data-reveal>
             <a class="brand" href="dashboard.php">
-                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="46" height="46"></span>
+                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Snake" width="46" height="46"></span>
                 <span>
-                    <strong>Excel Quest</strong>
-                    <small>Modo Víbora</small>
+                    <strong>Excel Snake</strong>
+                    <small>Modo Snake</small>
                 </span>
             </a>
             <nav class="site-nav site-nav--actions" id="main-nav">
@@ -97,7 +104,7 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
             </a>
             <a href="snake.php?nivel=<?= e((string) $requestedLevel) ?>" class="bottom-nav__item bottom-nav__item--active">
                 <i class="fa-solid fa-gamepad"></i>
-                <span>Víbora</span>
+                <span>Snake</span>
             </a>
             <a href="leaderboard.php" class="bottom-nav__item">
                 <i class="fa-solid fa-trophy"></i>
@@ -133,8 +140,8 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
                     <canvas id="snake-canvas"></canvas>
                     <div class="snake-overlay" id="snake-overlay">
                         <div class="snake-overlay__content" id="snake-overlay-content">
-                            <h2>🐍 Modo Víbora</h2>
-                            <p>Mueve la víbora hasta la respuesta correcta.<br>Usa las flechas ← ↑ ↓ → o desliza en móvil.</p>
+                            <h2>🐍 Modo Snake</h2>
+                            <p>Mueve la snake hasta la respuesta correcta.<br>Usa las flechas ← ↑ ↓ → o desliza en móvil.</p>
                             <button class="button button--primary" id="snake-start-btn" type="button">Comenzar</button>
                         </div>
                     </div>
@@ -153,7 +160,7 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
             <aside class="snake-sidebar">
                 <section class="snake-legend" id="snake-legend">
                     <h3>Celda objetivo: <strong><?= e($level['formula_target']) ?></strong></h3>
-                    <p class="snake-legend__hint">Come la respuesta correcta con la víbora:</p>
+                    <p class="snake-legend__hint">Come la respuesta correcta con la snake:</p>
                     <ol class="snake-options" id="snake-options">
                         <?php foreach ($answers as $i => $ans): ?>
                             <li class="snake-option" data-index="<?= $i ?>">

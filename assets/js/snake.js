@@ -44,6 +44,12 @@
         bindKeys();
         bindTouch();
         bindSwipe();
+        if (!isVip && lives <= 0) {
+            overlay.classList.remove('hidden');
+            overlayContent.innerHTML = '<h2>Sin vidas</h2><p>Espera a que se regeneren (1 cada 15 min).</p><a class="button button--primary" href="dashboard.php">Volver al mapa</a>';
+            startBtn.style.display = 'none';
+            return;
+        }
         startBtn.addEventListener('click', startGame);
         draw();
     }

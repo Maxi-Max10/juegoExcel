@@ -16,6 +16,11 @@ if (!level_is_unlocked($progress, $requestedLevel)) {
     redirect('dashboard.php');
 }
 
+if (!$isVip && (int) $progress['vidas'] <= 0) {
+    set_flash('error', 'No tienes vidas. Espera a que se regeneren (1 cada 15 min).');
+    redirect('dashboard.php');
+}
+
 $level = get_level_by_number($requestedLevel);
 
 if (!$level) {
@@ -38,9 +43,9 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
     <div class="page-shell">
         <header class="site-header" data-reveal>
             <a class="brand" href="dashboard.php">
-                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Quest" width="46" height="46"></span>
+                <span class="brand__mark"><img src="assets/img/logo.png" alt="Excel Snake" width="46" height="46"></span>
                 <span>
-                    <strong>Excel Quest</strong>
+                    <strong>Excel Snake</strong>
                     <small>Modo práctica</small>
                 </span>
             </a>
@@ -81,7 +86,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                 <p class="topbar__lead">El objetivo es escribir una fórmula válida en la celda marcada. La hoja se adapta a móvil con desplazamiento seguro y feedback inmediato.</p>
             </div>
             <div class="topbar__actions">
-                <a class="button button--ghost" href="snake.php?nivel=<?= e((string) $requestedLevel) ?>">🐍 Modo Víbora</a>
+                <a class="button button--ghost" href="snake.php?nivel=<?= e((string) $requestedLevel) ?>">🐍 Modo Snake</a>
                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
                 <span class="pill pill--neutral">+<?= e((string) $level['points_reward']) ?> pts</span>
             </div>
