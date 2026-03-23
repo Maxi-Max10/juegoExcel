@@ -380,6 +380,7 @@ img {
     font-size: clamp(3rem, 7vw, 5.8rem);
     line-height: 0.92;
     max-width: 9ch;
+    margin-bottom: 18px;
 }
 
 .hero__copy p,
