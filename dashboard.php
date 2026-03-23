@@ -89,7 +89,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                     <p><?= e(level_band_title($currentLevel)) ?> · Mueve la víbora hasta la respuesta correcta.</p>
                     <div class="focus-card__actions">
                         <a class="button button--primary" href="snake.php?nivel=<?= e((string) $currentLevel) ?>">🐍 Modo Víbora</a>
-                        <a class="button button--ghost" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Modo clásico</a>
+                        <!-- <a class="button button--ghost" href="level.php?nivel=<?= e((string) $currentLevel) ?>">Modo clásico</a> -->
                         <a class="button button--ghost" href="leaderboard.php">Comparar ranking</a>
                     </div>
                 </div>
