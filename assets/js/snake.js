@@ -46,29 +46,75 @@
         bindSwipe();
         if (!isVip && lives <= 0) {
             overlay.classList.remove('hidden');
-            overlayContent.innerHTML = '<h2>Sin vidas</h2><p>Espera a que se regeneren (1 cada 15 min).</p><a class="button button--primary" href="dashboard.php">Volver al mapa</a>';
             startBtn.style.display = 'none';
+            showLifeTimer();
+            return;
+        }
+            // -------- vidas/timer --------
+            function showLifeTimer() {
+                overlayContent.innerHTML = '<h2>Sin vidas</h2><div id="life-timer-msg"><i class="fa-solid fa-clock"></i> Consultando tiempo restante...</div><a class="button button--primary" href="dashboard.php">Volver al mapa</a>';
+                fetchLifeStatus();
+            }
+
+            function fetchLifeStatus() {
+                fetch('api_life_status.php')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.lives > 0 || data.vip) {
+                            // Si ya tiene vidas, recargar para jugar
+                            window.location.reload();
+                            return;
+                        }
+                        if (typeof data.nextLifeIn === 'number') {
+                            startLifeCountdown(data.nextLifeIn);
+                        } else {
+                            document.getElementById('life-timer-msg').innerHTML = '<i class="fa-solid fa-clock"></i> Esperando regeneración...';
+                        }
+                    })
+                    .catch(() => {
+                        document.getElementById('life-timer-msg').innerHTML = 'No se pudo consultar el servidor.';
+                    });
+            }
+
+            let timerInterval = null;
+            function startLifeCountdown(seconds) {
+                updateTimerMsg(seconds);
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    seconds--;
+                    if (seconds <= 0) {
+                        clearInterval(timerInterval);
+                        fetchLifeStatus();
+                    } else {
+                        updateTimerMsg(seconds);
+                    }
+                }, 1000);
+            }
+
+            function updateTimerMsg(secs) {
+                const min = Math.floor(secs / 60);
+                const s = secs % 60;
+                document.getElementById('life-timer-msg').innerHTML = `<i class="fa-solid fa-clock"></i> Próxima vida en <strong>${min}:${s.toString().padStart(2, '0')}</strong>`;
+            }
+        startBtn.addEventListener('click', startGame);
+        draw();
+    }
+
+    function init() {
+        resize();
+        window.addEventListener('resize', () => { resize(); draw(); });
+        bindKeys();
+        bindTouch();
+        bindSwipe();
+        if (!isVip && lives <= 0) {
+            overlay.classList.remove('hidden');
+            startBtn.style.display = 'none';
+            showLifeTimer();
             return;
         }
         startBtn.addEventListener('click', startGame);
         draw();
     }
-
-    function resize() {
-        const wrapper = document.getElementById('snake-board');
-        const maxW = Math.min(wrapper.clientWidth, 560);
-        const size = Math.floor(maxW / GRID) * GRID;
-        canvas.width = size;
-        canvas.height = size;
-        cellSize = size / GRID;
-    }
-
-    /* -------- game flow -------- */
-
-    function startGame() {
-        overlay.classList.add('is-hidden');
-        resetSnake();
-        placeFood();
         gameActive = true;
         loop();
     }
