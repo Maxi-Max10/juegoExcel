@@ -168,7 +168,7 @@ try {
                 $s = getPDO()->prepare('SELECT GREATEST(0, TIMESTAMPDIFF(SECOND, ?, NOW())) AS elapsed');
                 $s->execute([$freshProgress['last_life_lost_at']]);
                 $e = (int) $s->fetchColumn();
-                return 900 - ($e % 900);
+                return 120 - ($e % 120);
             })()
             : null,
         'completedLevels' => (int) $freshProgress['niveles_completados'],

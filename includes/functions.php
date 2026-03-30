@@ -257,7 +257,7 @@ function regenerate_lives(int $userId): void
     }
 
     $elapsedSeconds = max(0, (int) $row['secs_elapsed']);
-    $livesToAdd = intdiv($elapsedSeconds, 900);
+    $livesToAdd = intdiv($elapsedSeconds, 120);
 
     if ($livesToAdd <= 0) {
         return;
@@ -265,7 +265,7 @@ function regenerate_lives(int $userId): void
 
     $currentLives = (int) $row['vidas'];
     $newLives = min(5, $currentLives + $livesToAdd);
-    $secondsUsed = $livesToAdd * 900;
+    $secondsUsed = $livesToAdd * 120;
 
     if ($newLives >= 5) {
         $update = $pdo->prepare('UPDATE progress SET vidas = ?, last_life_lost_at = NULL WHERE user_id = ?');

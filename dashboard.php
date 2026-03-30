@@ -181,9 +181,9 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                     $timerStmt = getPDO()->prepare('SELECT GREATEST(0, TIMESTAMPDIFF(SECOND, ?, NOW())) AS elapsed');
                     $timerStmt->execute([$progress['last_life_lost_at']]);
                     $secsElapsed = (int) $timerStmt->fetchColumn();
-                    $secsInCycle = $secsElapsed % 900;
-                    $secsLeft = 900 - $secsInCycle;
-                    if ($secsLeft > 900) { $secsLeft = 900; }
+                    $secsInCycle = $secsElapsed % 120;
+                    $secsLeft = 120 - $secsInCycle;
+                    if ($secsLeft > 120) { $secsLeft = 120; }
                     ?>
                     <div class="lives-timer"><i class="fa-solid fa-clock"></i> <span id="life-timer" data-seconds="<?= $secsLeft ?>"><?= sprintf('%d:%02d', intdiv($secsLeft, 60), $secsLeft % 60) ?></span></div>
                 <?php endif; ?>
