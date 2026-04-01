@@ -9,6 +9,7 @@ function render_head(string $title): void
     <meta name="theme-color" content="#0F172A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google-adsense-account" content="ca-pub-3986035282338746">
     <title><?= e($title) ?></title>
     <link rel="icon" type="image/png" href="assets/img/logo.png">
     <link rel="apple-touch-icon" href="assets/img/logo.png">
