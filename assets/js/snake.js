@@ -35,6 +35,14 @@
     let points = level.points;
     let submitting = false;
 
+    function resize() {
+        const board = document.getElementById('snake-board');
+        const size = Math.min(board.clientWidth, board.clientHeight) || 400;
+        canvas.width = size;
+        canvas.height = size;
+        cellSize = size / GRID;
+    }
+
     /* -------- init -------- */
 
     // -------- vidas/timer --------
