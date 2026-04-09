@@ -19,9 +19,9 @@
     const scorePopup = document.getElementById('sg-score-popup');
 
     const GRID = 20;
-    const FOOD_COLORS = ['#3B82F6', '#FACC15', '#EF4444', '#A855F7'];
-    const BG = '#0a0f1e';
-    const GRID_LINE = 'rgba(148,163,184,0.04)';
+    const FOOD_COLORS = ['#22C55E', '#FACC15', '#EF4444', '#A855F7'];
+    const BG = '#0c1222';
+    const GRID_LINE = 'rgba(148,163,184,0.035)';
     const SNAKE_BODY = '#22C55E';
     const SNAKE_HEAD = '#4ADE80';
 
@@ -310,14 +310,20 @@
         ctx.fillStyle = BG;
         ctx.fillRect(0, 0, w, h);
 
-        // Subtle grid dots
-        for (let gx = 0; gx <= GRID; gx++) {
-            for (let gy = 0; gy <= GRID; gy++) {
-                ctx.fillStyle = 'rgba(148,163,184,0.08)';
-                ctx.beginPath();
-                ctx.arc(gx * cellSize, gy * cellSize, 1.2, 0, Math.PI * 2);
-                ctx.fill();
-            }
+        // Subtle grid lines
+        ctx.strokeStyle = GRID_LINE;
+        ctx.lineWidth = 0.5;
+        for (let gx = 1; gx < GRID; gx++) {
+            ctx.beginPath();
+            ctx.moveTo(gx * cellSize, 0);
+            ctx.lineTo(gx * cellSize, h);
+            ctx.stroke();
+        }
+        for (let gy = 1; gy < GRID; gy++) {
+            ctx.beginPath();
+            ctx.moveTo(0, gy * cellSize);
+            ctx.lineTo(w, gy * cellSize);
+            ctx.stroke();
         }
 
         // Trail / ghost

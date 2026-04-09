@@ -151,7 +151,8 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
             <p><?= e($level['consigna']) ?></p>
         </div>
 
-        <main class="snake-layout">
+        <main class="snake-game-container">
+            <div class="snake-layout">
             <section class="snake-board-wrapper">
                 <div class="snake-board" id="snake-board">
                     <canvas id="snake-canvas"></canvas>
@@ -216,6 +217,7 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
                     </a>
                 </div>
             </aside>
+            </div>
         </main>
 
         <!-- Modal de explicación -->
