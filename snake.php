@@ -79,6 +79,9 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
     <link rel="stylesheet" href="assets/css/snake.css">
 </head>
 <body class="app-page snake-page">
+    <!-- Ambient particles -->
+    <div class="sg-particles" id="sg-particles"></div>
+
     <div class="page-shell">
         <header class="site-header" data-reveal>
             <a class="brand" href="dashboard.php">
@@ -122,30 +125,46 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
             <div class="flash flash--<?= e($flash['type']) ?>"><?= e($flash['message']) ?></div>
         <?php endif; ?>
 
-        <header class="snake-header" data-reveal>
-            <div class="snake-header__info">
-                <span class="eyebrow"><?= e($level['categoria']) ?> · <?= e($level['dificultad']) ?></span>
-                <h1>Nivel <?= e((string) $requestedLevel) ?> · <?= e($level['titulo']) ?></h1>
-                <p class="snake-header__consigna"><?= e($level['consigna']) ?></p>
+        <!-- Game HUD bar -->
+        <div class="sg-hud" data-reveal>
+            <div class="sg-hud__left">
+                <span class="sg-hud__level">
+                    <i class="fa-solid fa-gamepad"></i>
+                    Nivel <strong><?= e((string) $requestedLevel) ?></strong>
+                </span>
+                <span class="sg-hud__diff pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
             </div>
-            <div class="snake-header__stats">
-                <button class="pill pill--help" type="button" id="guide-popup-btn" title="Ver explicación"><i class="fa-solid fa-circle-question"></i> Ayuda</button>
-                <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
-                <span class="pill pill--neutral">+<?= e((string) $level['points_reward']) ?> pts</span>
-                <span class="pill pill--neutral" id="snake-lives"><i class="fa-solid fa-heart"></i> <?= e((string) $progress['vidas']) ?></span>
-                <span class="pill pill--neutral" id="snake-points"><i class="fa-solid fa-star"></i> <?= e((string) $progress['puntos']) ?></span>
+            <div class="sg-hud__center">
+                <span class="sg-hud__title"><?= e($level['titulo']) ?></span>
             </div>
-        </header>
+            <div class="sg-hud__right">
+                <button class="sg-hud__btn" type="button" id="guide-popup-btn" title="Ayuda"><i class="fa-solid fa-circle-question"></i></button>
+                <span class="sg-hud__stat sg-hud__stat--reward"><i class="fa-solid fa-bolt"></i> +<?= e((string) $level['points_reward']) ?></span>
+                <span class="sg-hud__stat sg-hud__stat--lives" id="snake-lives"><i class="fa-solid fa-heart"></i> <?= e((string) $progress['vidas']) ?></span>
+                <span class="sg-hud__stat sg-hud__stat--points" id="snake-points"><i class="fa-solid fa-star"></i> <?= e((string) $progress['puntos']) ?></span>
+            </div>
+        </div>
+
+        <!-- Consigna / question bar -->
+        <div class="sg-question" data-reveal>
+            <i class="fa-solid fa-clipboard-question sg-question__icon"></i>
+            <p><?= e($level['consigna']) ?></p>
+        </div>
 
         <main class="snake-layout">
             <section class="snake-board-wrapper">
                 <div class="snake-board" id="snake-board">
                     <canvas id="snake-canvas"></canvas>
+                    <!-- Score popup layer -->
+                    <div class="sg-score-popup" id="sg-score-popup"></div>
                     <div class="snake-overlay" id="snake-overlay">
                         <div class="snake-overlay__content" id="snake-overlay-content">
-                            <h2>🐍 Modo Snake</h2>
-                            <p>Mueve la snake hasta la respuesta correcta.<br>Usa las flechas ← ↑ ↓ → o desliza en móvil.</p>
-                            <button class="button button--primary" id="snake-start-btn" type="button">Comenzar</button>
+                            <div class="sg-start-icon">🐍</div>
+                            <h2>Modo Snake</h2>
+                            <p>Mueve la serpiente hasta la respuesta correcta<br><small><i class="fa-solid fa-keyboard"></i> Flechas / WASD &nbsp;·&nbsp; <i class="fa-solid fa-hand-pointer"></i> Desliza en móvil</small></p>
+                            <button class="sg-play-btn" id="snake-start-btn" type="button">
+                                <i class="fa-solid fa-play"></i> Jugar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -162,8 +181,14 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
 
             <aside class="snake-sidebar">
                 <section class="snake-legend" id="snake-legend">
-                    <h3>Celda objetivo: <strong><?= e($level['formula_target']) ?></strong></h3>
-                    <p class="snake-legend__hint">Come la respuesta correcta con la snake:</p>
+                    <div class="sg-legend-header">
+                        <i class="fa-solid fa-crosshairs"></i>
+                        <div>
+                            <span class="sg-legend-label">Celda objetivo</span>
+                            <strong class="sg-legend-target"><?= e($level['formula_target']) ?></strong>
+                        </div>
+                    </div>
+                    <p class="snake-legend__hint"><i class="fa-solid fa-utensils"></i> Come la respuesta correcta:</p>
                     <ol class="snake-options" id="snake-options">
                         <?php foreach ($answers as $i => $ans): ?>
                             <li class="snake-option" data-index="<?= $i ?>">
@@ -178,11 +203,17 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
 
                 <div class="snake-next" id="snake-next-actions" style="display:none;">
                     <?php if ($requestedLevel < TOTAL_LEVELS): ?>
-                        <a class="button button--primary button--wide" href="snake.php?nivel=<?= e((string) $nextLevel) ?>">Siguiente nivel</a>
+                        <a class="sg-next-btn" href="snake.php?nivel=<?= e((string) $nextLevel) ?>">
+                            <i class="fa-solid fa-forward-step"></i> Siguiente nivel
+                        </a>
                     <?php else: ?>
-                        <a class="button button--primary button--wide" href="leaderboard.php">Ver ranking final</a>
+                        <a class="sg-next-btn" href="leaderboard.php">
+                            <i class="fa-solid fa-trophy"></i> Ver ranking final
+                        </a>
                     <?php endif; ?>
-                    <a class="button button--ghost button--wide" href="dashboard.php">Volver al mapa</a>
+                    <a class="sg-map-btn" href="dashboard.php">
+                        <i class="fa-solid fa-map"></i> Volver al mapa
+                    </a>
                 </div>
             </aside>
         </main>

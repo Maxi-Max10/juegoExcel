@@ -15,14 +15,15 @@
     const livesNode = document.getElementById('snake-lives');
     const pointsNode = document.getElementById('snake-points');
     const optionEls = document.querySelectorAll('.snake-option');
+    const board = document.getElementById('snake-board');
+    const scorePopup = document.getElementById('sg-score-popup');
 
     const GRID = 20;
     const FOOD_COLORS = ['#3B82F6', '#FACC15', '#EF4444', '#A855F7'];
-    const BG = '#0F172A';
-    const GRID_LINE = 'rgba(148,163,184,0.07)';
+    const BG = '#0a0f1e';
+    const GRID_LINE = 'rgba(148,163,184,0.04)';
     const SNAKE_BODY = '#22C55E';
     const SNAKE_HEAD = '#4ADE80';
-    const WALL_COLOR = '#334155';
 
     let cellSize = 0;
     let snake = [];
@@ -34,6 +35,8 @@
     let lives = level.lives;
     let points = level.points;
     let submitting = false;
+    let frameCount = 0;
+    let trail = []; // ghost trail behind snake
 
     function resize() {
         const board = document.getElementById('snake-board');
@@ -109,9 +112,12 @@
 
     function startGame() {
         overlay.classList.add('is-hidden');
+        board.classList.add('sg-active');
         resetSnake();
         placeFood();
         gameActive = true;
+        frameCount = 0;
+        trail = [];
         loop();
     }
 
@@ -181,6 +187,10 @@
             return;
         }
 
+        // Add trail from tail before moving
+        const tail = snake[snake.length - 1];
+        trail.push({ x: tail.x, y: tail.y, life: 8, maxLife: 8 });
+
         snake.unshift(head);
 
         // Check food
@@ -202,7 +212,7 @@
 
     function handleSelfHit() {
         stopLoop();
-        flashFeedback('error', 'Te mordiste a ti misma. Reintentando…');
+        flashFeedback('error', '<i class="fa-solid fa-rotate"></i> Te mordiste. Reintentando…');
         playTone('error');
         shakeCanvas();
         setTimeout(() => {
@@ -222,7 +232,11 @@
         highlightOption(food.index, true);
         playTone('success');
         celebrate();
-        flashFeedback('success', '¡Correcto! Nivel superado.');
+        showScorePopup(food, '+' + level.reward);
+        canvas.classList.add('sg-glow-correct');
+        setTimeout(() => canvas.classList.remove('sg-glow-correct'), 1000);
+        flashFeedback('success', '<i class="fa-solid fa-check-circle"></i> ¡Correcto! Nivel superado.');
+        pulseHudStat(pointsNode);
 
         if (!submitting) {
             submitting = true;
@@ -237,7 +251,9 @@
         highlightOption(food.index, false);
         playTone('error');
         shakeCanvas();
-        flashFeedback('error', 'Respuesta incorrecta. Pierdes una vida.');
+        showScorePopup(food, '-1 ❤️');
+        flashFeedback('error', '<i class="fa-solid fa-xmark"></i> Respuesta incorrecta. Pierdes una vida.');
+        pulseHudStat(livesNode);
 
         if (!submitting) {
             submitting = true;
@@ -288,33 +304,58 @@
     function draw() {
         const w = canvas.width;
         const h = canvas.height;
+        frameCount++;
 
         // Background
         ctx.fillStyle = BG;
         ctx.fillRect(0, 0, w, h);
 
-        // Grid lines
-        ctx.strokeStyle = GRID_LINE;
-        ctx.lineWidth = 1;
-        for (let i = 0; i <= GRID; i++) {
-            const pos = i * cellSize;
-            ctx.beginPath(); ctx.moveTo(pos, 0); ctx.lineTo(pos, h); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(0, pos); ctx.lineTo(w, pos); ctx.stroke();
+        // Subtle grid dots
+        for (let gx = 0; gx <= GRID; gx++) {
+            for (let gy = 0; gy <= GRID; gy++) {
+                ctx.fillStyle = 'rgba(148,163,184,0.08)';
+                ctx.beginPath();
+                ctx.arc(gx * cellSize, gy * cellSize, 1.2, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
-        // Food items
+        // Trail / ghost
+        trail.forEach((t, i) => {
+            const alpha = (t.life / t.maxLife) * 0.25;
+            ctx.fillStyle = `rgba(34,197,94,${alpha})`;
+            const pad = 2;
+            roundRect(ctx, t.x * cellSize + pad, t.y * cellSize + pad, cellSize - pad * 2, cellSize - pad * 2, cellSize * 0.12);
+            ctx.fill();
+            t.life--;
+        });
+        trail = trail.filter(t => t.life > 0);
+
+        // Food items with pulse & glow
         foods.forEach(f => {
             const cx = f.x * cellSize + cellSize / 2;
             const cy = f.y * cellSize + cellSize / 2;
-            const r = cellSize * 0.42;
+            const pulse = 1 + Math.sin(frameCount * 0.08 + f.index * 1.5) * 0.12;
+            const r = cellSize * 0.42 * pulse;
+            const color = FOOD_COLORS[f.index % FOOD_COLORS.length];
 
-            ctx.fillStyle = FOOD_COLORS[f.index % FOOD_COLORS.length];
-            ctx.shadowColor = FOOD_COLORS[f.index % FOOD_COLORS.length];
-            ctx.shadowBlur = 10;
+            // Outer glow
+            ctx.shadowColor = color;
+            ctx.shadowBlur = 16;
+            ctx.fillStyle = color;
             ctx.beginPath();
             ctx.arc(cx, cy, r, 0, Math.PI * 2);
             ctx.fill();
             ctx.shadowBlur = 0;
+
+            // Inner highlight
+            const grad = ctx.createRadialGradient(cx - r * 0.25, cy - r * 0.25, 0, cx, cy, r);
+            grad.addColorStop(0, 'rgba(255,255,255,0.35)');
+            grad.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, 0, Math.PI * 2);
+            ctx.fill();
 
             // Number label
             ctx.fillStyle = '#FFF';
@@ -324,33 +365,73 @@
             ctx.fillText(f.label, cx, cy + 1);
         });
 
-        // Snake
-        snake.forEach((seg, i) => {
+        // Snake body with gradient and glow
+        for (let i = snake.length - 1; i >= 0; i--) {
+            const seg = snake[i];
             const x = seg.x * cellSize;
             const y = seg.y * cellSize;
             const pad = 1;
+            const segW = cellSize - pad * 2;
+            const segH = cellSize - pad * 2;
 
-            ctx.fillStyle = i === 0 ? SNAKE_HEAD : SNAKE_BODY;
-            const radius = cellSize * 0.15;
-            roundRect(ctx, x + pad, y + pad, cellSize - pad * 2, cellSize - pad * 2, radius);
+            if (i === 0) {
+                // Head glow
+                ctx.shadowColor = SNAKE_HEAD;
+                ctx.shadowBlur = 12;
+            }
+
+            // Gradient along body
+            const t = snake.length > 1 ? i / (snake.length - 1) : 0;
+            const r = Math.round(34 + t * 0);
+            const g = Math.round(197 - t * 60);
+            const b = Math.round(94 + t * 20);
+            ctx.fillStyle = i === 0 ? SNAKE_HEAD : `rgb(${r},${g},${b})`;
+
+            const radius = cellSize * 0.18;
+            roundRect(ctx, x + pad, y + pad, segW, segH, radius);
             ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Segment highlight
+            if (i === 0) {
+                const hGrad = ctx.createLinearGradient(x, y, x + cellSize, y + cellSize);
+                hGrad.addColorStop(0, 'rgba(255,255,255,0.18)');
+                hGrad.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = hGrad;
+                roundRect(ctx, x + pad, y + pad, segW, segH, radius);
+                ctx.fill();
+            }
 
             // Eyes on head
             if (i === 0) {
-                ctx.fillStyle = '#0F172A';
-                const eyeR = cellSize * 0.08;
-                let ex1, ey1, ex2, ey2;
                 const cx = x + cellSize / 2;
                 const cy = y + cellSize / 2;
                 const off = cellSize * 0.18;
+                const eyeR = cellSize * 0.09;
+                let ex1, ey1, ex2, ey2;
                 if (dir.x === 1) { ex1 = cx + off; ey1 = cy - off; ex2 = cx + off; ey2 = cy + off; }
                 else if (dir.x === -1) { ex1 = cx - off; ey1 = cy - off; ex2 = cx - off; ey2 = cy + off; }
                 else if (dir.y === -1) { ex1 = cx - off; ey1 = cy - off; ex2 = cx + off; ey2 = cy - off; }
                 else { ex1 = cx - off; ey1 = cy + off; ex2 = cx + off; ey2 = cy + off; }
+
+                // Eye whites
+                ctx.fillStyle = '#fff';
                 ctx.beginPath(); ctx.arc(ex1, ey1, eyeR, 0, Math.PI * 2); ctx.fill();
                 ctx.beginPath(); ctx.arc(ex2, ey2, eyeR, 0, Math.PI * 2); ctx.fill();
+                // Pupils
+                ctx.fillStyle = '#0a0f1e';
+                const pupR = eyeR * 0.55;
+                ctx.beginPath(); ctx.arc(ex1 + dir.x * 1, ey1 + dir.y * 1, pupR, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(ex2 + dir.x * 1, ey2 + dir.y * 1, pupR, 0, Math.PI * 2); ctx.fill();
             }
-        });
+        }
+
+        // Border vignette
+        const vGrad = ctx.createRadialGradient(w / 2, h / 2, w * 0.3, w / 2, h / 2, w * 0.72);
+        vGrad.addColorStop(0, 'rgba(0,0,0,0)');
+        vGrad.addColorStop(1, 'rgba(0,0,0,0.25)');
+        ctx.fillStyle = vGrad;
+        ctx.fillRect(0, 0, w, h);
     }
 
     function roundRect(c, x, y, w, h, r) {
@@ -427,12 +508,12 @@
 
     function flashFeedback(type, msg) {
         feedbackBox.className = 'snake-feedback is-visible is-' + type;
-        feedbackBox.textContent = msg;
+        feedbackBox.innerHTML = msg;
     }
 
     function clearFeedback() {
         feedbackBox.className = 'snake-feedback';
-        feedbackBox.textContent = '';
+        feedbackBox.innerHTML = '';
     }
 
     function highlightOption(idx, correct) {
@@ -497,6 +578,47 @@
 
     function key(x, y) { return x + ',' + y; }
 
+    /* -------- score popup -------- */
+    function showScorePopup(food, text) {
+        if (!scorePopup) return;
+        const el = document.createElement('span');
+        el.className = 'sg-score-fly';
+        el.textContent = text;
+        const pxX = (food.x / GRID) * 100;
+        const pxY = (food.y / GRID) * 100;
+        el.style.left = pxX + '%';
+        el.style.top = pxY + '%';
+        if (text.startsWith('-')) { el.style.color = '#f87171'; el.style.textShadow = '0 0 12px rgba(248,113,113,0.5)'; }
+        scorePopup.appendChild(el);
+        setTimeout(() => el.remove(), 1300);
+    }
+
+    function pulseHudStat(node) {
+        if (!node) return;
+        node.classList.remove('pulse');
+        void node.offsetWidth;
+        node.classList.add('pulse');
+        setTimeout(() => node.classList.remove('pulse'), 600);
+    }
+
+    /* -------- ambient particles -------- */
+    function spawnParticles() {
+        const container = document.getElementById('sg-particles');
+        if (!container) return;
+        const colors = ['rgba(59,130,246,0.4)', 'rgba(34,197,94,0.3)', 'rgba(250,204,21,0.3)', 'rgba(168,85,247,0.3)'];
+        for (let i = 0; i < 20; i++) {
+            const span = document.createElement('span');
+            const size = 3 + Math.random() * 6;
+            const dur = 10 + Math.random() * 18;
+            const delay = Math.random() * 12;
+            const left = Math.random() * 100;
+            const bottom = -(Math.random() * 20);
+            span.style.cssText = `width:${size}px;height:${size}px;left:${left}%;bottom:${bottom}%;background:${colors[i % colors.length]};animation-duration:${dur}s;animation-delay:${delay}s;`;
+            container.appendChild(span);
+        }
+    }
+
     /* -------- boot -------- */
+    spawnParticles();
     init();
 })();
