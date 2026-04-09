@@ -210,8 +210,8 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                         <h2><i class="fa-solid fa-route"></i> Ruta de niveles</h2>
                         <p class="levels-panel__summary">Niveles <?= e((string) $previewStart) ?>–<?= e((string) $previewEnd) ?> · Tu progreso actual</p>
                     </div>
-                    <button class="button button--ghost levels-panel__toggle" type="button" data-route-toggle data-label-expand="Ver los 100 niveles" data-label-collapse="Volver a resumen">
-                        Ver los 100 niveles
+                    <button class="button button--ghost levels-panel__toggle" type="button" data-route-toggle data-label-expand="Ver los <?= TOTAL_LEVELS ?> niveles" data-label-collapse="Volver a resumen">
+                        Ver los <?= TOTAL_LEVELS ?> niveles
                     </button>
                 </div>
                 <div class="levels-panel__viewport is-collapsed" data-route-viewport>
