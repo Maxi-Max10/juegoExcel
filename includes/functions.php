@@ -369,8 +369,8 @@ function normalize_formula(string $formula): string
 
     // Accept English function names (order matters: longer names first)
     $normalized = str_replace(
-        ['averageif(', 'sumif(', 'countif(', 'iferror(', 'vlookup(', 'xlookup(', 'average(', 'count(', 'product(', 'sum(', 'if(', 'false', 'true'],
-        ['promedio.si(', 'sumar.si(', 'contar.si(', 'si.error(', 'buscarv(', 'buscarx(', 'promedio(', 'contar(', 'producto(', 'suma(', 'si(', 'falso', 'verdadero'],
+        ['averageifs(', 'averageif(', 'sumifs(', 'sumif(', 'countifs(', 'countif(', 'iferror(', 'ifs(', 'vlookup(', 'xlookup(', 'average(', 'count(', 'product(', 'sum(', 'index(', 'match(', 'concatenate(', 'concat(', 'left(', 'right(', 'mid(', 'len(', 'upper(', 'lower(', 'proper(', 'substitute(', 'find(', 'round(', 'abs(', 'and(', 'or(', 'if(', 'false', 'true'],
+        ['promedio.si.conjunto(', 'promedio.si(', 'sumar.si.conjunto(', 'sumar.si(', 'contar.si.conjunto(', 'contar.si(', 'si.error(', 'si.conjunto(', 'buscarv(', 'buscarx(', 'promedio(', 'contar(', 'producto(', 'suma(', 'indice(', 'coincidir(', 'concatenar(', 'concatenar(', 'izquierda(', 'derecha(', 'med(', 'largo(', 'mayusc(', 'minusc(', 'nompropio(', 'sustituir(', 'encontrar(', 'redondear(', 'abs(', 'y(', 'o(', 'si(', 'falso', 'verdadero'],
         $normalized
     );
 
@@ -414,6 +414,12 @@ function difficulty_class(string $difficulty): string
         'Intermedio 1' => 'difficulty-mid-1',
         'Intermedio 2' => 'difficulty-mid-2',
         'Avanzado 1' => 'difficulty-adv-1',
+        'Avanzado 2' => 'difficulty-adv-2',
+        'Experto 1' => 'difficulty-exp-1',
+        'Experto 2' => 'difficulty-exp-2',
+        'Experto 3' => 'difficulty-exp-3',
+        'Experto 4' => 'difficulty-exp-4',
+        'Maestro' => 'difficulty-master',
         default => 'difficulty-adv-2',
     };
 }
@@ -465,7 +471,12 @@ function level_band_title(int $number): string
         $number <= 40 => 'Intermedio 1',
         $number <= 60 => 'Intermedio 2',
         $number <= 80 => 'Avanzado 1',
-        default => 'Avanzado 2',
+        $number <= 100 => 'Avanzado 2',
+        $number <= 120 => 'Experto 1',
+        $number <= 140 => 'Experto 2',
+        $number <= 160 => 'Experto 3',
+        $number <= 180 => 'Experto 4',
+        default => 'Maestro',
     };
 }
 
@@ -473,6 +484,174 @@ function level_learning_guide(array $level): array
 {
     $formula = mb_strtoupper(normalize_formula((string) ($level['respuesta_correcta'] ?? '')), 'UTF-8');
     $category = mb_strtoupper((string) ($level['categoria'] ?? ''), 'UTF-8');
+
+    if (str_contains($formula, 'SUMAR.SI.CONJUNTO')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'SUMAR.SI.CONJUNTO suma un rango cuando se cumplen varias condiciones a la vez. El primer argumento es el rango a sumar, y luego se pasan pares de rango_criterio y criterio.',
+            'example' => '=SUMAR.SI.CONJUNTO(D2:D10,A2:A10,"Norte",C2:C10,"Tecnología")',
+        ];
+    }
+
+    if (str_contains($formula, 'CONTAR.SI.CONJUNTO')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'CONTAR.SI.CONJUNTO cuenta cuántas filas cumplen varias condiciones simultáneamente. Se pasan pares de rango y criterio para cada condición que se quiera evaluar.',
+            'example' => '=CONTAR.SI.CONJUNTO(A2:A10,"Activo",B2:B10,">500")',
+        ];
+    }
+
+    if (str_contains($formula, 'SI.CONJUNTO')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'SI.CONJUNTO evalúa varias condiciones en orden y devuelve el valor de la primera que se cumpla. Usa VERDADERO como última condición para cubrir todos los casos restantes.',
+            'example' => '=SI.CONJUNTO(B2>=90,"Excelente",B2>=70,"Bueno",VERDADERO,"Reforzar")',
+        ];
+    }
+
+    if (str_contains($formula, 'INDICE') && str_contains($formula, 'COINCIDIR')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'INDICE+COINCIDIR es la alternativa avanzada a BUSCARV. COINCIDIR encuentra la posición de un valor en un rango, e INDICE devuelve el valor de esa posición en otro rango. Es más flexible porque permite buscar en cualquier dirección.',
+            'example' => '=INDICE(B2:B10,COINCIDIR("P400",A2:A10,0))',
+        ];
+    }
+
+    if (str_contains($formula, 'COINCIDIR')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'COINCIDIR busca un valor en un rango y devuelve su posición numérica (fila). El tercer argumento 0 indica coincidencia exacta. Úsalo con INDICE para búsquedas potentes.',
+            'example' => '=COINCIDIR("P400",A2:A10,0)',
+        ];
+    }
+
+    if (str_contains($formula, 'INDICE')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'INDICE devuelve el valor de una celda dentro de un rango dado el número de fila (y opcionalmente columna). Combinado con COINCIDIR, reemplaza a BUSCARV con más potencia.',
+            'example' => '=INDICE(B2:B10,3)',
+        ];
+    }
+
+    if (str_contains($formula, 'CONCATENAR') || str_contains($formula, 'CONCAT') || str_contains($formula, '&')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'CONCATENAR une varios textos o valores en una sola celda. También puedes usar el operador & para unir directamente. Pon los textos entre comillas y separa con comas.',
+            'example' => '=CONCATENAR(A2," ",B2)',
+        ];
+    }
+
+    if (str_contains($formula, 'IZQUIERDA')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'IZQUIERDA extrae una cantidad de caracteres desde el inicio de un texto. Es útil para obtener códigos, prefijos o las primeras letras de un dato.',
+            'example' => '=IZQUIERDA(A2,3)',
+        ];
+    }
+
+    if (str_contains($formula, 'DERECHA')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'DERECHA extrae caracteres desde el final de un texto. Sirve para obtener extensiones, sufijos o los últimos dígitos de un código.',
+            'example' => '=DERECHA(A3,4)',
+        ];
+    }
+
+    if (str_contains($formula, 'MED(') || str_contains($formula, 'EXTRAE(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'MED (o EXTRAE) extrae una porción de texto desde una posición dada. Necesitas indicar la posición inicial y la cantidad de caracteres a extraer.',
+            'example' => '=MED(A4,2,3)',
+        ];
+    }
+
+    if (str_contains($formula, 'ENCONTRAR')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'ENCONTRAR busca un carácter o texto dentro de otro y devuelve su posición. Distingue mayúsculas de minúsculas. Es útil para localizar símbolos como @ o guiones.',
+            'example' => '=ENCONTRAR("@",A2)',
+        ];
+    }
+
+    if (str_contains($formula, 'LARGO(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'LARGO devuelve la cantidad de caracteres de un texto, incluyendo espacios. Es útil para validar longitudes de códigos o datos.',
+            'example' => '=LARGO(A2)',
+        ];
+    }
+
+    if (str_contains($formula, 'MAYUSC(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'MAYUSC convierte todo el texto a mayúsculas. Útil para estandarizar datos que vienen escritos de distintas formas.',
+            'example' => '=MAYUSC(A2)',
+        ];
+    }
+
+    if (str_contains($formula, 'MINUSC(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'MINUSC convierte todo el texto a minúsculas. Ideal para normalizar datos antes de compararlos.',
+            'example' => '=MINUSC(A3)',
+        ];
+    }
+
+    if (str_contains($formula, 'NOMPROPIO(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'NOMPROPIO convierte la primera letra de cada palabra a mayúscula y el resto a minúsculas. Perfecto para nombres propios.',
+            'example' => '=NOMPROPIO(A2)',
+        ];
+    }
+
+    if (str_contains($formula, 'SUSTITUIR(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'SUSTITUIR reemplaza una parte del texto por otra. Se indica el texto original, qué buscar y por qué reemplazarlo.',
+            'example' => '=SUSTITUIR(A2,"viejo","nuevo")',
+        ];
+    }
+
+    if (str_contains($formula, 'CONTAR.SI(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'CONTAR.SI cuenta cuántas celdas de un rango cumplen una condición. Puedes contar textos exactos como "Norte" o usar criterios numéricos como ">=70".',
+            'example' => '=CONTAR.SI(A2:A10,"Norte")',
+        ];
+    }
+
+    if (str_contains($formula, 'REDONDEAR(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'REDONDEAR ajusta un número a la cantidad de decimales que indiques. Usa 0 para enteros, 1 para un decimal, 2 para dos, etc.',
+            'example' => '=REDONDEAR(PROMEDIO(B2:B6),2)',
+        ];
+    }
+
+    if (str_contains($formula, 'ABS(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'ABS devuelve el valor absoluto de un número, es decir, siempre positivo. Es útil para calcular diferencias sin importar la dirección.',
+            'example' => '=ABS(B2-C2)',
+        ];
+    }
+
+    if (str_contains($formula, 'Y(') || str_contains($formula, 'AND(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'Y (AND) evalúa si TODAS las condiciones son verdaderas. Se usa dentro de SI para verificar múltiples requisitos a la vez.',
+            'example' => '=SI(Y(B2>=70,C2>=70),"Aprobado","Reforzar")',
+        ];
+    }
+
+    if (str_contains($formula, 'O(') || str_contains($formula, 'OR(')) {
+        return [
+            'title' => 'Explicacion del nivel',
+            'explanation' => 'O (OR) evalúa si AL MENOS UNA condición es verdadera. Se usa dentro de SI para aceptar cualquiera de varias opciones.',
+            'example' => '=SI(O(B4<50,C4<50),"Alerta","Normal")',
+        ];
+    }
 
     if (str_contains($formula, 'SI.ERROR')) {
         return [
@@ -944,6 +1123,116 @@ function build_level_tables(array $level): array
         ]];
     }
 
+    // --- NIVELES 101-120: Experto 1 (CONTAR.SI, Y/O, ABS, REDONDEAR) ---
+    if ($number >= 101 && $number <= 120) {
+        return [
+            [
+                'title' => 'Control de Inventario Avanzado',
+                'target' => (string) $level['formula_target'],
+                'columns' => ['A', 'B', 'C', 'D', 'E', 'F'],
+                'rows' => [
+                    ['row' => 1, 'cells' => ['A' => 'Región', 'B' => 'Producto', 'C' => 'Nota 1', 'D' => 'Nota 2', 'E' => 'Estado', 'F' => 'Resultado']],
+                    ['row' => 2, 'cells' => ['A' => 'Norte', 'B' => 'Laptop', 'C' => '85', 'D' => '72', 'E' => 'Activo', 'F' => '']],
+                    ['row' => 3, 'cells' => ['A' => 'Sur', 'B' => 'Mouse', 'C' => '60', 'D' => '45', 'E' => 'Urgente', 'F' => '']],
+                    ['row' => 4, 'cells' => ['A' => 'Norte', 'B' => 'Laptop', 'C' => '92', 'D' => '88', 'E' => 'Activo', 'F' => '']],
+                    ['row' => 5, 'cells' => ['A' => 'Este', 'B' => 'Teclado', 'C' => '74', 'D' => '68', 'E' => 'Activo', 'F' => '']],
+                    ['row' => 6, 'cells' => ['A' => 'Norte', 'B' => 'Monitor', 'C' => '55', 'D' => '1200', 'E' => 'Urgente', 'F' => '']],
+                    ['row' => 7, 'cells' => ['A' => 'Sur', 'B' => 'Laptop', 'C' => '78', 'D' => '82', 'E' => 'Activo', 'F' => '']],
+                    ['row' => 8, 'cells' => ['A' => 'Norte', 'B' => 'Webcam', 'C' => '90', 'D' => '95', 'E' => 'Activo', 'F' => '']],
+                    ['row' => 9, 'cells' => ['A' => 'Este', 'B' => 'Laptop', 'C' => '63', 'D' => '500', 'E' => 'Activo', 'F' => '']],
+                    ['row' => 10, 'cells' => ['A' => 'Sur', 'B' => 'Mouse', 'C' => '48', 'D' => '35', 'E' => 'Activo', 'F' => '']],
+                ],
+            ],
+        ];
+    }
+
+    // --- NIVELES 121-140: Experto 2 (CONCATENAR, TEXTO, IZQUIERDA, DERECHA, LARGO) ---
+    if ($number >= 121 && $number <= 140) {
+        return [[
+            'title' => 'Base de Contactos',
+            'target' => (string) $level['formula_target'],
+            'columns' => ['A', 'B', 'C', 'D'],
+            'rows' => [
+                ['row' => 1, 'cells' => ['A' => 'Nombre', 'B' => 'Apellido', 'C' => 'Email', 'D' => 'Código']],
+                ['row' => 2, 'cells' => ['A' => 'juan', 'B' => 'PÉREZ', 'C' => 'jperez@mail.com', 'D' => 'MX-501']],
+                ['row' => 3, 'cells' => ['A' => 'MARÍA', 'B' => 'López', 'C' => 'mlopez@empresa.org', 'D' => 'US-302']],
+                ['row' => 4, 'cells' => ['A' => 'carlos', 'B' => 'GARCÍA', 'C' => 'cgarcia@web.net', 'D' => 'AR-1003']],
+                ['row' => 5, 'cells' => ['A' => 'Ana', 'B' => 'Martínez', 'C' => 'amart@datos.com', 'D' => 'CO-204']],
+                ['row' => 6, 'cells' => ['A' => 'PEDRO', 'B' => 'ruiz', 'C' => 'pruiz@viejo.mx', 'D' => 'CL-705']],
+            ],
+        ]];
+    }
+
+    // --- NIVELES 141-160: Experto 3 (INDICE+COINCIDIR, SI.CONJUNTO) ---
+    if ($number >= 141 && $number <= 160) {
+        return [
+            [
+                'title' => 'Catálogo de Productos',
+                'target' => (string) $level['formula_target'],
+                'columns' => ['A', 'B', 'C', 'D', 'E', 'F'],
+                'rows' => [
+                    ['row' => 1, 'cells' => ['A' => 'Código', 'B' => 'Producto', 'C' => 'Categoría', 'D' => 'Precio', 'E' => 'Stock', 'F' => 'Responsable']],
+                    ['row' => 2, 'cells' => ['A' => 'P100', 'B' => 'Laptop', 'C' => 'Tecnología', 'D' => '950', 'E' => '14', 'F' => 'Alicia']],
+                    ['row' => 3, 'cells' => ['A' => 'P200', 'B' => 'Tablet', 'C' => 'Tecnología', 'D' => '620', 'E' => '18', 'F' => 'Bruno']],
+                    ['row' => 4, 'cells' => ['A' => 'P300', 'B' => 'Mouse', 'C' => 'Accesorios', 'D' => '45', 'E' => '65', 'F' => 'Carla']],
+                    ['row' => 5, 'cells' => ['A' => 'P400', 'B' => 'Monitor', 'C' => 'Tecnología', 'D' => '310', 'E' => '11', 'F' => 'Diego']],
+                    ['row' => 6, 'cells' => ['A' => 'P500', 'B' => 'Teclado', 'C' => 'Accesorios', 'D' => '70', 'E' => '29', 'F' => 'Elena']],
+                    ['row' => 7, 'cells' => ['A' => 'P600', 'B' => 'Impresora', 'C' => 'Oficina', 'D' => '410', 'E' => '8', 'F' => 'Fabio']],
+                    ['row' => 8, 'cells' => ['A' => 'P700', 'B' => 'Cámara', 'C' => 'Multimedia', 'D' => '520', 'E' => '13', 'F' => 'Gina']],
+                    ['row' => 9, 'cells' => ['A' => 'P800', 'B' => 'Router', 'C' => 'Redes', 'D' => '130', 'E' => '22', 'F' => 'Hugo']],
+                    ['row' => 10, 'cells' => ['A' => 'P900', 'B' => 'Auriculares', 'C' => 'Audio', 'D' => '95', 'E' => '37', 'F' => 'Iris']],
+                ],
+            ],
+            [
+                'title' => 'Celdas de consulta',
+                'target' => (string) $level['formula_target'],
+                'columns' => ['G', 'H', 'I'],
+                'rows' => [
+                    ['row' => 1, 'cells' => ['G' => 'Buscar', 'H' => 'Código', 'I' => 'Código alterno']],
+                    ['row' => 2, 'cells' => ['G' => 'Consulta 1', 'H' => 'P400', 'I' => 'P800']],
+                    ['row' => 3, 'cells' => ['G' => 'Consulta 2', 'H' => 'P600', 'I' => 'P200']],
+                    ['row' => 4, 'cells' => ['G' => 'Consulta 3', 'H' => 'P300', 'I' => 'P100']],
+                    ['row' => 5, 'cells' => ['G' => 'Consulta 4', 'H' => 'P999', 'I' => 'P700']],
+                ],
+            ],
+        ];
+    }
+
+    // --- NIVELES 161-200: Experto 4 + Maestro (SUMAR.SI.CONJUNTO, CONTAR.SI.CONJUNTO, combos) ---
+    if ($number >= 161 && $number <= 200) {
+        return [
+            [
+                'title' => 'Base de Ventas Completa',
+                'target' => (string) $level['formula_target'],
+                'columns' => ['A', 'B', 'C', 'D', 'E', 'F'],
+                'rows' => [
+                    ['row' => 1, 'cells' => ['A' => 'Región', 'B' => 'Producto', 'C' => 'Categoría', 'D' => 'Ventas', 'E' => 'Stock', 'F' => 'Responsable']],
+                    ['row' => 2, 'cells' => ['A' => 'Norte', 'B' => 'Laptop', 'C' => 'Tecnología', 'D' => '950', 'E' => '14', 'F' => 'Alicia']],
+                    ['row' => 3, 'cells' => ['A' => 'Sur', 'B' => 'Tablet', 'C' => 'Tecnología', 'D' => '620', 'E' => '18', 'F' => 'Bruno']],
+                    ['row' => 4, 'cells' => ['A' => 'Norte', 'B' => 'Mouse', 'C' => 'Accesorios', 'D' => '45', 'E' => '65', 'F' => 'Carla']],
+                    ['row' => 5, 'cells' => ['A' => 'Activo', 'B' => 'Monitor', 'C' => 'Tecnología', 'D' => '310', 'E' => '11', 'F' => 'Diego']],
+                    ['row' => 6, 'cells' => ['A' => 'Norte', 'B' => 'Teclado', 'C' => 'Accesorios', 'D' => '70', 'E' => '29', 'F' => 'Elena']],
+                    ['row' => 7, 'cells' => ['A' => 'Sur', 'B' => 'Impresora', 'C' => 'Oficina', 'D' => '410', 'E' => '8', 'F' => 'Fabio']],
+                    ['row' => 8, 'cells' => ['A' => 'Norte', 'B' => 'Cámara', 'C' => 'Multimedia', 'D' => '520', 'E' => '13', 'F' => 'Gina']],
+                    ['row' => 9, 'cells' => ['A' => 'Activo', 'B' => 'Router', 'C' => 'Redes', 'D' => '130', 'E' => '22', 'F' => 'Hugo']],
+                    ['row' => 10, 'cells' => ['A' => 'Norte', 'B' => 'Auriculares', 'C' => 'Audio', 'D' => '95', 'E' => '37', 'F' => 'Iris']],
+                ],
+            ],
+            [
+                'title' => 'Celdas de análisis',
+                'target' => (string) $level['formula_target'],
+                'columns' => ['G', 'H', 'I'],
+                'rows' => [
+                    ['row' => 1, 'cells' => ['G' => 'Análisis', 'H' => 'Buscar', 'I' => 'Resultado']],
+                    ['row' => 2, 'cells' => ['G' => 'Zona 1', 'H' => 'P400', 'I' => '']],
+                    ['row' => 3, 'cells' => ['G' => 'Zona 2', 'H' => 'P600', 'I' => '']],
+                    ['row' => 4, 'cells' => ['G' => 'Zona 3', 'H' => 'P300', 'I' => '']],
+                    ['row' => 5, 'cells' => ['G' => 'Zona 4', 'H' => 'P999', 'I' => '']],
+                ],
+            ],
+        ];
+    }
+
     return [[
         'title' => 'Caso integral',
         'target' => (string) $level['formula_target'],
@@ -975,6 +1264,16 @@ function generate_distractors(array $level, int $count = 3): array
         'BUSCARV' => 'BUSCARX', 'BUSCARX' => 'BUSCARV',
         'CONTAR' => 'SUMA',
         'SUMAR.SI' => 'CONTAR.SI', 'PROMEDIO.SI' => 'SUMAR.SI',
+        'CONTAR.SI.CONJUNTO' => 'SUMAR.SI.CONJUNTO', 'SUMAR.SI.CONJUNTO' => 'CONTAR.SI.CONJUNTO',
+        'CONTAR.SI' => 'SUMAR.SI',
+        'INDICE' => 'BUSCARV', 'COINCIDIR' => 'CONTAR',
+        'SI.CONJUNTO' => 'SI',
+        'CONCATENAR' => 'LARGO', 'IZQUIERDA' => 'DERECHA', 'DERECHA' => 'IZQUIERDA',
+        'ABS' => 'REDONDEAR', 'REDONDEAR' => 'ABS',
+        'Y(' => 'O(', 'O(' => 'Y(',
+        'MAYUSC' => 'MINUSC', 'MINUSC' => 'MAYUSC',
+        'LARGO' => 'CONTAR',
+        'MED' => 'IZQUIERDA',
     ];
     foreach ($fnSwaps as $from => $to) {
         if (mb_stripos($correct, $from) !== false) {

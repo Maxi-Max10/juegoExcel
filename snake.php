@@ -56,12 +56,19 @@ $snakeData = [
     'points'     => (int) $progress['puntos'],
 ];
 
+$guide = level_learning_guide($level);
+
 $speedMap = [
     'Básico'       => 160,
     'Intermedio 1'  => 140,
     'Intermedio 2'  => 120,
     'Avanzado 1'    => 105,
     'Avanzado 2'    => 90,
+    'Experto 1'     => 80,
+    'Experto 2'     => 72,
+    'Experto 3'     => 65,
+    'Experto 4'     => 58,
+    'Maestro'       => 52,
 ];
 $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
 ?>
@@ -122,6 +129,7 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
                 <p class="snake-header__consigna"><?= e($level['consigna']) ?></p>
             </div>
             <div class="snake-header__stats">
+                <button class="pill pill--help" type="button" id="guide-popup-btn" title="Ver explicación"><i class="fa-solid fa-circle-question"></i> Ayuda</button>
                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
                 <span class="pill pill--neutral">+<?= e((string) $level['points_reward']) ?> pts</span>
                 <span class="pill pill--neutral" id="snake-lives"><i class="fa-solid fa-heart"></i> <?= e((string) $progress['vidas']) ?></span>
@@ -178,6 +186,19 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
                 </div>
             </aside>
         </main>
+
+        <!-- Modal de explicación -->
+        <div class="guide-modal-backdrop" id="guide-modal" style="display:none;">
+            <div class="guide-modal">
+                <button class="guide-modal__close" id="guide-modal-close" type="button" aria-label="Cerrar">&times;</button>
+                <h2><i class="fa-solid fa-lightbulb"></i> <?= e($guide['title']) ?></h2>
+                <p class="guide-modal__explanation"><?= e($guide['explanation']) ?></p>
+                <div class="guide-modal__example">
+                    <span class="guide-modal__example-label">Ejemplo</span>
+                    <code class="guide-modal__example-value"><?= e($guide['example']) ?></code>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script id="snake-level-data" type="application/json"><?= json_encode($snakeData, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) ?></script>

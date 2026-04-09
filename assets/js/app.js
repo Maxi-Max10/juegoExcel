@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCounterAnimation();
     initMagneticButtons();
     initScrollHideIndicator();
+    initGuideModal();
 });
 
 function initNavToggle() {
@@ -602,4 +603,20 @@ function initScrollHideIndicator() {
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
+}
+
+function initGuideModal() {
+    const btn = document.getElementById('guide-popup-btn');
+    const modal = document.getElementById('guide-modal');
+    const closeBtn = document.getElementById('guide-modal-close');
+    if (!btn || !modal) return;
+
+    btn.addEventListener('click', () => { modal.style.display = 'flex'; });
+    if (closeBtn) closeBtn.addEventListener('click', () => { modal.style.display = 'none'; });
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'flex') modal.style.display = 'none';
+    });
 }

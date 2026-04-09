@@ -85,6 +85,7 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
                 <p class="topbar__lead">El objetivo es escribir una fórmula válida en la celda marcada. La hoja se adapta a móvil con desplazamiento seguro y feedback inmediato.</p>
             </div>
             <div class="topbar__actions">
+                <button class="pill pill--help" type="button" id="guide-popup-btn" title="Ver explicación"><i class="fa-solid fa-circle-question"></i> Ayuda</button>
                 <a class="button button--ghost" href="snake.php?nivel=<?= e((string) $requestedLevel) ?>">🐍 Modo Snake</a>
                 <span class="pill <?= e(difficulty_class((string) $level['dificultad'])) ?>"><?= e($level['dificultad']) ?></span>
                 <span class="pill pill--neutral">+<?= e((string) $level['points_reward']) ?> pts</span>
@@ -171,6 +172,19 @@ $nextLevel = min(TOTAL_LEVELS, $requestedLevel + 1);
 
             </aside>
         </main>
+
+        <!-- Modal de explicación -->
+        <div class="guide-modal-backdrop" id="guide-modal" style="display:none;">
+            <div class="guide-modal">
+                <button class="guide-modal__close" id="guide-modal-close" type="button" aria-label="Cerrar">&times;</button>
+                <h2><i class="fa-solid fa-lightbulb"></i> <?= e($guide['title']) ?></h2>
+                <p class="guide-modal__explanation"><?= e($guide['explanation']) ?></p>
+                <div class="guide-modal__example">
+                    <span class="guide-modal__example-label">Ejemplo</span>
+                    <code class="guide-modal__example-value"><?= e($guide['example']) ?></code>
+                </div>
+            </div>
+        </div>
 
     </div>
     <?php render_app_scripts(); ?>
