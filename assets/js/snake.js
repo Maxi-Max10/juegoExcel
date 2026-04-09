@@ -98,7 +98,7 @@
         bindTouch();
         bindSwipe();
         if (lives <= 0) {
-            overlay.classList.remove('hidden');
+            overlay.classList.remove('is-hidden');
             startBtn.style.display = 'none';
             showLifeTimer();
             return;
@@ -108,7 +108,7 @@
     }
 
     function startGame() {
-        overlay.classList.add('hidden');
+        overlay.classList.add('is-hidden');
         resetSnake();
         placeFood();
         gameActive = true;
