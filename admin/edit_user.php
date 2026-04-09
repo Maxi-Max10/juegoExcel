@@ -21,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim((string) ($_POST['username'] ?? ''));
         $email = trim((string) ($_POST['email'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
-        $isVip = isset($_POST['is_vip']) ? 1 : 0;
         $nivelActual = max(1, min(TOTAL_LEVELS, (int) ($_POST['nivel_actual'] ?? 1)));
         $puntos = max(0, (int) ($_POST['puntos'] ?? 0));
         $vidas = max(0, min(5, (int) ($_POST['vidas'] ?? 5)));
@@ -45,11 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Actualizar datos del usuario
                 if ($password !== '') {
-                    $stmt = $pdo->prepare('UPDATE users SET username = ?, email = ?, password_hash = ?, is_vip = ? WHERE id = ?');
-                    $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $isVip, $id]);
+                    $stmt = $pdo->prepare('UPDATE users SET username = ?, email = ?, password_hash = ? WHERE id = ?');
+                    $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $id]);
                 } else {
-                    $stmt = $pdo->prepare('UPDATE users SET username = ?, email = ?, is_vip = ? WHERE id = ?');
-                    $stmt->execute([$username, $email, $isVip, $id]);
+                    $stmt = $pdo->prepare('UPDATE users SET username = ?, email = ? WHERE id = ?');
+                    $stmt->execute([$username, $email, $id]);
                 }
 
                 // Actualizar progreso
@@ -69,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = array_merge($user, [
             'username' => $username,
             'email' => $email,
-            'is_vip' => $isVip,
             'nivel_actual' => $nivelActual,
             'puntos' => $puntos,
             'vidas' => $vidas,
@@ -144,13 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form-group">
                         <label for="password"><i class="fa-solid fa-lock"></i> Nueva contraseña <small>(dejar vacío para no cambiar)</small></label>
                         <input type="password" id="password" name="password" class="form-control" minlength="6">
-                    </div>
-                    <div class="form-group form-group--checkbox">
-                        <label class="admin-checkbox">
-                            <input type="checkbox" name="is_vip" value="1" <?= (int) $user['is_vip'] ? 'checked' : '' ?>>
-                            <span class="admin-checkbox__mark"></span>
-                            <i class="fa-solid fa-crown"></i> Usuario VIP (vidas infinitas)
-                        </label>
                     </div>
                 </div>
 

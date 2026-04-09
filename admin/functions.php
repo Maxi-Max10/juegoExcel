@@ -73,7 +73,7 @@ function ensure_admin_table(): void
 function admin_get_all_users(): array
 {
     $sql = "
-        SELECT u.id, u.username, u.email, u.is_vip, u.created_at,
+        SELECT u.id, u.username, u.email, u.created_at,
                COALESCE(p.nivel_actual, 1) AS nivel_actual,
                COALESCE(p.puntos, 0) AS puntos,
                COALESCE(p.vidas, 5) AS vidas,
@@ -91,7 +91,7 @@ function admin_get_all_users(): array
 function admin_get_user(int $id): ?array
 {
     $stmt = getPDO()->prepare("
-        SELECT u.id, u.username, u.email, u.password_hash, u.is_vip, u.created_at,
+        SELECT u.id, u.username, u.email, u.password_hash, u.created_at,
                COALESCE(p.nivel_actual, 1) AS nivel_actual,
                COALESCE(p.puntos, 0) AS puntos,
                COALESCE(p.vidas, 5) AS vidas,

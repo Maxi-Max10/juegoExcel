@@ -39,7 +39,6 @@ if (!$level) {
 }
 
 $progress = get_user_progress($userId);
-$vipCheck = is_user_vip($userId);
 
 if (!level_is_unlocked($progress, (int) $level['numero'])) {
     http_response_code(403);
@@ -47,7 +46,7 @@ if (!level_is_unlocked($progress, (int) $level['numero'])) {
     exit;
 }
 
-if (!$vipCheck && (int) $progress['vidas'] <= 0) {
+if ((int) $progress['vidas'] <= 0) {
     http_response_code(403);
     echo json_encode(['success' => false, 'correct' => false, 'message' => 'No tienes vidas. Espera a que se regeneren.', 'lives' => 0, 'noLives' => true]);
     exit;
@@ -108,25 +107,7 @@ try {
         ]);
     }
 
-    $vip = is_user_vip($userId);
-
-    if ($correct && !$alreadyCompleted) {
-        $newCurrentLevel = min(TOTAL_LEVELS, max((int) $progressRow['nivel_actual'], (int) $level['numero'] + 1));
-        $updateProgress = $pdo->prepare(
-            'UPDATE progress
-             SET puntos = puntos + ?,
-                 nivel_actual = ?,
-                 vidas = LEAST(vidas + 1, 5),
-                 racha_actual = racha_actual + 1,
-                 niveles_completados = niveles_completados + 1,
-                 last_life_lost_at = CASE WHEN vidas + 1 >= 5 THEN NULL ELSE last_life_lost_at END,
-                 updated_at = NOW()
-             WHERE user_id = ?'
-        );
-        $updateProgress->execute([(int) $level['points_reward'], $newCurrentLevel, $userId]);
-    }
-
-    if (!$correct && !$vip) {
+    if (!$correct) {
         $updateProgress = $pdo->prepare(
             'UPDATE progress
              SET vidas = GREATEST(vidas - 1, 0),
@@ -138,20 +119,24 @@ try {
         $updateProgress->execute([$userId]);
     }
 
-    if (!$correct && $vip) {
+    if ($correct && !$alreadyCompleted) {
+        $newCurrentLevel = min(TOTAL_LEVELS, max((int) $progressRow['nivel_actual'], (int) $level['numero'] + 1));
         $updateProgress = $pdo->prepare(
             'UPDATE progress
-             SET racha_actual = 0,
+             SET puntos = puntos + ?,
+                 nivel_actual = ?,
+                 racha_actual = racha_actual + 1,
+                 niveles_completados = niveles_completados + 1,
                  updated_at = NOW()
              WHERE user_id = ?'
         );
-        $updateProgress->execute([$userId]);
+        $updateProgress->execute([(int) $level['points_reward'], $newCurrentLevel, $userId]);
     }
 
     $pdo->commit();
 
     $freshProgress = get_user_progress($userId);
-    $livesValue = $vip ? -1 : (int) $freshProgress['vidas'];
+    $livesValue = (int) $freshProgress['vidas'];
     echo json_encode([
         'success' => true,
         'correct' => $correct,
@@ -162,8 +147,7 @@ try {
         'expected' => !$correct ? $level['respuesta_correcta'] : null,
         'points' => (int) $freshProgress['puntos'],
         'lives' => $livesValue,
-        'vip' => $vip,
-        'nextLifeIn' => (!$vip && (int) $freshProgress['vidas'] < 5 && $freshProgress['last_life_lost_at'])
+        'nextLifeIn' => ((int) $freshProgress['vidas'] < 5 && $freshProgress['last_life_lost_at'])
             ? (function() use ($freshProgress) {
                 $s = getPDO()->prepare('SELECT GREATEST(0, TIMESTAMPDIFF(SECOND, ?, NOW())) AS elapsed');
                 $s->execute([$freshProgress['last_life_lost_at']]);

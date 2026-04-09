@@ -43,20 +43,8 @@ if ($exists->fetch()) {
     redirect('index.php');
 }
 
-$inviteCode = strtoupper(trim((string) ($_POST['invite_code'] ?? '')));
-$isVip = 0;
-
-if ($inviteCode !== '') {
-    if ($inviteCode !== 'CTRLZ') {
-        if ($isAjax) json_out(422, 'error', 'El código especial que ingresaste no existe.');
-        set_flash('error', 'El código especial que ingresaste no existe.');
-        redirect('index.php');
-    }
-    $isVip = 1;
-}
-
-$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, is_vip, email_verified) VALUES (?, ?, ?, ?, 0)');
-$stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $isVip]);
+$stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, email_verified) VALUES (?, ?, ?, 0)');
+$stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT)]);
 
 $userId = (int) $pdo->lastInsertId();
 initialize_progress($userId);
@@ -68,9 +56,7 @@ send_verification_email($email, $username, $token);
 $_SESSION['user_id'] = $userId;
 $_SESSION['username'] = $username;
 
-$msg = $isVip
-    ? '¡Código VIP activado! Te enviamos un correo para verificar tu email.'
-    : 'Tu cuenta está lista. Te enviamos un correo para verificar tu email. Revisa tu bandeja de entrada.';
+$msg = 'Tu cuenta está lista. Te enviamos un correo para verificar tu email. Revisa tu bandeja de entrada.';
 if ($isAjax) json_out(200, 'success', $msg);
 set_flash('success', $msg);
 redirect('dashboard.php');

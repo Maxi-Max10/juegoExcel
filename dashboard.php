@@ -9,7 +9,6 @@ require_login();
 $userId = current_user_id();
 $user = fetch_user_by_id((int) $userId);
 $progress = get_user_progress((int) $userId);
-$isVip = is_user_vip((int) $userId);
 
 // Check email verification status
 $emailVerified = true;
@@ -139,7 +138,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                     </div>
                     <ul class="focus-list">
                         <li><i class="fa-solid fa-star"></i> <?= e((string) $progress['puntos']) ?> puntos</li>
-                        <li><i class="fa-solid fa-heart"></i> <?= $isVip ? '∞ vidas <small>(VIP)</small>' : e((string) $progress['vidas']) . '/5 vidas' ?></li>
+                        <li><i class="fa-solid fa-heart"></i> <?= e((string) $progress['vidas']) . '/5 vidas' ?></li>
                         <li><i class="fa-solid fa-layer-group"></i> <?= e((string) $progress['niveles_completados']) ?> niveles resueltos</li>
                     </ul>
                 </div>
@@ -165,18 +164,14 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                 <div class="quick-stat__icon"><i class="fa-solid fa-heart"></i></div>
                 <div class="quick-stat__body">
                     <span class="quick-stat__label">Vidas</span>
-                    <?php if ($isVip): ?>
-                        <strong class="quick-stat__value">∞ <small>VIP</small></strong>
-                    <?php else: ?>
                         <strong class="quick-stat__value"><?= e((string) $progress['vidas']) ?><small>/5</small></strong>
                         <div class="lives-bar">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
                                 <span class="lives-bar__heart <?= $i <= (int) $progress['vidas'] ? 'is-full' : 'is-empty' ?>"><i class="fa-solid fa-heart"></i></span>
                             <?php endfor; ?>
                         </div>
-                    <?php endif; ?>
                 </div>
-                <?php if (!$isVip && (int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
+                <?php if ((int) $progress['vidas'] < 5 && !empty($progress['last_life_lost_at'])): ?>
                     <?php
                     $timerStmt = getPDO()->prepare('SELECT GREATEST(0, TIMESTAMPDIFF(SECOND, ?, NOW())) AS elapsed');
                     $timerStmt->execute([$progress['last_life_lost_at']]);

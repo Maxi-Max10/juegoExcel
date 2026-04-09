@@ -127,7 +127,7 @@ function initLevelForm() {
             }
 
             if (livesNode) {
-                livesNode.textContent = payload.vip ? '∞' : String(payload.lives);
+                livesNode.textContent = String(payload.lives);
             }
 
             if (progressFill) {

@@ -7,7 +7,6 @@ require_admin_login();
 $flash = get_flash();
 $users = admin_get_all_users();
 $totalUsers = count($users);
-$totalVip = count(array_filter($users, fn($u) => (int) $u['is_vip'] === 1));
 $totalPoints = array_sum(array_column($users, 'puntos'));
 ?>
 <!DOCTYPE html>
@@ -66,15 +65,6 @@ $totalPoints = array_sum(array_column($users, 'puntos'));
                 </div>
             </div>
             <div class="admin-stat-card">
-                <div class="admin-stat-card__icon admin-stat-card__icon--vip">
-                    <i class="fa-solid fa-crown"></i>
-                </div>
-                <div>
-                    <span class="admin-stat-card__label">VIP</span>
-                    <strong class="admin-stat-card__value"><?= $totalVip ?></strong>
-                </div>
-            </div>
-            <div class="admin-stat-card">
                 <div class="admin-stat-card__icon admin-stat-card__icon--points">
                     <i class="fa-solid fa-bolt"></i>
                 </div>
@@ -92,7 +82,6 @@ $totalPoints = array_sum(array_column($users, 'puntos'));
                         <th>ID</th>
                         <th>Usuario</th>
                         <th>Email</th>
-                        <th>VIP</th>
                         <th>Nivel</th>
                         <th>Puntos</th>
                         <th>Niveles completados</th>
@@ -109,13 +98,6 @@ $totalPoints = array_sum(array_column($users, 'puntos'));
                                 <td><?= (int) $u['id'] ?></td>
                                 <td><strong><?= e($u['username']) ?></strong></td>
                                 <td><?= e($u['email']) ?></td>
-                                <td>
-                                    <?php if ((int) $u['is_vip']): ?>
-                                        <span class="badge badge--vip"><i class="fa-solid fa-crown"></i> VIP</span>
-                                    <?php else: ?>
-                                        <span class="badge badge--normal">Normal</span>
-                                    <?php endif; ?>
-                                </td>
                                 <td><?= (int) $u['nivel_actual'] ?></td>
                                 <td><?= number_format((int) $u['puntos']) ?></td>
                                 <td><?= (int) $u['niveles_completados'] ?>/<?= TOTAL_LEVELS ?></td>

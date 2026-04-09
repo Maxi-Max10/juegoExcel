@@ -34,70 +34,53 @@
     let lives = level.lives;
     let points = level.points;
     let submitting = false;
-    const isVip = !!level.vip;
 
     /* -------- init -------- */
 
-    function init() {
-        resize();
-        window.addEventListener('resize', () => { resize(); draw(); });
-        bindKeys();
-        bindTouch();
-        bindSwipe();
-        if (!isVip && lives <= 0) {
-            overlay.classList.remove('hidden');
-            startBtn.style.display = 'none';
-            showLifeTimer();
-            return;
-        }
-            // -------- vidas/timer --------
-            function showLifeTimer() {
-                overlayContent.innerHTML = '<h2>Sin vidas</h2><div id="life-timer-msg"><i class="fa-solid fa-clock"></i> Consultando tiempo restante...</div><a class="button button--primary" href="dashboard.php">Volver al mapa</a>';
+    // -------- vidas/timer --------
+    function showLifeTimer() {
+        overlayContent.innerHTML = '<h2>Sin vidas</h2><div id="life-timer-msg"><i class="fa-solid fa-clock"></i> Consultando tiempo restante...</div><a class="button button--primary" href="dashboard.php">Volver al mapa</a>';
+        fetchLifeStatus();
+    }
+
+    function fetchLifeStatus() {
+        fetch('api_life_status.php')
+            .then(res => res.json())
+            .then(data => {
+                if (data.lives > 0) {
+                    window.location.reload();
+                    return;
+                }
+                if (typeof data.nextLifeIn === 'number') {
+                    startLifeCountdown(data.nextLifeIn);
+                } else {
+                    document.getElementById('life-timer-msg').innerHTML = '<i class="fa-solid fa-clock"></i> Esperando regeneración...';
+                }
+            })
+            .catch(() => {
+                document.getElementById('life-timer-msg').innerHTML = 'No se pudo consultar el servidor.';
+            });
+    }
+
+    let timerInterval = null;
+    function startLifeCountdown(seconds) {
+        updateTimerMsg(seconds);
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            seconds--;
+            if (seconds <= 0) {
+                clearInterval(timerInterval);
                 fetchLifeStatus();
-            }
-
-            function fetchLifeStatus() {
-                fetch('api_life_status.php')
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.lives > 0 || data.vip) {
-                            // Si ya tiene vidas, recargar para jugar
-                            window.location.reload();
-                            return;
-                        }
-                        if (typeof data.nextLifeIn === 'number') {
-                            startLifeCountdown(data.nextLifeIn);
-                        } else {
-                            document.getElementById('life-timer-msg').innerHTML = '<i class="fa-solid fa-clock"></i> Esperando regeneración...';
-                        }
-                    })
-                    .catch(() => {
-                        document.getElementById('life-timer-msg').innerHTML = 'No se pudo consultar el servidor.';
-                    });
-            }
-
-            let timerInterval = null;
-            function startLifeCountdown(seconds) {
+            } else {
                 updateTimerMsg(seconds);
-                if (timerInterval) clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
-                    seconds--;
-                    if (seconds <= 0) {
-                        clearInterval(timerInterval);
-                        fetchLifeStatus();
-                    } else {
-                        updateTimerMsg(seconds);
-                    }
-                }, 1000);
             }
+        }, 1000);
+    }
 
-            function updateTimerMsg(secs) {
-                const min = Math.floor(secs / 60);
-                const s = secs % 60;
-                document.getElementById('life-timer-msg').innerHTML = `<i class="fa-solid fa-clock"></i> Próxima vida en <strong>${min}:${s.toString().padStart(2, '0')}</strong>`;
-            }
-        startBtn.addEventListener('click', startGame);
-        draw();
+    function updateTimerMsg(secs) {
+        const min = Math.floor(secs / 60);
+        const s = secs % 60;
+        document.getElementById('life-timer-msg').innerHTML = `<i class="fa-solid fa-clock"></i> Próxima vida en <strong>${min}:${s.toString().padStart(2, '0')}</strong>`;
     }
 
     function init() {
@@ -106,7 +89,7 @@
         bindKeys();
         bindTouch();
         bindSwipe();
-        if (!isVip && lives <= 0) {
+        if (lives <= 0) {
             overlay.classList.remove('hidden');
             startBtn.style.display = 'none';
             showLifeTimer();
@@ -115,6 +98,11 @@
         startBtn.addEventListener('click', startGame);
         draw();
     }
+
+    function startGame() {
+        overlay.classList.add('hidden');
+        resetSnake();
+        placeFood();
         gameActive = true;
         loop();
     }
@@ -249,7 +237,7 @@
             submitting = false;
         }
 
-        if (!isVip && lives <= 0) {
+        if (lives <= 0) {
             flashFeedback('error', 'Sin vidas. Vuelve al mapa para recuperarte.');
             setTimeout(() => { window.location.href = 'dashboard.php'; }, 2000);
             return;
@@ -278,7 +266,7 @@
             const data = await res.json();
             if (data.lives !== undefined) {
                 lives = data.lives;
-                livesNode.innerHTML = '<i class="fa-solid fa-heart"></i> ' + (isVip ? '∞' : lives);
+                livesNode.innerHTML = '<i class="fa-solid fa-heart"></i> ' + lives;
             }
             if (data.points !== undefined) {
                 points = data.points;

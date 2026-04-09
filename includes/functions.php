@@ -106,10 +106,7 @@ function initialize_progress(int $userId): void
 
 function is_user_vip(int $userId): bool
 {
-    $stmt = getPDO()->prepare('SELECT is_vip FROM users WHERE id = ? LIMIT 1');
-    $stmt->execute([$userId]);
-    $row = $stmt->fetch();
-    return $row && (int) $row['is_vip'] === 1;
+    return false;
 }
 
 /* ── Email verification ── */
@@ -280,9 +277,7 @@ function get_user_progress(int $userId): array
 {
     initialize_progress($userId);
 
-    if (!is_user_vip($userId)) {
-        regenerate_lives($userId);
-    }
+    regenerate_lives($userId);
 
     $stmt = getPDO()->prepare('SELECT * FROM progress WHERE user_id = ? LIMIT 1');
     $stmt->execute([$userId]);

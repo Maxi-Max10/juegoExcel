@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim((string) ($_POST['username'] ?? ''));
         $email = trim((string) ($_POST['email'] ?? ''));
         $password = (string) ($_POST['password'] ?? '');
-        $isVip = isset($_POST['is_vip']) ? 1 : 0;
 
         if (mb_strlen($username) < 3) {
             $error = 'El nombre de usuario debe tener al menos 3 caracteres.';
@@ -30,8 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($exists->fetch()) {
                 $error = 'Ese usuario o correo ya está registrado.';
             } else {
-                $stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash, is_vip) VALUES (?, ?, ?, ?)');
-                $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $isVip]);
+                $stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)');
+                $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT)]);
                 $userId = (int) $pdo->lastInsertId();
                 initialize_progress($userId);
 
@@ -106,13 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form-group">
                         <label for="password"><i class="fa-solid fa-lock"></i> Contraseña</label>
                         <input type="password" id="password" name="password" class="form-control" required minlength="6">
-                    </div>
-                    <div class="form-group form-group--checkbox">
-                        <label class="admin-checkbox">
-                            <input type="checkbox" name="is_vip" value="1" <?= !empty($isVip) ? 'checked' : '' ?>>
-                            <span class="admin-checkbox__mark"></span>
-                            <i class="fa-solid fa-crown"></i> Usuario VIP (vidas infinitas)
-                        </label>
                     </div>
                 </div>
 
