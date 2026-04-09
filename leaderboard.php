@@ -8,7 +8,7 @@ $leaderboard = fetch_leaderboard(25);
 $flash = get_flash();
 $podium = array_slice($leaderboard, 0, 3);
 $rest = array_slice($leaderboard, 3);
-$currentUser = is_logged_in() ? current_user()['username'] ?? '' : '';
+$currentUser = is_logged_in() ? ($_SESSION['username'] ?? '') : '';
 ?>
 <!DOCTYPE html>
 <html lang="es">
