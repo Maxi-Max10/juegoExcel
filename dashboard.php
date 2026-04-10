@@ -47,93 +47,199 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         @keyframes dash-orb3{0%{transform:translate(0,0) scale(1)}100%{transform:translate(40px,-30px) scale(1.1)}}
         @keyframes dash-orb4{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-30px,-50px) scale(1.15)}}
 
-        /* ── Floating Particles ── */
+        /* ── Floating Particles (enhanced with shapes) ── */
         .dash-particle{position:fixed;border-radius:50%;pointer-events:none;z-index:0;animation:dashParticleFloat linear infinite}
-        @keyframes dashParticleFloat{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:.7}90%{opacity:.7}100%{transform:translateY(-10vh) rotate(360deg);opacity:0}}
+        .dash-particle--ring{background:transparent !important;border:1.5px solid currentColor}
+        .dash-particle--cross{background:transparent !important;border-radius:0 !important;width:2px !important;height:var(--size,8px);position:fixed}
+        .dash-particle--cross::after{content:'';position:absolute;width:var(--size,8px);height:2px;background:currentColor;top:50%;left:50%;transform:translate(-50%,-50%)}
+        @keyframes dashParticleFloat{0%{transform:translateY(100vh) rotate(0deg);opacity:0}8%{opacity:.6}50%{opacity:.8}92%{opacity:.6}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
 
-        /* ── Hero Welcome Card ── */
-        .dash-welcome{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;padding:36px 40px;margin-bottom:28px;border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(17,24,39,.96),rgba(15,23,42,.92));border:1px solid rgba(51,196,129,.2);overflow:hidden;box-shadow:0 24px 70px rgba(2,6,23,.45)}
+        /* ── Cursor glow follower ── */
+        .dash-cursor-glow{position:fixed;width:320px;height:320px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(51,196,129,.07),transparent 70%);transform:translate(-50%,-50%);transition:left .3s ease,top .3s ease;will-change:left,top}
+
+        /* ── Hero Welcome Card (enhanced) ── */
+        .dash-welcome{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;padding:36px 40px;margin-bottom:28px;border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(17,24,39,.96),rgba(15,23,42,.92));border:1px solid rgba(51,196,129,.2);overflow:hidden;box-shadow:0 24px 70px rgba(2,6,23,.45);animation:welcomeEntrance .8s cubic-bezier(.22,1,.36,1) both}
+        @keyframes welcomeEntrance{0%{opacity:0;transform:translateY(30px) scale(.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
         .dash-welcome::before{content:'';position:absolute;top:-40%;right:-15%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(51,196,129,.1),transparent 70%);pointer-events:none;animation:welcome-glow 6s ease-in-out infinite alternate}
         .dash-welcome::after{content:'';position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,var(--primary-strong),var(--secondary),transparent);animation:accent-shimmer 3s ease-in-out infinite}
         @keyframes welcome-glow{0%{opacity:.5;transform:scale(1)}100%{opacity:1;transform:scale(1.15)}}
-        .dash-welcome__greeting{font-size:.77rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:10px;margin-bottom:10px}
-        .dash-welcome__greeting::before{content:'';width:32px;height:2px;border-radius:999px;background:linear-gradient(90deg,var(--primary-strong),var(--secondary))}
-        .dash-welcome__title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.2rem);line-height:.95;letter-spacing:-.03em;margin:0 0 8px;background:linear-gradient(135deg,#fff 40%,rgba(51,196,129,.8));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .dash-welcome__subtitle{color:var(--muted);font-size:1rem;margin:0 0 20px;max-width:40ch}
-        .dash-welcome__actions{display:flex;flex-wrap:wrap;gap:12px}
-        .dash-welcome__ring{position:relative;justify-self:center}
 
-        /* ── Stat Cards Grid ── */
+        /* ── Shimmer sweep on welcome ── */
+        .dash-welcome__shimmer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+        .dash-welcome__shimmer::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),rgba(255,255,255,.08),rgba(255,255,255,.04),transparent);animation:shimmerSweep 4s ease-in-out infinite;transform:skewX(-15deg)}
+        @keyframes shimmerSweep{0%,100%{left:-100%}50%{left:150%}}
+
+        /* ── Orbiting rings around welcome ── */
+        .dash-welcome__orbit{position:absolute;border-radius:50%;border:1px solid rgba(51,196,129,.08);pointer-events:none}
+        .dash-welcome__orbit--1{width:300px;height:300px;top:-100px;right:-80px;animation:orbitSpin 20s linear infinite}
+        .dash-welcome__orbit--2{width:440px;height:440px;top:-170px;right:-150px;animation:orbitSpin 30s linear infinite reverse}
+        .dash-welcome__orbit--3{width:200px;height:200px;bottom:-60px;left:-60px;border-color:rgba(59,130,246,.06);animation:orbitSpin 15s linear infinite}
+        @keyframes orbitSpin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .dash-welcome__orbit::before{content:'';position:absolute;width:6px;height:6px;border-radius:50%;top:0;left:50%;transform:translateX(-50%)}
+        .dash-welcome__orbit--1::before{background:#34D399;box-shadow:0 0 10px rgba(52,211,153,.6)}
+        .dash-welcome__orbit--2::before{background:#60A5FA;box-shadow:0 0 10px rgba(96,165,250,.6)}
+        .dash-welcome__orbit--3::before{background:#FBBF24;box-shadow:0 0 10px rgba(251,191,36,.6)}
+
+        .dash-welcome__greeting{font-size:.77rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:inline-flex;align-items:center;gap:10px;margin-bottom:10px}
+        .dash-welcome__greeting::before{content:'';width:32px;height:2px;border-radius:999px;background:linear-gradient(90deg,var(--primary-strong),var(--secondary));animation:greetingLineGrow .6s .3s cubic-bezier(.22,1,.36,1) both}
+        @keyframes greetingLineGrow{0%{width:0;opacity:0}100%{width:32px;opacity:1}}
+        .dash-welcome__title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.2rem);line-height:.95;letter-spacing:-.03em;margin:0 0 8px;background:linear-gradient(135deg,#fff 40%,rgba(51,196,129,.8));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:titleReveal .7s .15s cubic-bezier(.22,1,.36,1) both}
+        @keyframes titleReveal{0%{opacity:0;transform:translateY(15px);filter:blur(4px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
+        .dash-welcome__subtitle{color:var(--muted);font-size:1rem;margin:0 0 20px;max-width:40ch;animation:subtitleReveal .7s .3s cubic-bezier(.22,1,.36,1) both}
+        @keyframes subtitleReveal{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+        .dash-welcome__actions{display:flex;flex-wrap:wrap;gap:12px;animation:actionsReveal .7s .45s cubic-bezier(.22,1,.36,1) both}
+        @keyframes actionsReveal{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+        .dash-welcome__ring{position:relative;justify-self:center;animation:ringEntrance .9s .3s cubic-bezier(.22,1,.36,1) both}
+        @keyframes ringEntrance{0%{opacity:0;transform:scale(.7) rotate(-10deg)}100%{opacity:1;transform:scale(1) rotate(0deg)}}
+
+        /* ── Focus ring pulse effect ── */
+        .dash-welcome__ring .focus-ring{animation:ringPulse 3s ease-in-out infinite}
+        @keyframes ringPulse{0%,100%{box-shadow:inset 0 0 0 1px rgba(229,231,235,.08),0 0 30px rgba(51,196,129,.08)}50%{box-shadow:inset 0 0 0 1px rgba(229,231,235,.12),0 0 50px rgba(51,196,129,.18),0 0 80px rgba(51,196,129,.06)}}
+
+        /* ── Stat Cards Grid (enhanced) ── */
         .dash-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:28px}
-        .dash-stat{position:relative;display:flex;align-items:center;gap:16px;padding:22px 24px;border-radius:22px;background:linear-gradient(135deg,rgba(30,41,59,.92),rgba(15,23,42,.95));border:1px solid rgba(148,163,184,.1);box-shadow:0 4px 20px rgba(0,0,0,.2);overflow:hidden;transition:transform 220ms ease,box-shadow 220ms ease,border-color 220ms ease}
-        .dash-stat:hover{transform:translateY(-3px);box-shadow:0 14px 35px rgba(0,0,0,.25)}
+        .dash-stat{position:relative;display:flex;align-items:center;gap:16px;padding:22px 24px;border-radius:22px;background:linear-gradient(135deg,rgba(30,41,59,.92),rgba(15,23,42,.95));border:1px solid rgba(148,163,184,.1);box-shadow:0 4px 20px rgba(0,0,0,.2);overflow:hidden;transition:transform 320ms cubic-bezier(.22,1,.36,1),box-shadow 320ms ease,border-color 320ms ease}
+        .dash-stat:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 20px 40px rgba(0,0,0,.3)}
         .dash-stat::after{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);pointer-events:none}
-        .dash-stat__icon{display:grid;place-items:center;width:50px;height:50px;border-radius:16px;font-size:1.2rem;flex-shrink:0;transition:transform .3s ease}
-        .dash-stat:hover .dash-stat__icon{transform:scale(1.1)}
+
+        /* ── Stat hover ripple ── */
+        .dash-stat::before{content:'';position:absolute;width:150%;height:150%;border-radius:50%;left:var(--ripple-x,50%);top:var(--ripple-y,50%);transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%);transition:transform .6s ease;pointer-events:none}
+        .dash-stat:hover::before{transform:translate(-50%,-50%) scale(1)}
+
+        .dash-stat__icon{display:grid;place-items:center;width:50px;height:50px;border-radius:16px;font-size:1.2rem;flex-shrink:0;transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
+        .dash-stat:hover .dash-stat__icon{transform:scale(1.15) rotate(5deg)}
         .dash-stat__body{display:flex;flex-direction:column;gap:3px;min-width:0}
-        .dash-stat__label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+        .dash-stat__label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);transition:color .3s}
+        .dash-stat:hover .dash-stat__label{color:var(--ink)}
         .dash-stat__value{font-size:1.6rem;line-height:1;font-family:var(--font-display);font-weight:800}
         .dash-stat__value small{font-size:.65em;color:var(--muted);font-weight:400}
+
+        /* ── Stat color variants with glow hover ── */
         .dash-stat--xp{border-left:3px solid #FBBF24}.dash-stat--xp .dash-stat__icon{background:rgba(250,204,21,.13);color:#FBBF24}
+        .dash-stat--xp:hover{border-color:rgba(250,204,21,.5);box-shadow:0 20px 40px rgba(250,204,21,.1)}
+        .dash-stat--xp:hover .dash-stat__icon{box-shadow:0 0 20px rgba(250,204,21,.25)}
         .dash-stat--levels{border-left:3px solid #60A5FA}.dash-stat--levels .dash-stat__icon{background:rgba(59,130,246,.13);color:#60A5FA}
+        .dash-stat--levels:hover{border-color:rgba(96,165,250,.5);box-shadow:0 20px 40px rgba(59,130,246,.1)}
+        .dash-stat--levels:hover .dash-stat__icon{box-shadow:0 0 20px rgba(59,130,246,.25)}
         .dash-stat--lives{border-left:3px solid #F87171}.dash-stat--lives .dash-stat__icon{background:rgba(239,68,68,.13);color:#F87171;animation:heartbeat 1.4s ease-in-out infinite}
+        .dash-stat--lives:hover{border-color:rgba(248,113,113,.5);box-shadow:0 20px 40px rgba(239,68,68,.1)}
+        .dash-stat--lives:hover .dash-stat__icon{box-shadow:0 0 20px rgba(239,68,68,.25)}
         .dash-stat--next{text-decoration:none;color:inherit;background:linear-gradient(135deg,rgba(33,115,70,.2),rgba(15,23,42,.95));border-color:rgba(51,196,129,.25);border-left:3px solid #34D399;cursor:pointer}
-        .dash-stat--next:hover{border-color:rgba(51,196,129,.5);box-shadow:0 14px 35px rgba(51,196,129,.12)}
-        .dash-stat--next .dash-stat__icon{background:rgba(51,196,129,.15);color:#34D399}
-        .dash-stat__arrow{margin-left:auto;color:var(--muted);font-size:.9rem;transition:transform 220ms ease,color 220ms ease}
-        .dash-stat--next:hover .dash-stat__arrow{transform:translateX(4px);color:#34D399}
+        .dash-stat--next:hover{border-color:rgba(51,196,129,.5);box-shadow:0 20px 40px rgba(51,196,129,.12)}
+        .dash-stat--next .dash-stat__icon{background:rgba(51,196,129,.15);color:#34D399;animation:playBounce 2s ease-in-out infinite}
+        .dash-stat--next:hover .dash-stat__icon{box-shadow:0 0 20px rgba(51,196,129,.25)}
+        @keyframes playBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+        .dash-stat__arrow{margin-left:auto;color:var(--muted);font-size:.9rem;transition:transform 320ms cubic-bezier(.22,1,.36,1),color 220ms ease}
+        .dash-stat--next:hover .dash-stat__arrow{transform:translateX(6px);color:#34D399}
+
+        /* ── Stat stagger entrance ── */
+        .dash-stat{animation:statSlideUp .6s cubic-bezier(.22,1,.36,1) both}
+        .dash-stat:nth-child(1){animation-delay:.1s}
+        .dash-stat:nth-child(2){animation-delay:.2s}
+        .dash-stat:nth-child(3){animation-delay:.3s}
+        .dash-stat:nth-child(4){animation-delay:.4s}
+        @keyframes statSlideUp{0%{opacity:0;transform:translateY(25px) scale(.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
 
         /* ── Lives display in stat ── */
         .dash-stat .lives-bar{margin:4px 0 0}
-        .dash-stat .lives-bar__heart{font-size:.85rem}
+        .dash-stat .lives-bar__heart{font-size:.85rem;transition:transform .2s ease}
+        .dash-stat:hover .lives-bar__heart.is-full{animation:heartJump .5s ease forwards}
+        .dash-stat:hover .lives-bar__heart.is-full:nth-child(2){animation-delay:.05s}
+        .dash-stat:hover .lives-bar__heart.is-full:nth-child(3){animation-delay:.1s}
+        .dash-stat:hover .lives-bar__heart.is-full:nth-child(4){animation-delay:.15s}
+        .dash-stat:hover .lives-bar__heart.is-full:nth-child(5){animation-delay:.2s}
+        @keyframes heartJump{0%{transform:scale(1)}40%{transform:scale(1.3) translateY(-3px)}100%{transform:scale(1)}}
         .dash-stat .lives-timer{position:absolute;right:16px;top:50%;transform:translateY(-50%);padding:6px 12px;border-radius:10px;font-size:.82rem;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);display:flex;align-items:center;gap:6px;color:#FBBF24;font-family:var(--font-display);font-weight:700}
         .dash-stat .lives-timer i{color:#F97316;animation:pulse-glow 2s ease-in-out infinite}
 
-        /* ── XP Progress Track ── */
-        .dash-xp-track{margin-bottom:32px;padding:20px 26px;border-radius:22px;background:linear-gradient(135deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border:1px solid rgba(148,163,184,.08);box-shadow:0 4px 16px rgba(0,0,0,.15);position:relative;overflow:hidden}
+        /* ── XP Progress Track (enhanced) ── */
+        .dash-xp-track{margin-bottom:32px;padding:20px 26px;border-radius:22px;background:linear-gradient(135deg,rgba(30,41,59,.6),rgba(15,23,42,.7));border:1px solid rgba(148,163,184,.08);box-shadow:0 4px 16px rgba(0,0,0,.15);position:relative;overflow:hidden;animation:fadeSlideUp .6s .5s cubic-bezier(.22,1,.36,1) both}
+        @keyframes fadeSlideUp{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}
         .dash-xp-track::after{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);pointer-events:none}
         .dash-xp-track__row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
         .dash-xp-track__label{font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
-        .dash-xp-track__label i{color:#F97316;font-size:.9rem}
+        .dash-xp-track__label i{color:#F97316;font-size:.9rem;animation:fireFlicker 1.5s ease-in-out infinite}
+        @keyframes fireFlicker{0%,100%{transform:scale(1);opacity:1}25%{transform:scale(1.15) rotate(-5deg);opacity:.8}75%{transform:scale(1.1) rotate(5deg);opacity:.9}}
         .dash-xp-track__pct{font-size:1.15rem;font-weight:800;font-family:var(--font-display);background:linear-gradient(135deg,var(--primary-strong),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+        /* ── Animated progress bar glow ── */
+        .dash-xp-track .progress-bar__fill{position:relative}
+        .dash-xp-track .progress-bar__fill::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#34D399;box-shadow:0 0 12px rgba(52,211,153,.6),0 0 24px rgba(52,211,153,.3);animation:progressDot 2s ease-in-out infinite}
+        @keyframes progressDot{0%,100%{opacity:1;box-shadow:0 0 12px rgba(52,211,153,.6),0 0 24px rgba(52,211,153,.3)}50%{opacity:.7;box-shadow:0 0 20px rgba(52,211,153,.8),0 0 40px rgba(52,211,153,.4)}}
 
         /* ── Dashboard Main Grid ── */
         .dash-main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,.64fr);gap:22px;align-items:start}
 
-        /* ── Levels Panel ── */
-        .dash-levels{padding:30px;border-radius:var(--radius-xl);background:var(--paper);border:1px solid var(--line);backdrop-filter:blur(18px);box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+        /* ── Levels Panel (enhanced) ── */
+        .dash-levels{padding:30px;border-radius:var(--radius-xl);background:var(--paper);border:1px solid var(--line);backdrop-filter:blur(18px);box-shadow:var(--shadow-lg);position:relative;overflow:hidden;animation:fadeSlideUp .7s .6s cubic-bezier(.22,1,.36,1) both}
         .dash-levels::after{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);pointer-events:none}
         .dash-levels__heading{display:flex;align-items:start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
         .dash-levels__heading h2{margin:0;font-family:var(--font-display);letter-spacing:-.03em;font-size:1.3rem}
+        .dash-levels__heading h2 i{background:linear-gradient(135deg,#34D399,#60A5FA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .dash-levels__summary{margin:8px 0 0;color:var(--muted);max-width:54ch;font-size:.9rem}
 
         /* ── Side Panel ── */
         .dash-sidebar{display:grid;gap:22px}
 
-        /* ── Leaderboard Card ── */
-        .dash-leaderboard{padding:28px;border-radius:var(--radius-xl);background:var(--paper);border:1px solid var(--line);backdrop-filter:blur(18px);box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+        /* ── Leaderboard Card (enhanced) ── */
+        .dash-leaderboard{padding:28px;border-radius:var(--radius-xl);background:var(--paper);border:1px solid var(--line);backdrop-filter:blur(18px);box-shadow:var(--shadow-lg);position:relative;overflow:hidden;animation:fadeSlideUp .7s .65s cubic-bezier(.22,1,.36,1) both}
         .dash-leaderboard::after{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);pointer-events:none}
         .dash-leaderboard__head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
         .dash-leaderboard__head h2{margin:0;font-family:var(--font-display);letter-spacing:-.03em;font-size:1.2rem}
-        .dash-leaderboard__head a{color:var(--muted);font-size:.85rem;font-weight:600;transition:color .2s}
-        .dash-leaderboard__head a:hover{color:var(--ink)}
+        .dash-leaderboard__head h2 i{color:#FBBF24;animation:crownBounce 2s ease-in-out infinite}
+        @keyframes crownBounce{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-4px) rotate(5deg)}}
+        .dash-leaderboard__head a{color:var(--muted);font-size:.85rem;font-weight:600;transition:color .2s,transform .2s}
+        .dash-leaderboard__head a:hover{color:var(--ink);transform:translateX(3px)}
 
-        /* ── Tips Card ── */
-        .dash-tips{padding:28px;border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(17,24,39,.92),rgba(15,23,42,.96));border:1px solid rgba(250,204,21,.12);backdrop-filter:blur(18px);box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
-        .dash-tips::before{content:'';position:absolute;bottom:-40%;right:-20%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(250,204,21,.08),transparent 70%);pointer-events:none}
+        /* ── Leaderboard rows stagger ── */
+        .dash-leaderboard .leaderboard-list li{animation:lbRowSlide .4s cubic-bezier(.22,1,.36,1) both}
+        .dash-leaderboard .leaderboard-list li:nth-child(1){animation-delay:.7s}
+        .dash-leaderboard .leaderboard-list li:nth-child(2){animation-delay:.78s}
+        .dash-leaderboard .leaderboard-list li:nth-child(3){animation-delay:.86s}
+        .dash-leaderboard .leaderboard-list li:nth-child(4){animation-delay:.94s}
+        .dash-leaderboard .leaderboard-list li:nth-child(5){animation-delay:1.02s}
+        .dash-leaderboard .leaderboard-list li:nth-child(6){animation-delay:1.1s}
+        .dash-leaderboard .leaderboard-list li:nth-child(7){animation-delay:1.18s}
+        .dash-leaderboard .leaderboard-list li:nth-child(8){animation-delay:1.26s}
+        @keyframes lbRowSlide{0%{opacity:0;transform:translateX(-20px)}100%{opacity:1;transform:translateX(0)}}
+
+        /* ── Tips Card (enhanced) ── */
+        .dash-tips{padding:28px;border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(17,24,39,.92),rgba(15,23,42,.96));border:1px solid rgba(250,204,21,.12);backdrop-filter:blur(18px);box-shadow:var(--shadow-lg);position:relative;overflow:hidden;animation:fadeSlideUp .7s .8s cubic-bezier(.22,1,.36,1) both}
+        .dash-tips::before{content:'';position:absolute;bottom:-40%;right:-20%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(250,204,21,.08),transparent 70%);pointer-events:none;animation:tipGlow 5s ease-in-out infinite alternate}
+        @keyframes tipGlow{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.3);opacity:1}}
         .dash-tips::after{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(250,204,21,.25),transparent);pointer-events:none}
         .dash-tips h2{margin:0 0 16px;font-family:var(--font-display);letter-spacing:-.03em;font-size:1.15rem;color:#FBBF24}
+        .dash-tips h2 i{animation:lightbulbGlow 3s ease-in-out infinite}
+        @keyframes lightbulbGlow{0%,100%{filter:drop-shadow(0 0 2px rgba(251,191,36,.4));transform:rotate(0deg)}50%{filter:drop-shadow(0 0 8px rgba(251,191,36,.8));transform:rotate(8deg)}}
         .dash-tips ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-        .dash-tips li{display:flex;align-items:baseline;gap:10px;color:var(--muted);font-size:.9rem;line-height:1.5}
-        .dash-tips li::before{content:'';width:5px;height:5px;border-radius:50%;background:#FBBF24;flex-shrink:0;margin-top:6px}
+        .dash-tips li{display:flex;align-items:baseline;gap:10px;color:var(--muted);font-size:.9rem;line-height:1.5;animation:tipFadeIn .5s ease both}
+        .dash-tips li:nth-child(1){animation-delay:.9s}
+        .dash-tips li:nth-child(2){animation-delay:1s}
+        .dash-tips li:nth-child(3){animation-delay:1.1s}
+        @keyframes tipFadeIn{0%{opacity:0;transform:translateX(-10px)}100%{opacity:1;transform:translateX(0)}}
+        .dash-tips li::before{content:'';width:5px;height:5px;border-radius:50%;background:#FBBF24;flex-shrink:0;margin-top:6px;animation:dotPulse 2s ease-in-out infinite}
+        @keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,.4)}50%{box-shadow:0 0 0 4px rgba(251,191,36,0)}}
 
-        /* ── Achievement Badge ── */
-        .dash-achievement{padding:22px 26px;border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(15,23,42,.95));border:1px solid rgba(139,92,246,.2);position:relative;overflow:hidden;display:flex;align-items:center;gap:18px}
+        /* ── Achievement Badge (enhanced) ── */
+        .dash-achievement{padding:22px 26px;border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(15,23,42,.95));border:1px solid rgba(139,92,246,.2);position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;animation:fadeSlideUp .7s .75s cubic-bezier(.22,1,.36,1) both;transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease}
+        .dash-achievement:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(139,92,246,.15);border-color:rgba(139,92,246,.4)}
         .dash-achievement::after{content:'';position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,.3),transparent);pointer-events:none}
-        .dash-achievement__icon{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:rgba(139,92,246,.15);color:#A78BFA;font-size:1.3rem;flex-shrink:0}
-        .dash-achievement__body{min-width:0}
-        .dash-achievement__title{font-weight:800;font-size:.95rem;margin:0 0 2px}
+        .dash-achievement::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(139,92,246,.05),transparent,rgba(139,92,246,.05),transparent);animation:achievementRotate 8s linear infinite;pointer-events:none}
+        @keyframes achievementRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+        .dash-achievement__icon{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:rgba(139,92,246,.15);color:#A78BFA;font-size:1.3rem;flex-shrink:0;animation:achieveIconFloat 3s ease-in-out infinite;position:relative;z-index:1}
+        @keyframes achieveIconFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.05)}}
+        .dash-achievement__body{min-width:0;position:relative;z-index:1}
+        .dash-achievement__title{font-weight:800;font-size:.95rem;margin:0 0 2px;background:linear-gradient(135deg,#fff,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
         .dash-achievement__desc{color:var(--muted);font-size:.82rem;margin:0}
+
+        /* ── Magnetic buttons on welcome ── */
+        .dash-welcome__actions .button{transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease}
+
+        /* ── Animated gradient border on welcome hover ── */
+        .dash-welcome:hover{border-color:rgba(51,196,129,.35)}
+        .dash-welcome:hover .dash-welcome__title{animation:titleShine 2s linear infinite}
+        @keyframes titleShine{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+        .dash-welcome:hover .dash-welcome__title{background-size:200% auto;background-image:linear-gradient(135deg,#fff 0%,rgba(51,196,129,.8) 25%,#fff 50%,rgba(51,196,129,.8) 75%,#fff 100%)}
 
         /* ── Responsiveness ── */
         @media(max-width:1240px){
@@ -146,12 +252,16 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             .dash-welcome__subtitle{margin-left:auto;margin-right:auto}
             .dash-welcome__actions{justify-content:center}
             .dash-welcome__ring{margin-bottom:8px}
+            .dash-welcome__orbit{display:none}
         }
         @media(max-width:640px){
             .dash-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
             .dash-stat{padding:16px 18px}
             .dash-stat__icon{width:42px;height:42px}
             .dash-stat__value{font-size:1.35rem}
+        }
+        @media(prefers-reduced-motion:reduce){
+            *,*::before,*::after{animation-duration:0s !important;transition-duration:0s !important}
         }
     </style>
 </head>
@@ -218,6 +328,10 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 
         <!-- ═══ HERO WELCOME ═══ -->
         <section class="dash-welcome" data-reveal>
+            <div class="dash-welcome__shimmer"></div>
+            <div class="dash-welcome__orbit dash-welcome__orbit--1"></div>
+            <div class="dash-welcome__orbit dash-welcome__orbit--2"></div>
+            <div class="dash-welcome__orbit dash-welcome__orbit--3"></div>
             <div>
                 <span class="dash-welcome__greeting"><i class="fa-solid fa-bolt"></i> Hola, <?= e($user['username'] ?? $_SESSION['username'] ?? 'Jugador') ?></span>
                 <h1 class="dash-welcome__title">Tu misión</h1>
@@ -418,73 +532,226 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
     <?php render_app_scripts(); ?>
     <script>
     (function(){
-        // Floating particles
-        var colors = ['#34D399','#3b82f6','#fbbf24','#a855f7','#f87171','#f97316'];
-        for (var i = 0; i < 14; i++) {
+        /* ═══ Cursor Glow Follower ═══ */
+        if (!window.matchMedia('(pointer: coarse)').matches) {
+            var glow = document.createElement('div');
+            glow.className = 'dash-cursor-glow';
+            document.body.appendChild(glow);
+            document.addEventListener('mousemove', function(e) {
+                glow.style.left = e.clientX + 'px';
+                glow.style.top = e.clientY + 'px';
+            });
+        }
+
+        /* ═══ Floating particles (enhanced with shapes) ═══ */
+        var colors = ['#34D399','#3b82f6','#fbbf24','#a855f7','#f87171','#f97316','#e879f9','#22d3ee'];
+        var types = ['dot','dot','dot','ring','cross'];
+        for (var i = 0; i < 20; i++) {
             var p = document.createElement('div');
-            p.className = 'dash-particle';
-            var size = 3 + Math.random() * 6;
-            var dur = 10 + Math.random() * 16;
-            var delay = Math.random() * 12;
+            var type = types[i % types.length];
+            p.className = 'dash-particle' + (type !== 'dot' ? ' dash-particle--' + type : '');
+            var size = type === 'dot' ? (3 + Math.random() * 5) : (8 + Math.random() * 6);
+            var dur = 12 + Math.random() * 18;
+            var delay = Math.random() * 15;
             var left = Math.random() * 100;
-            p.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+left+'%;background:'+colors[i%colors.length]+';animation-duration:'+dur+'s;animation-delay:'+delay+'s;opacity:0;';
+            var color = colors[i % colors.length];
+            p.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+left+'%;color:'+color+';background:'+color+';animation-duration:'+dur+'s;animation-delay:'+delay+'s;opacity:0;--size:'+size+'px;';
             document.body.appendChild(p);
         }
-    })();
 
-    (function(){
-        var el = document.getElementById('life-timer');
-        if (!el) return;
-        var secs = parseInt(el.dataset.seconds, 10);
-        var iv = setInterval(function(){
-            secs--;
-            if (secs <= 0) { clearInterval(iv); location.reload(); return; }
-            el.textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
-        }, 1000);
-    })();
-
-    (function(){
-        var banner = document.getElementById('verification-banner');
-        if (!banner) return;
-
-        // Hide if previously dismissed
-        if (localStorage.getItem('dismiss_email_banner') === '1') {
-            banner.style.display = 'none';
-            return;
-        }
-
-        var dismissBtn = document.getElementById('dismiss-verification');
-        if (dismissBtn) {
-            dismissBtn.addEventListener('click', function() {
-                banner.style.display = 'none';
-                localStorage.setItem('dismiss_email_banner', '1');
-            });
-        }
-
-        var resendLink = document.getElementById('resend-verification');
-        if (!resendLink) return;
-        resendLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            resendLink.textContent = 'Enviando...';
-            resendLink.style.pointerEvents = 'none';
-            var fd = new FormData();
-            fd.append('csrf_token', '<?= e(csrf_token()) ?>');
-            fetch('resend_verification.php', {
-                method: 'POST',
-                body: fd,
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
-            .then(function(r) { return r.json(); })
-            .then(function(d) {
-                banner.querySelector('span').textContent = d.message;
-                resendLink.textContent = 'Reenviar correo';
-                setTimeout(function() { resendLink.style.pointerEvents = ''; }, 120000);
-            })
-            .catch(function() {
-                resendLink.textContent = 'Reenviar correo';
-                resendLink.style.pointerEvents = '';
+        /* ═══ Stat cards ripple on hover ═══ */
+        document.querySelectorAll('.dash-stat').forEach(function(stat) {
+            stat.addEventListener('mousemove', function(e) {
+                var rect = stat.getBoundingClientRect();
+                var x = ((e.clientX - rect.left) / rect.width * 100);
+                var y = ((e.clientY - rect.top) / rect.height * 100);
+                stat.style.setProperty('--ripple-x', x + '%');
+                stat.style.setProperty('--ripple-y', y + '%');
             });
         });
+
+        /* ═══ Counter animation for stat values ═══ */
+        var statValues = document.querySelectorAll('.dash-stat__value');
+        function animateCounter(el) {
+            var text = el.textContent.trim();
+            var match = text.match(/^(\d+)/);
+            if (!match) return;
+            var target = parseInt(match[1], 10);
+            if (target === 0) return;
+            var suffix = text.slice(match[1].length);
+            var duration = 1200;
+            var start = performance.now();
+            el.textContent = '0' + suffix;
+            function tick(now) {
+                var elapsed = now - start;
+                var progress = Math.min(elapsed / duration, 1);
+                var eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(target * eased) + suffix;
+                if (progress < 1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+        if (window.IntersectionObserver) {
+            var counterObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            statValues.forEach(function(el) { counterObserver.observe(el); });
+        } else {
+            statValues.forEach(animateCounter);
+        }
+
+        /* ═══ XP percentage counter ═══ */
+        var xpPct = document.querySelector('.dash-xp-track__pct');
+        if (xpPct) {
+            var pctMatch = xpPct.textContent.trim().match(/^(\d+)/);
+            if (pctMatch) {
+                var pctTarget = parseInt(pctMatch[1], 10);
+                var pctSuffix = xpPct.textContent.trim().slice(pctMatch[1].length);
+                xpPct.textContent = '0' + pctSuffix;
+                if (window.IntersectionObserver) {
+                    var pctObs = new IntersectionObserver(function(entries) {
+                        entries.forEach(function(entry) {
+                            if (entry.isIntersecting) {
+                                var s = performance.now();
+                                (function t(now) {
+                                    var p = Math.min((now - s) / 1400, 1);
+                                    var e = 1 - Math.pow(1 - p, 3);
+                                    xpPct.textContent = Math.round(pctTarget * e) + pctSuffix;
+                                    if (p < 1) requestAnimationFrame(t);
+                                })(s);
+                                pctObs.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.5 });
+                    pctObs.observe(xpPct);
+                }
+            }
+        }
+
+        /* ═══ Progress bar animated fill ═══ */
+        var progressFill = document.querySelector('.dash-xp-track .progress-bar__fill');
+        if (progressFill) {
+            var targetWidth = progressFill.style.width;
+            progressFill.style.width = '0%';
+            progressFill.style.transition = 'width 1.8s cubic-bezier(.22,1,.36,1)';
+            if (window.IntersectionObserver) {
+                var fillObs = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            setTimeout(function() { progressFill.style.width = targetWidth; }, 200);
+                            fillObs.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.3 });
+                fillObs.observe(progressFill.parentElement);
+            } else {
+                setTimeout(function() { progressFill.style.width = targetWidth; }, 500);
+            }
+        }
+
+        /* ═══ Magnetic buttons in welcome ═══ */
+        if (!window.matchMedia('(pointer: coarse)').matches) {
+            document.querySelectorAll('.dash-welcome__actions .button').forEach(function(btn) {
+                btn.addEventListener('mousemove', function(e) {
+                    var rect = btn.getBoundingClientRect();
+                    var x = e.clientX - rect.left - rect.width / 2;
+                    var y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = 'translateY(-2px) translateX(' + (x * 0.12) + 'px) translateY(' + (y * 0.12) + 'px)';
+                });
+                btn.addEventListener('mouseleave', function() {
+                    btn.style.transform = '';
+                });
+            });
+        }
+
+        /* ═══ Tilt effect on welcome card ═══ */
+        if (!window.matchMedia('(pointer: coarse)').matches) {
+            var welcome = document.querySelector('.dash-welcome');
+            if (welcome) {
+                welcome.addEventListener('mousemove', function(e) {
+                    var rect = welcome.getBoundingClientRect();
+                    var px = (e.clientX - rect.left) / rect.width - 0.5;
+                    var py = (e.clientY - rect.top) / rect.height - 0.5;
+                    welcome.style.transform = 'perspective(1200px) rotateX(' + (py * -3) + 'deg) rotateY(' + (px * 3) + 'deg)';
+                });
+                welcome.addEventListener('mouseleave', function() {
+                    welcome.style.transform = '';
+                    welcome.style.transition = 'transform 0.5s ease';
+                    setTimeout(function() { welcome.style.transition = ''; }, 500);
+                });
+            }
+        }
+
+        /* ═══ Level card hover glow effect ═══ */
+        document.querySelectorAll('.level-card:not([aria-disabled])').forEach(function(card) {
+            card.addEventListener('mousemove', function(e) {
+                var rect = card.getBoundingClientRect();
+                var x = e.clientX - rect.left;
+                var y = e.clientY - rect.top;
+                card.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, rgba(255,255,255,.06), rgba(255,255,255,.02) 50%, rgba(255,255,255,.04))';
+            });
+            card.addEventListener('mouseleave', function() {
+                card.style.background = '';
+            });
+        });
+
+        /* ═══ Life timer countdown ═══ */
+        var el = document.getElementById('life-timer');
+        if (el) {
+            var secs = parseInt(el.dataset.seconds, 10);
+            var iv = setInterval(function(){
+                secs--;
+                if (secs <= 0) { clearInterval(iv); location.reload(); return; }
+                el.textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
+            }, 1000);
+        }
+
+        /* ═══ Email verification banner ═══ */
+        var banner = document.getElementById('verification-banner');
+        if (banner) {
+            if (localStorage.getItem('dismiss_email_banner') === '1') {
+                banner.style.display = 'none';
+            } else {
+                var dismissBtn = document.getElementById('dismiss-verification');
+                if (dismissBtn) {
+                    dismissBtn.addEventListener('click', function() {
+                        banner.style.display = 'none';
+                        localStorage.setItem('dismiss_email_banner', '1');
+                    });
+                }
+
+                var resendLink = document.getElementById('resend-verification');
+                if (resendLink) {
+                    resendLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        resendLink.textContent = 'Enviando...';
+                        resendLink.style.pointerEvents = 'none';
+                        var fd = new FormData();
+                        fd.append('csrf_token', '<?= e(csrf_token()) ?>');
+                        fetch('resend_verification.php', {
+                            method: 'POST',
+                            body: fd,
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(function(r) { return r.json(); })
+                        .then(function(d) {
+                            banner.querySelector('span').textContent = d.message;
+                            resendLink.textContent = 'Reenviar correo';
+                            setTimeout(function() { resendLink.style.pointerEvents = ''; }, 120000);
+                        })
+                        .catch(function() {
+                            resendLink.textContent = 'Reenviar correo';
+                            resendLink.style.pointerEvents = '';
+                        });
+                    });
+                }
+            }
+        }
     })();
     </script>
 </body>
