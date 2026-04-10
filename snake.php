@@ -161,8 +161,8 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
                     <div class="snake-overlay" id="snake-overlay">
                         <div class="snake-overlay__content" id="snake-overlay-content">
                             <div class="sg-start-icon">🐍</div>
-                            <h2>Modo Snake</h2>
-                            <p>Mueve la serpiente hasta la respuesta correcta<br><small><i class="fa-solid fa-keyboard"></i> Flechas / WASD &nbsp;·&nbsp; <i class="fa-solid fa-hand-pointer"></i> Desliza en móvil</small></p>
+                            <h2>Nivel <?= e((string) $requestedLevel) ?></h2>
+                            <p>Come la respuesta correcta para avanzar<br><small><i class="fa-solid fa-keyboard"></i> Flechas / WASD &nbsp;·&nbsp; <i class="fa-solid fa-hand-pointer"></i> Swipe en móvil</small></p>
                             <button class="sg-play-btn" id="snake-start-btn" type="button">
                                 <i class="fa-solid fa-play"></i> Jugar
                             </button>
@@ -189,7 +189,7 @@ $snakeData['speed'] = $speedMap[$level['dificultad']] ?? 140;
                             <strong class="sg-legend-target"><?= e($level['formula_target']) ?></strong>
                         </div>
                     </div>
-                    <p class="snake-legend__hint"><i class="fa-solid fa-utensils"></i> Come la respuesta correcta:</p>
+                    <p class="snake-legend__hint"><i class="fa-solid fa-bullseye"></i> Come la respuesta correcta:</p>
                     <ol class="snake-options" id="snake-options">
                         <?php foreach ($answers as $i => $ans): ?>
                             <li class="snake-option" data-index="<?= $i ?>">
