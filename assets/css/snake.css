@@ -372,7 +372,7 @@
 }
 .snake-option:hover .snake-option__num { transform: scale(1.15); box-shadow: 0 3px 12px rgba(0,0,0,0.3); }
 .snake-option code {
-    font-family: 'Manrope', monospace; font-size: 0.84rem; word-break: break-all;
+    font-family: var(--font-body, 'Manrope', sans-serif); font-size: 0.84rem; word-break: break-all;
     color: rgba(255,255,255,0.88);
 }
 
