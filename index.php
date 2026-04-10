@@ -54,7 +54,7 @@ $flash = get_flash();
             <div class="hero-orbit hero-orbit--3"></div>
             <div class="hero__copy" data-reveal>
                 <span class="eyebrow"><i class="fa-solid fa-snake"></i> 200 niveles progresivos</span>
-                <h1>Domina Excel jugando con la snake.</h1>
+                <h1>Domina Excel jugando</h1>
                 <p>Una serpiente, fórmulas reales, corrección instantánea. Avanza desde SUMA hasta BUSCARV y más allá con ritmo de videojuego.</p>
                 <div class="hero__actions">
                     <a class="button button--primary button--glow" href="#acceso"><i class="fa-solid fa-play"></i> Empezar gratis</a>
@@ -238,7 +238,7 @@ $flash = get_flash();
                 </div>
                 <article class="step-card" data-reveal-item>
                     <div class="step-card__number">2</div>
-                    <h3>Mueve la snake</h3>
+                    <h3>Mueve</h3>
                     <p>Dirige la serpiente hacia la respuesta correcta entre las opciones del tablero.</p>
                 </article>
                 <div class="step-connector" data-reveal-item aria-hidden="true">
