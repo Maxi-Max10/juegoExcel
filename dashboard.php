@@ -111,10 +111,11 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         <?php endif; ?>
 
         <?php if (!$emailVerified): ?>
-            <div class="verification-banner">
+            <div class="verification-banner" id="verification-banner">
                 <i class="fa-solid fa-envelope-circle-check"></i>
                 <span>Tu correo aún no está verificado. Revisa tu bandeja de entrada.</span>
                 <a href="#" id="resend-verification">Reenviar correo</a>
+                <button type="button" id="dismiss-verification" aria-label="Cerrar" title="Cerrar">&times;</button>
             </div>
         <?php endif; ?>
 
@@ -293,6 +294,23 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
     })();
 
     (function(){
+        var banner = document.getElementById('verification-banner');
+        if (!banner) return;
+
+        // Hide if previously dismissed
+        if (localStorage.getItem('dismiss_email_banner') === '1') {
+            banner.style.display = 'none';
+            return;
+        }
+
+        var dismissBtn = document.getElementById('dismiss-verification');
+        if (dismissBtn) {
+            dismissBtn.addEventListener('click', function() {
+                banner.style.display = 'none';
+                localStorage.setItem('dismiss_email_banner', '1');
+            });
+        }
+
         var resendLink = document.getElementById('resend-verification');
         if (!resendLink) return;
         resendLink.addEventListener('click', function(e) {
@@ -308,10 +326,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             })
             .then(function(r) { return r.json(); })
             .then(function(d) {
-                var banner = resendLink.closest('.verification-banner');
-                if (banner) {
-                    banner.querySelector('span').textContent = d.message;
-                }
+                banner.querySelector('span').textContent = d.message;
                 resendLink.textContent = 'Reenviar correo';
                 setTimeout(function() { resendLink.style.pointerEvents = ''; }, 120000);
             })
