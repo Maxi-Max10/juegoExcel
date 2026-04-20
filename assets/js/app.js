@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMagneticButtons();
     initScrollHideIndicator();
     initGuideModal();
+    initHeartbeat();
 });
 
 function initNavToggle() {
@@ -619,4 +620,95 @@ function initGuideModal() {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && modal.style.display === 'flex') modal.style.display = 'none';
     });
+}
+
+function initHeartbeat() {
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfMeta) return; // not logged in
+
+    const CSRF = csrfMeta.getAttribute('content');
+    if (!CSRF) return;
+
+    // Dashboard has its own heartbeat + invite handling — don't duplicate
+    const onDashboard = window.location.pathname.endsWith('dashboard.php')
+                     || window.location.pathname.endsWith('/');
+
+    let knownInviteId = null;
+    let knownActiveDuelId = null;
+
+    async function beat() {
+        try {
+            const fd = new FormData();
+            fd.append('csrf_token', CSRF);
+            const r    = await fetch('api_user_heartbeat.php', { method: 'POST', body: fd });
+            const data = await r.json();
+            if (!onDashboard && data.pending_duel_id && data.pending_duel_id !== knownInviteId) {
+                knownInviteId = data.pending_duel_id;
+                showDuelToast(data.challenger_name || 'Alguien', data.pending_duel_id);
+            }
+            // Redirect if an active duel appeared (e.g. user sent challenge then navigated away)
+            if (!onDashboard && data.active_duel_id && data.active_duel_id !== knownActiveDuelId) {
+                knownActiveDuelId = data.active_duel_id;
+                // Only auto-redirect if we're not already on duel.php
+                if (!window.location.pathname.includes('duel.php')) {
+                    window.location.href = 'duel.php?id=' + data.active_duel_id;
+                }
+            }
+        } catch {}
+    }
+
+    beat();
+    setInterval(beat, 15000);
+}
+
+function showDuelToast(challengerName, duelId) {
+    const existing = document.getElementById('duel-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'duel-toast';
+    toast.style.cssText = `
+        position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;
+        background:#161929;border:1.5px solid #4f8ef7;border-radius:14px;
+        padding:1rem 1.2rem;color:#e2e8f0;font-family:inherit;
+        box-shadow:0 8px 32px rgba(0,0,0,.5);max-width:300px;
+        display:flex;flex-direction:column;gap:.5rem;
+        animation:slideInToast .3s ease;
+    `;
+    toast.innerHTML = `
+        <style>@keyframes slideInToast{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}</style>
+        <strong>⚔ ¡Te desafían!</strong>
+        <span style="color:#94a3b8;font-size:.85rem;">${challengerName} quiere un duelo de Excel.</span>
+        <div style="display:flex;gap:.5rem;">
+          <button id="dt-accept" style="flex:1;background:#4f8ef7;color:#fff;border:none;border-radius:8px;padding:.45rem;font-size:.85rem;font-weight:700;cursor:pointer;">✓ Aceptar</button>
+          <button id="dt-reject" style="flex:1;background:#2a2f4a;color:#94a3b8;border:none;border-radius:8px;padding:.45rem;font-size:.85rem;cursor:pointer;">✗ Rechazar</button>
+        </div>
+    `;
+
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    const CSRF = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    async function postToast(url, data) {
+        const fd = new FormData();
+        for (const [k, v] of Object.entries(data)) fd.append(k, v);
+        return fetch(url, { method: 'POST', body: fd }).then(r => r.json());
+    }
+
+    toast.querySelector('#dt-accept').addEventListener('click', async () => {
+        toast.remove();
+        const res = await postToast('api_duel_respond.php', {
+            csrf_token: CSRF, duel_id: duelId, action: 'accept',
+        });
+        if (res.ok) window.location.href = 'duel.php?id=' + duelId;
+    });
+
+    toast.querySelector('#dt-reject').addEventListener('click', () => {
+        toast.remove();
+        postToast('api_duel_respond.php', {
+            csrf_token: CSRF, duel_id: duelId, action: 'reject',
+        }).catch(() => {});
+    });
+
+    document.body.appendChild(toast);
+    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 30000);
 }

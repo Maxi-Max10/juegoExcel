@@ -23,6 +23,9 @@ $levels = get_all_levels();
 $statusMap = get_user_level_status_map((int) $userId);
 $flash = get_flash();
 $leaderboard = fetch_leaderboard(8);
+$onlineUsers  = fetch_online_users((int) $userId, 20);
+$onlineLbMap  = [];
+foreach ($onlineUsers as $ou) $onlineLbMap[(int) $ou['id']] = true;
 $currentLevel = max(1, min(TOTAL_LEVELS, (int) $progress['nivel_actual']));
 $progressPercent = number_format(progress_percentage($progress), 2, '.', '');
 $previewSize = 12;
@@ -263,6 +266,33 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         @media(prefers-reduced-motion:reduce){
             *,*::before,*::after{animation-duration:0s !important;transition-duration:0s !important}
         }
+
+        /* ── Online indicator & challenge buttons ── */
+        .lb-online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 5px #22c55e;flex-shrink:0;animation:onlinePulse 2s ease-in-out infinite}
+        @keyframes onlinePulse{0%,100%{box-shadow:0 0 4px #22c55e}50%{box-shadow:0 0 10px #22c55e,0 0 18px rgba(34,197,94,.3)}}
+        .lb-challenge-btn{background:none;border:1.5px solid #4f8ef7;color:#4f8ef7;border-radius:8px;padding:.2rem .55rem;font-size:.75rem;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap;flex-shrink:0}
+        .lb-challenge-btn:hover{background:#4f8ef7;color:#fff}
+        .lb-challenge-btn--primary{padding:.3rem .75rem;font-size:.82rem}
+        .leaderboard-list li{display:flex;align-items:center;gap:.5rem;}
+
+        /* ── Online players section ── */
+        .online-players-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.4rem;}
+        .online-player-row{display:flex;align-items:center;gap:.5rem;padding:.5rem .4rem;border-radius:10px;transition:background .2s;}
+        .online-player-row:hover{background:rgba(79,142,247,.06);}
+        .online-player-name{flex:1;font-weight:600;font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+        .online-player-pts{font-size:.8rem;color:var(--muted);flex-shrink:0;}
+
+        /* ── Duel invite modal ── */
+        #duel-invite-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:900;align-items:center;justify-content:center;}
+        #duel-invite-modal.show{display:flex;}
+        .duel-invite-card{background:#161929;border:1px solid #2a2f4a;border-radius:20px;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+        .duel-invite-card h3{margin:0 0 .5rem;font-size:1.3rem;}
+        .duel-invite-card p{color:#94a3b8;font-size:.9rem;margin:.5rem 0 1.4rem;}
+        .duel-invite-btns{display:flex;gap:.7rem;justify-content:center;}
+        .duel-invite-btns button{padding:.65rem 1.5rem;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;border:none;transition:opacity .2s;}
+        .duel-invite-btns button:hover{opacity:.85;}
+        #duel-accept-btn{background:#4f8ef7;color:#fff;}
+        #duel-reject-btn{background:#2a2f4a;color:#94a3b8;}
     </style>
 </head>
 <body class="app-page">
@@ -469,16 +499,57 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                     </div>
                     <ol class="leaderboard-list">
                         <?php foreach ($leaderboard as $idx => $entry): ?>
+                            <?php $entryId = (int)($entry['id'] ?? 0); $isOnline = isset($onlineLbMap[$entryId]); ?>
                             <li>
                                 <span class="lb-rank"><?= $idx + 1 ?></span>
-                                <div>
+                                <div style="display:flex;align-items:center;gap:.45rem;flex:1;min-width:0;">
+                                    <?php if ($isOnline): ?>
+                                        <span class="lb-online-dot" title="En línea"></span>
+                                    <?php endif; ?>
                                     <strong><?= e($entry['username']) ?></strong>
                                     <span><?= e((string) $entry['niveles_completados']) ?> niveles</span>
                                 </div>
                                 <span class="lb-pts"><?= e((string) $entry['puntos']) ?></span>
+                                <?php if ($isOnline && $entryId !== (int)$userId): ?>
+                                    <button class="lb-challenge-btn"
+                                            data-user-id="<?= $entryId ?>"
+                                            data-username="<?= e($entry['username']) ?>"
+                                            title="Desafiar a <?= e($entry['username']) ?>">
+                                        <i class="fa-solid fa-swords"></i>
+                                    </button>
+                                <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
                     </ol>
+                </section>
+
+                <!-- Online Players (duel challenges) -->
+                <section class="dash-leaderboard online-players-section" style="margin-top:1.2rem;">
+                    <div class="dash-leaderboard__head" style="margin-bottom:.8rem;">
+                        <h2 style="display:flex;align-items:center;gap:.5rem;">
+                            <span class="lb-online-dot" style="width:9px;height:9px;"></span>
+                            Jugadores en línea
+                        </h2>
+                    </div>
+                    <?php if (empty($onlineUsers)): ?>
+                        <p style="color:var(--muted);font-size:.85rem;padding:.5rem 0;">Nadie en línea ahora mismo.</p>
+                    <?php else: ?>
+                        <ul class="online-players-list">
+                            <?php foreach ($onlineUsers as $ou): ?>
+                                <?php if ((int)$ou['id'] === (int)$userId) continue; ?>
+                                <li class="online-player-row">
+                                    <span class="lb-online-dot"></span>
+                                    <span class="online-player-name"><?= e($ou['username']) ?></span>
+                                    <span class="online-player-pts"><?= e((string)($ou['puntos'] ?? 0)) ?> pts</span>
+                                    <button class="lb-challenge-btn lb-challenge-btn--primary"
+                                            data-user-id="<?= (int)$ou['id'] ?>"
+                                            data-username="<?= e($ou['username']) ?>">
+                                        <i class="fa-solid fa-swords"></i> Desafiar
+                                    </button>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
                 </section>
 
                 <!-- Achievement -->
@@ -754,5 +825,121 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         }
     })();
     </script>
+
+<!-- Duel invite modal -->
+<div id="duel-invite-modal" role="dialog" aria-modal="true" aria-labelledby="duel-invite-title">
+  <div class="duel-invite-card">
+    <div style="font-size:2.5rem;margin-bottom:.5rem;">⚔️</div>
+    <h3 id="duel-invite-title">¡Te desafían!</h3>
+    <p id="duel-invite-msg">alguien quiere un duelo de 5 preguntas de Excel.</p>
+    <div class="duel-invite-btns">
+      <button id="duel-accept-btn"><i class="fa-solid fa-check"></i> Aceptar</button>
+      <button id="duel-reject-btn"><i class="fa-solid fa-xmark"></i> Rechazar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+    const CSRF = <?= json_encode(csrf_token()) ?>;
+    let activeDuelIdForInvite = null;
+    let heartbeatSeenDuelId = null;
+    let sentDuelId = null;
+
+    async function post(url, data) {
+        const fd = new FormData();
+        for (const [k, v] of Object.entries(data)) fd.append(k, v);
+        const r = await fetch(url, { method: 'POST', body: fd });
+        return r.json();
+    }
+
+    // Heartbeat: update last_seen + check for pending invites
+    async function heartbeat() {
+        try {
+            const data = await post('api_user_heartbeat.php', { csrf_token: CSRF });
+            if (data.pending_duel_id && data.pending_duel_id !== heartbeatSeenDuelId) {
+                heartbeatSeenDuelId = data.pending_duel_id;
+                activeDuelIdForInvite = data.pending_duel_id;
+                showInviteModal(data.challenger_name || 'Un jugador');
+            }
+            // Redirect challenger when their sent duel becomes active
+            if (data.active_duel_id && data.active_duel_id === sentDuelId) {
+                window.location.href = 'duel.php?id=' + data.active_duel_id;
+            }
+        } catch {}
+    }
+
+    // Challenge button click
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.lb-challenge-btn');
+        if (!btn) return;
+        const targetId   = btn.dataset.userId;
+        const targetName = btn.dataset.username;
+        if (!targetId) return;
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+
+        try {
+            const res = await post('api_duel_create.php', {
+                csrf_token:   CSRF,
+                challenged_id: targetId,
+            });
+            if (res.ok) {
+                sentDuelId = res.duel_id;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Invitación enviada!';
+                btn.style.borderColor = '#22c55e';
+                btn.style.color = '#22c55e';
+            } else {
+                btn.innerHTML = '<i class="fa-solid fa-swords"></i> ' + (res.error || 'Error');
+                btn.disabled = false;
+            }
+        } catch {
+            btn.innerHTML = '<i class="fa-solid fa-swords"></i> Error';
+            btn.disabled = false;
+        }
+    });
+
+    // Invite modal handling
+    function showInviteModal(challengerName) {
+        document.getElementById('duel-invite-msg').textContent =
+            challengerName + ' te desafía a una ronda de 5 preguntas de Excel.';
+        document.getElementById('duel-invite-modal').classList.add('show');
+    }
+
+    document.getElementById('duel-accept-btn').addEventListener('click', async () => {
+        if (!activeDuelIdForInvite) return;
+        const duelId = activeDuelIdForInvite;
+        activeDuelIdForInvite = null;
+        document.getElementById('duel-invite-modal').classList.remove('show');
+
+        const res = await post('api_duel_respond.php', {
+            csrf_token: CSRF,
+            duel_id:    duelId,
+            action:     'accept',
+        });
+        if (res.ok) {
+            window.location.href = 'duel.php?id=' + duelId;
+        }
+    });
+
+    document.getElementById('duel-reject-btn').addEventListener('click', async () => {
+        if (!activeDuelIdForInvite) return;
+        const duelId = activeDuelIdForInvite;
+        activeDuelIdForInvite = null;
+        document.getElementById('duel-invite-modal').classList.remove('show');
+
+        post('api_duel_respond.php', {
+            csrf_token: CSRF,
+            duel_id:    duelId,
+            action:     'reject',
+        }).catch(() => {});
+    });
+
+    // Start heartbeat immediately + every 15s
+    heartbeat();
+    setInterval(heartbeat, 15000);
+})();
+</script>
 </body>
 </html>

@@ -10,6 +10,7 @@ function render_head(string $title): void
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google-adsense-account" content="ca-pub-3986035282338746">
+    <?php if (is_logged_in()): ?><meta name="csrf-token" content="<?= e(csrf_token()) ?>"><?php endif; ?>
     <title><?= e($title) ?></title>
     <link rel="icon" type="image/png" href="assets/img/logo.png">
     <link rel="apple-touch-icon" href="assets/img/logo.png">

@@ -452,7 +452,7 @@ function level_is_unlocked(array $progress, int $levelNumber): bool
 function fetch_leaderboard(int $limit = 15): array
 {
     $stmt = getPDO()->prepare(
-        'SELECT u.username, p.puntos, p.niveles_completados, p.nivel_actual
+        'SELECT u.id, u.username, p.puntos, p.niveles_completados, p.nivel_actual
          FROM progress p
          INNER JOIN users u ON u.id = p.user_id
          ORDER BY p.puntos DESC, p.niveles_completados DESC, p.updated_at ASC
@@ -1367,4 +1367,176 @@ function render_excel_tables(array $tables, string $targetCell): string
     }
 
     return (string) ob_get_clean();
+}
+
+// ─────────────────────────────────────────────────────────────
+// DUEL (PvP) HELPERS
+// ─────────────────────────────────────────────────────────────
+
+function update_last_seen(int $userId): void
+{
+    $pdo = get_pdo();
+    $pdo->prepare('UPDATE users SET last_seen = NOW() WHERE id = ?')->execute([$userId]);
+}
+
+function fetch_online_users(int $excludeUserId, int $limit = 20): array
+{
+    $pdo = get_pdo();
+    $stmt = $pdo->prepare(
+        'SELECT u.id, u.username, p.puntos, p.niveles_completados
+         FROM users u
+         LEFT JOIN progress p ON p.user_id = u.id
+         WHERE u.id != ?
+           AND u.last_seen >= NOW() - INTERVAL 3 MINUTE
+         ORDER BY p.puntos DESC
+         LIMIT ?'
+    );
+    $stmt->execute([$excludeUserId, $limit]);
+    return $stmt->fetchAll();
+}
+
+function fetch_duel(int $duelId): array|null
+{
+    $pdo = get_pdo();
+    $stmt = $pdo->prepare(
+        'SELECT d.*, uc.username AS challenger_name, ud.username AS challenged_name
+         FROM duels d
+         JOIN users uc ON uc.id = d.challenger_id
+         JOIN users ud ON ud.id = d.challenged_id
+         WHERE d.id = ?'
+    );
+    $stmt->execute([$duelId]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+function get_duel_current_question(int $duelId, int $questionIdx): array|null
+{
+    $pdo = get_pdo();
+    $stmt = $pdo->prepare(
+        'SELECT dq.id AS duel_question_id, dq.question_order, l.*
+         FROM duel_questions dq
+         JOIN levels l ON l.id = dq.level_id
+         WHERE dq.duel_id = ? AND dq.question_order = ?'
+    );
+    $stmt->execute([$duelId, $questionIdx]);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+function get_duel_questions(int $duelId): array
+{
+    $pdo = get_pdo();
+    $stmt = $pdo->prepare(
+        'SELECT dq.*, l.titulo, l.categoria, l.dificultad
+         FROM duel_questions dq
+         JOIN levels l ON l.id = dq.level_id
+         WHERE dq.duel_id = ?
+         ORDER BY dq.question_order ASC'
+    );
+    $stmt->execute([$duelId]);
+    return $stmt->fetchAll();
+}
+
+function award_duel_points(int $userId, int $points): void
+{
+    if ($points <= 0) return;
+    $pdo = get_pdo();
+    $pdo->prepare('UPDATE progress SET puntos = puntos + ? WHERE user_id = ?')
+        ->execute([$points, $userId]);
+}
+
+function get_pending_duel_for_user(int $userId): array|null
+{
+    $pdo = get_pdo();
+    $stmt = $pdo->prepare(
+        'SELECT d.id, u.username AS challenger_name
+         FROM duels d
+         JOIN users u ON u.id = d.challenger_id
+         WHERE d.challenged_id = ? AND d.status = ?
+         ORDER BY d.created_at DESC
+         LIMIT 1'
+    );
+    $stmt->execute([$userId, 'pending']);
+    $row = $stmt->fetch();
+    return $row ?: null;
+}
+
+/**
+ * Advance duel timeout: if current question has been open > 20 s and neither
+ * player answered correctly, skip to the next question.
+ * Returns the (possibly updated) duel row.
+ */
+function maybe_advance_duel_timeout(array $duel): array
+{
+    if ($duel['status'] !== 'active') return $duel;
+    if ($duel['current_question_idx'] >= 5) return $duel;
+    if ($duel['question_started_at'] === null) return $duel;
+
+    $started = strtotime($duel['question_started_at']);
+    $elapsed = microtime(true) - $started;
+    if ($elapsed < 20) return $duel;
+
+    $pdo = get_pdo();
+
+    // Check if round was already won (someone answered correctly)
+    $dq = get_duel_current_question((int) $duel['id'], (int) $duel['current_question_idx']);
+    if ($dq) {
+        $stmt = $pdo->prepare(
+            'SELECT COUNT(*) FROM duel_answers WHERE question_id = ? AND is_correct = 1'
+        );
+        $stmt->execute([$dq['duel_question_id']]);
+        if ((int) $stmt->fetchColumn() > 0) return $duel; // already resolved
+    }
+
+    $nextIdx = (int) $duel['current_question_idx'] + 1;
+
+    if ($nextIdx >= 5) {
+        $duel = finish_duel((int) $duel['id'], $duel);
+    } else {
+        $pdo->prepare(
+            'UPDATE duels SET current_question_idx = ?, question_started_at = NOW(3) WHERE id = ?'
+        )->execute([$nextIdx, $duel['id']]);
+        $duel['current_question_idx'] = $nextIdx;
+        $duel['question_started_at']  = date('Y-m-d H:i:s.000');
+    }
+    return $duel;
+}
+
+function finish_duel(int $duelId, array $duel): array
+{
+    $pdo = get_pdo();
+    $cs = (int) $duel['challenger_score'];
+    $ds = (int) $duel['challenged_score'];
+
+    if ($cs > $ds) {
+        $winnerId = $duel['challenger_id'];
+    } elseif ($ds > $cs) {
+        $winnerId = $duel['challenged_id'];
+    } else {
+        $winnerId = null;
+    }
+
+    // Atomic: only finishes if still active (prevents double-awarding)
+    $stmt = $pdo->prepare(
+        'UPDATE duels SET status = ?, winner_id = ?, finished_at = NOW(), current_question_idx = 5
+         WHERE id = ? AND status = \'active\''
+    );
+    $stmt->execute(['finished', $winnerId, $duelId]);
+
+    if ($stmt->rowCount() === 0) {
+        // Already finished by another concurrent request
+        return fetch_duel($duelId) ?? $duel;
+    }
+
+    if ($winnerId !== null) {
+        award_duel_points((int) $winnerId, 20);
+    } else {
+        award_duel_points((int) $duel['challenger_id'], 10);
+        award_duel_points((int) $duel['challenged_id'], 10);
+    }
+
+    $duel['status']    = 'finished';
+    $duel['winner_id'] = $winnerId;
+    return $duel;
 }
