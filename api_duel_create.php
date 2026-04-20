@@ -23,7 +23,7 @@ if ($challengedId === 0 || $challengedId === $userId) {
     exit;
 }
 
-$pdo = get_pdo();
+$pdo = getPDO();
 
 // Verify target is online
 $stmt = $pdo->prepare(

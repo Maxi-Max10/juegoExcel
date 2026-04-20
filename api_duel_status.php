@@ -78,7 +78,7 @@ if ($duel['status'] === 'active' && (int) $duel['current_question_idx'] < 5) {
         ];
 
         // Has this user already answered this question?
-        $pdo   = get_pdo();
+        $pdo   = getPDO();
         $stmt  = $pdo->prepare(
             'SELECT is_correct FROM duel_answers WHERE question_id = ? AND user_id = ?'
         );
@@ -89,7 +89,7 @@ if ($duel['status'] === 'active' && (int) $duel['current_question_idx'] < 5) {
 }
 
 // Build round results for history
-$pdo  = get_pdo();
+$pdo  = getPDO();
 $qs   = get_duel_questions($duelId);
 foreach ($qs as $qRow) {
     $stmt = $pdo->prepare(

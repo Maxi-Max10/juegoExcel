@@ -24,7 +24,7 @@ if ($duelId === 0 || !in_array($action, ['accept', 'reject'], true)) {
     exit;
 }
 
-$pdo  = get_pdo();
+$pdo  = getPDO();
 $duel = fetch_duel($duelId);
 
 if (!$duel || (int) $duel['challenged_id'] !== $userId || $duel['status'] !== 'pending') {

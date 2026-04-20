@@ -1375,13 +1375,13 @@ function render_excel_tables(array $tables, string $targetCell): string
 
 function update_last_seen(int $userId): void
 {
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $pdo->prepare('UPDATE users SET last_seen = NOW() WHERE id = ?')->execute([$userId]);
 }
 
 function fetch_online_users(int $excludeUserId, int $limit = 20): array
 {
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $stmt = $pdo->prepare(
         'SELECT u.id, u.username, p.puntos, p.niveles_completados
          FROM users u
@@ -1397,7 +1397,7 @@ function fetch_online_users(int $excludeUserId, int $limit = 20): array
 
 function fetch_duel(int $duelId): array|null
 {
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $stmt = $pdo->prepare(
         'SELECT d.*, uc.username AS challenger_name, ud.username AS challenged_name
          FROM duels d
@@ -1412,7 +1412,7 @@ function fetch_duel(int $duelId): array|null
 
 function get_duel_current_question(int $duelId, int $questionIdx): array|null
 {
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $stmt = $pdo->prepare(
         'SELECT dq.id AS duel_question_id, dq.question_order, l.*
          FROM duel_questions dq
@@ -1426,7 +1426,7 @@ function get_duel_current_question(int $duelId, int $questionIdx): array|null
 
 function get_duel_questions(int $duelId): array
 {
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $stmt = $pdo->prepare(
         'SELECT dq.*, l.titulo, l.categoria, l.dificultad
          FROM duel_questions dq
@@ -1441,14 +1441,14 @@ function get_duel_questions(int $duelId): array
 function award_duel_points(int $userId, int $points): void
 {
     if ($points <= 0) return;
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $pdo->prepare('UPDATE progress SET puntos = puntos + ? WHERE user_id = ?')
         ->execute([$points, $userId]);
 }
 
 function get_pending_duel_for_user(int $userId): array|null
 {
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $stmt = $pdo->prepare(
         'SELECT d.id, u.username AS challenger_name
          FROM duels d
@@ -1477,7 +1477,7 @@ function maybe_advance_duel_timeout(array $duel): array
     $elapsed = microtime(true) - $started;
     if ($elapsed < 20) return $duel;
 
-    $pdo = get_pdo();
+    $pdo = getPDO();
 
     // Check if round was already won (someone answered correctly)
     $dq = get_duel_current_question((int) $duel['id'], (int) $duel['current_question_idx']);
@@ -1505,7 +1505,7 @@ function maybe_advance_duel_timeout(array $duel): array
 
 function finish_duel(int $duelId, array $duel): array
 {
-    $pdo = get_pdo();
+    $pdo = getPDO();
     $cs = (int) $duel['challenger_score'];
     $ds = (int) $duel['challenged_score'];
 

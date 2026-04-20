@@ -25,7 +25,7 @@ if ($duelId === 0 || $duelQuestionId === 0 || $formula === '') {
     exit;
 }
 
-$pdo  = get_pdo();
+$pdo  = getPDO();
 $duel = fetch_duel($duelId);
 
 if (!$duel || $duel['status'] !== 'active') {

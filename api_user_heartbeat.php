@@ -18,7 +18,7 @@ update_last_seen($userId);
 $pendingDuel = get_pending_duel_for_user($userId);
 
 // Check for an active duel the user belongs to (challenger whose invite was accepted, or either player)
-$pdo  = get_pdo();
+$pdo  = getPDO();
 $stmt = $pdo->prepare(
     'SELECT id FROM duels
      WHERE status = ? AND (challenger_id = ? OR challenged_id = ?)
