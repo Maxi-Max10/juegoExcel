@@ -102,7 +102,7 @@ try {
             } else {
                 $pdo->prepare(
                     "UPDATE duels SET {$scoreCol} = {$scoreCol} + 1,
-                     current_question_idx = ?, question_started_at = NOW(3) WHERE id = ?"
+                     current_question_idx = ?, question_started_at = NOW() WHERE id = ?"
                 )->execute([$nextIdx, $duelId]);
                 $pdo->commit();
             }

@@ -51,7 +51,7 @@ try {
     }
 
     $pdo->prepare(
-        'UPDATE duels SET status = ?, question_started_at = NOW(3) WHERE id = ?'
+        'UPDATE duels SET status = ?, question_started_at = NOW() WHERE id = ?'
     )->execute(['active', $duelId]);
 
     $pdo->commit();

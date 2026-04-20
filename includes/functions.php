@@ -1473,11 +1473,17 @@ function maybe_advance_duel_timeout(array $duel): array
     if ($duel['current_question_idx'] >= 5) return $duel;
     if ($duel['question_started_at'] === null) return $duel;
 
-    $started = strtotime($duel['question_started_at']);
-    $elapsed = microtime(true) - $started;
-    if ($elapsed < 20) return $duel;
-
     $pdo = getPDO();
+
+    // Use DB-side time comparison to avoid PHP/MySQL timezone mismatches
+    $stmt = $pdo->prepare(
+        'SELECT TIMESTAMPDIFF(SECOND, question_started_at, NOW()) AS elapsed
+         FROM duels WHERE id = ?'
+    );
+    $stmt->execute([$duel['id']]);
+    $elapsed = (int) $stmt->fetchColumn();
+
+    if ($elapsed < 20) return $duel;
 
     // Check if round was already won (someone answered correctly)
     $dq = get_duel_current_question((int) $duel['id'], (int) $duel['current_question_idx']);
@@ -1495,10 +1501,9 @@ function maybe_advance_duel_timeout(array $duel): array
         $duel = finish_duel((int) $duel['id'], $duel);
     } else {
         $pdo->prepare(
-            'UPDATE duels SET current_question_idx = ?, question_started_at = NOW(3) WHERE id = ?'
+            'UPDATE duels SET current_question_idx = ?, question_started_at = NOW() WHERE id = ?'
         )->execute([$nextIdx, $duel['id']]);
         $duel['current_question_idx'] = $nextIdx;
-        $duel['question_started_at']  = date('Y-m-d H:i:s.000');
     }
     return $duel;
 }

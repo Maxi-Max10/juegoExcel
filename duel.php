@@ -229,8 +229,13 @@ body{background:var(--duel-bg);min-height:100vh;display:flex;flex-direction:colu
       showWaitingForRival();
     }
 
-    // Keep timer in sync
+    // Keep timer in sync from server (always sync, not just on big drift)
     updateTimer(data.question_time_left);
+
+    // Show waiting state if user already answered this question
+    if (answered && q.order === lastQuestionIdx) {
+      showWaitState(data.question_time_left);
+    }
 
     // Round history
     renderHistory(data.round_results, MY_ROLE === 'challenger' ? data.challenger_name : data.challenged_name,
@@ -238,6 +243,7 @@ body{background:var(--duel-bg);min-height:100vh;display:flex;flex-direction:colu
   }
 
   function renderQuestion(q, timeLeft) {
+    document.getElementById('wait-state-msg')?.remove();
     document.getElementById('q-difficulty').textContent = q.dificultad;
     document.getElementById('q-category').textContent   = q.categoria;
     document.getElementById('q-round').textContent      = q.order + 1;
@@ -295,11 +301,22 @@ body{background:var(--duel-bg);min-height:100vh;display:flex;flex-direction:colu
   }
 
   function showWaitingForRival() {
-    const container = document.getElementById('q-answers');
-    const msg = document.createElement('p');
-    msg.style.cssText = 'color:#64748b;font-size:.85rem;margin-top:.8rem;';
-    msg.textContent = 'Esperando respuesta del rival…';
-    container.appendChild(msg);
+    // Handled by showWaitState on next poll
+  }
+
+  function showWaitState(secondsLeft) {
+    let waitMsg = document.getElementById('wait-state-msg');
+    if (!waitMsg) {
+      waitMsg = document.createElement('div');
+      waitMsg.id = 'wait-state-msg';
+      waitMsg.style.cssText = 'margin-top:.8rem;padding:.7rem 1rem;border-radius:10px;background:#1e2540;color:#94a3b8;font-size:.88rem;display:flex;align-items:center;gap:.6rem;';
+      document.getElementById('q-answers').after(waitMsg);
+    }
+    const icon = secondsLeft === 0 ? '⏳' : '⌛';
+    const msg  = secondsLeft === 0
+      ? 'Tiempo agotado — cargando siguiente pregunta…'
+      : `Esperando al rival o al tiempo (${secondsLeft}s restantes)`;
+    waitMsg.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
   }
 
   let timerTimeLeft = 20;
@@ -319,12 +336,11 @@ body{background:var(--duel-bg);min-height:100vh;display:flex;flex-direction:colu
   }
 
   function updateTimer(seconds) {
-    if (Math.abs(timerTimeLeft - seconds) > 2) {
-      timerTimeLeft = seconds;
-      const fill = document.getElementById('timer-fill');
-      fill.style.width = (seconds / 20 * 100) + '%';
-      fill.classList.toggle('urgent', seconds <= 6);
-    }
+    // Always sync from server to avoid drift
+    timerTimeLeft = seconds;
+    const fill = document.getElementById('timer-fill');
+    fill.style.width = (seconds / 20 * 100) + '%';
+    fill.classList.toggle('urgent', seconds <= 6);
   }
 
   function updatePips(roundResults, currentIdx, status) {

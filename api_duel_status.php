@@ -58,8 +58,13 @@ if ($duel['status'] === 'active' && (int) $duel['current_question_idx'] < 5) {
     $q = get_duel_current_question($duelId, $currentIdx);
 
     if ($q) {
-        $timeElapsed     = microtime(true) - strtotime($duel['question_started_at']);
-        $response['question_time_left'] = max(0, (int) round(20 - $timeElapsed));
+        // DB-side time to avoid PHP/MySQL timezone mismatches
+        $tStmt = getPDO()->prepare(
+            'SELECT GREATEST(0, 20 - TIMESTAMPDIFF(SECOND, question_started_at, NOW())) AS time_left
+             FROM duels WHERE id = ?'
+        );
+        $tStmt->execute([$duelId]);
+        $response['question_time_left'] = (int) $tStmt->fetchColumn();
 
         // Build answers (1 correct + 3 distractors)
         $distractors = generate_distractors($q);
