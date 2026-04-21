@@ -272,27 +272,337 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         @keyframes onlinePulse{0%,100%{box-shadow:0 0 4px #22c55e}50%{box-shadow:0 0 10px #22c55e,0 0 18px rgba(34,197,94,.3)}}
         .lb-challenge-btn{background:none;border:1.5px solid #4f8ef7;color:#4f8ef7;border-radius:8px;padding:.2rem .55rem;font-size:.75rem;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap;flex-shrink:0}
         .lb-challenge-btn:hover{background:#4f8ef7;color:#fff}
-        .lb-challenge-btn--primary{padding:.3rem .75rem;font-size:.82rem}
         .leaderboard-list li{display:flex;align-items:center;gap:.5rem;}
 
-        /* ── Online players section ── */
-        .online-players-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.4rem;}
-        .online-player-row{display:flex;align-items:center;gap:.5rem;padding:.5rem .4rem;border-radius:10px;transition:background .2s;}
-        .online-player-row:hover{background:rgba(79,142,247,.06);}
-        .online-player-name{flex:1;font-weight:600;font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-        .online-player-pts{font-size:.8rem;color:var(--muted);flex-shrink:0;}
+        /* ══════════════════════════════════════════════
+           ONLINE PLAYERS — REDISEÑO DESTACADO
+        ══════════════════════════════════════════════ */
+        .online-section {
+            position: relative;
+            padding: 22px 24px 20px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, rgba(10,30,18,.95), rgba(10,22,14,.98));
+            border: 1.5px solid rgba(34,197,94,.35);
+            box-shadow: 0 0 0 1px rgba(34,197,94,.08), 0 8px 32px rgba(0,0,0,.3), 0 0 40px rgba(34,197,94,.06);
+            overflow: hidden;
+            animation: fadeSlideUp .7s .62s cubic-bezier(.22,1,.36,1) both;
+            transition: border-color .4s, box-shadow .4s;
+        }
+        .online-section:hover {
+            border-color: rgba(34,197,94,.6);
+            box-shadow: 0 0 0 1px rgba(34,197,94,.15), 0 12px 40px rgba(0,0,0,.35), 0 0 60px rgba(34,197,94,.1);
+        }
+        /* Animated green glow background */
+        .online-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(34,197,94,.07) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        /* Top shimmer line */
+        .online-section::after {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(34,197,94,.6), rgba(52,211,153,.8), rgba(34,197,94,.6), transparent);
+            animation: onlineShimmer 3s ease-in-out infinite;
+        }
+        @keyframes onlineShimmer {
+            0%,100% { opacity: .5; }
+            50%      { opacity: 1; }
+        }
 
-        /* ── Duel invite modal ── */
-        #duel-invite-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:900;align-items:center;justify-content:center;}
-        #duel-invite-modal.show{display:flex;}
-        .duel-invite-card{background:#161929;border:1px solid #2a2f4a;border-radius:20px;padding:2rem;max-width:380px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5);}
-        .duel-invite-card h3{margin:0 0 .5rem;font-size:1.3rem;}
-        .duel-invite-card p{color:#94a3b8;font-size:.9rem;margin:.5rem 0 1.4rem;}
-        .duel-invite-btns{display:flex;gap:.7rem;justify-content:center;}
-        .duel-invite-btns button{padding:.65rem 1.5rem;border-radius:10px;font-size:.95rem;font-weight:700;cursor:pointer;border:none;transition:opacity .2s;}
-        .duel-invite-btns button:hover{opacity:.85;}
-        #duel-accept-btn{background:#4f8ef7;color:#fff;}
-        #duel-reject-btn{background:#2a2f4a;color:#94a3b8;}
+        /* Header row */
+        .online-section__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .online-section__title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -.02em;
+            margin: 0;
+        }
+        /* Live indicator ring */
+        .online-live-ring {
+            position: relative;
+            width: 14px; height: 14px;
+            flex-shrink: 0;
+        }
+        .online-live-ring__dot {
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+            animation: liveRingDot 1.5s ease-in-out infinite;
+        }
+        .online-live-ring__pulse {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1.5px solid #22c55e;
+            animation: liveRingPulse 1.5s ease-out infinite;
+        }
+        @keyframes liveRingDot  { 0%,100%{opacity:1} 50%{opacity:.6} }
+        @keyframes liveRingPulse { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.2);opacity:0} }
+
+        /* Live badge */
+        .online-live-badge {
+            font-size: .62rem;
+            font-weight: 900;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: #22c55e;
+            background: rgba(34,197,94,.12);
+            border: 1px solid rgba(34,197,94,.3);
+            border-radius: 999px;
+            padding: .18rem .55rem;
+            animation: liveBadgePulse 2s ease-in-out infinite;
+        }
+        @keyframes liveBadgePulse { 0%,100%{border-color:rgba(34,197,94,.3)} 50%{border-color:rgba(34,197,94,.7);box-shadow:0 0 8px rgba(34,197,94,.2)} }
+
+        /* Count pill */
+        .online-count-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34,197,94,.15);
+            border: 1px solid rgba(34,197,94,.3);
+            border-radius: 999px;
+            padding: .28rem .8rem;
+            font-size: .78rem;
+            font-weight: 800;
+            color: #4ade80;
+            letter-spacing: .04em;
+        }
+        .online-count-pill i { font-size: .7rem; }
+
+        /* Player list */
+        .online-players-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            z-index: 1;
+        }
+        .online-player-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(34,197,94,.08);
+            transition: background .2s, border-color .2s, transform .2s;
+            animation: onlineRowIn .4s cubic-bezier(.22,1,.36,1) both;
+        }
+        .online-player-row:nth-child(1){animation-delay:.05s}
+        .online-player-row:nth-child(2){animation-delay:.1s}
+        .online-player-row:nth-child(3){animation-delay:.15s}
+        .online-player-row:nth-child(4){animation-delay:.2s}
+        .online-player-row:nth-child(5){animation-delay:.25s}
+        @keyframes onlineRowIn { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:none} }
+        .online-player-row:hover {
+            background: rgba(34,197,94,.07);
+            border-color: rgba(34,197,94,.25);
+            transform: translateX(3px);
+        }
+
+        /* Avatar */
+        .online-player-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #166534, #15803d);
+            border: 2px solid rgba(34,197,94,.5);
+            box-shadow: 0 0 10px rgba(34,197,94,.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .82rem;
+            font-weight: 900;
+            color: #bbf7d0;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            position: relative;
+        }
+        .online-player-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; right: -1px;
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: #22c55e;
+            border: 2px solid rgba(10,30,18,.98);
+            box-shadow: 0 0 6px #22c55e;
+            animation: onlinePulse 2s ease-in-out infinite;
+        }
+
+        /* Player info */
+        .online-player-info { flex: 1; min-width: 0; }
+        .online-player-name {
+            font-weight: 700;
+            font-size: .88rem;
+            color: #e2e8f0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: block;
+            line-height: 1.2;
+        }
+        .online-player-pts {
+            font-size: .72rem;
+            color: #4ade80;
+            font-weight: 600;
+            letter-spacing: .04em;
+        }
+
+        /* Challenge button */
+        .online-challenge-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: linear-gradient(135deg, rgba(79,142,247,.15), rgba(79,142,247,.08));
+            border: 1.5px solid rgba(79,142,247,.4);
+            color: #60a5fa;
+            border-radius: 10px;
+            padding: .35rem .75rem;
+            font-size: .78rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background .2s, border-color .2s, transform .15s, box-shadow .2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: .02em;
+            font-family: inherit;
+        }
+        .online-challenge-btn:hover:not(:disabled) {
+            background: linear-gradient(135deg, rgba(79,142,247,.35), rgba(79,142,247,.2));
+            border-color: rgba(79,142,247,.8);
+            color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 0 16px rgba(79,142,247,.3);
+        }
+        .online-challenge-btn:disabled { opacity: .6; cursor: default; }
+        .online-challenge-btn i { font-size: .72rem; }
+
+        /* Empty state */
+        .online-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 0 8px;
+            color: rgba(74,222,128,.35);
+            font-size: .85rem;
+            position: relative;
+            z-index: 1;
+        }
+        .online-empty i { font-size: 2rem; }
+        .online-empty span { color: #475569; font-size: .82rem; }
+
+        /* ── Duel invite modal — REDESIGNED ── */
+        #duel-invite-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.75);
+            z-index: 900;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+        }
+        #duel-invite-modal.show { display: flex; }
+        .duel-invite-card {
+            background: linear-gradient(135deg, rgba(13,17,30,.98), rgba(8,12,24,.99));
+            border: 1.5px solid rgba(79,142,247,.4);
+            border-radius: 24px;
+            padding: 2.2rem 2rem;
+            max-width: 400px;
+            width: 92%;
+            text-align: center;
+            box-shadow: 0 0 0 1px rgba(79,142,247,.08), 0 24px 80px rgba(0,0,0,.7), 0 0 60px rgba(79,142,247,.1);
+            animation: inviteCardIn .5s cubic-bezier(.22,.61,.36,1);
+            position: relative;
+            overflow: hidden;
+        }
+        @keyframes inviteCardIn { from{opacity:0;transform:scale(.85) translateY(20px)} to{opacity:1;transform:none} }
+        .duel-invite-card::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto;
+            height: 1.5px;
+            background: linear-gradient(90deg, transparent, rgba(79,142,247,.8), rgba(129,140,248,.9), rgba(79,142,247,.8), transparent);
+        }
+        .duel-invite-icon {
+            font-size: 3.5rem;
+            margin-bottom: .8rem;
+            display: block;
+            animation: inviteIconBounce .6s .1s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes inviteIconBounce { 0%{transform:scale(0) rotate(-20deg)} 60%{transform:scale(1.2) rotate(5deg)} 100%{transform:scale(1) rotate(0)} }
+        .duel-invite-card h3 {
+            margin: 0 0 .5rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .duel-invite-card p {
+            color: #64748b;
+            font-size: .92rem;
+            margin: .4rem 0 1.6rem;
+            line-height: 1.5;
+        }
+        .duel-invite-card p strong { color: #e2e8f0; }
+        .duel-invite-btns { display: flex; gap: .75rem; justify-content: center; }
+        #duel-accept-btn {
+            flex: 1;
+            padding: .8rem 1.4rem;
+            border-radius: 12px;
+            font-size: .95rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            background: linear-gradient(135deg, #4f8ef7, #7c3aed);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(79,142,247,.4);
+            transition: transform .2s, box-shadow .2s;
+            font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        #duel-accept-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(79,142,247,.5); }
+        #duel-reject-btn {
+            padding: .8rem 1.4rem;
+            border-radius: 12px;
+            font-size: .95rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid rgba(100,116,139,.3);
+            background: rgba(255,255,255,.04);
+            color: #64748b;
+            transition: background .2s, color .2s;
+            font-family: inherit;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        #duel-reject-btn:hover { background: rgba(255,255,255,.08); color: #94a3b8; }
     </style>
 </head>
 <body class="app-page">
@@ -491,6 +801,53 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 
             <!-- Sidebar -->
             <aside class="dash-sidebar">
+
+                <!-- ★ ONLINE PLAYERS — DESTACADO ★ -->
+                <?php $onlineCount = count(array_filter($onlineUsers, fn($ou) => (int)$ou['id'] !== (int)$userId)); ?>
+                <section class="online-section" data-reveal>
+                    <div class="online-section__head">
+                        <h2 class="online-section__title">
+                            <span class="online-live-ring">
+                                <span class="online-live-ring__dot"></span>
+                                <span class="online-live-ring__pulse"></span>
+                            </span>
+                            Jugadores en línea
+                            <span class="online-live-badge">LIVE</span>
+                        </h2>
+                        <span class="online-count-pill">
+                            <i class="fa-solid fa-circle-dot"></i>
+                            <?= $onlineCount ?> <?= $onlineCount === 1 ? 'activo' : 'activos' ?>
+                        </span>
+                    </div>
+
+                    <?php if ($onlineCount === 0): ?>
+                        <div class="online-empty">
+                            <i class="fa-regular fa-circle"></i>
+                            <span>Nadie más en línea ahora mismo.</span>
+                        </div>
+                    <?php else: ?>
+                        <ul class="online-players-list">
+                            <?php foreach ($onlineUsers as $ou):
+                                if ((int)$ou['id'] === (int)$userId) continue;
+                                $initial = mb_strtoupper(mb_substr($ou['username'], 0, 1));
+                            ?>
+                            <li class="online-player-row">
+                                <div class="online-player-avatar"><?= e($initial) ?></div>
+                                <div class="online-player-info">
+                                    <span class="online-player-name"><?= e($ou['username']) ?></span>
+                                    <span class="online-player-pts"><i class="fa-solid fa-bolt" style="font-size:.65rem;"></i> <?= e((string)($ou['puntos'] ?? 0)) ?> pts</span>
+                                </div>
+                                <button class="online-challenge-btn lb-challenge-btn"
+                                        data-user-id="<?= (int)$ou['id'] ?>"
+                                        data-username="<?= e($ou['username']) ?>">
+                                    <i class="fa-solid fa-swords"></i> Desafiar
+                                </button>
+                            </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+                </section>
+
                 <!-- Leaderboard -->
                 <section class="dash-leaderboard" data-reveal>
                     <div class="dash-leaderboard__head">
@@ -521,35 +878,6 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
                             </li>
                         <?php endforeach; ?>
                     </ol>
-                </section>
-
-                <!-- Online Players (duel challenges) -->
-                <section class="dash-leaderboard online-players-section" style="margin-top:1.2rem;">
-                    <div class="dash-leaderboard__head" style="margin-bottom:.8rem;">
-                        <h2 style="display:flex;align-items:center;gap:.5rem;">
-                            <span class="lb-online-dot" style="width:9px;height:9px;"></span>
-                            Jugadores en línea
-                        </h2>
-                    </div>
-                    <?php if (empty($onlineUsers)): ?>
-                        <p style="color:var(--muted);font-size:.85rem;padding:.5rem 0;">Nadie en línea ahora mismo.</p>
-                    <?php else: ?>
-                        <ul class="online-players-list">
-                            <?php foreach ($onlineUsers as $ou): ?>
-                                <?php if ((int)$ou['id'] === (int)$userId) continue; ?>
-                                <li class="online-player-row">
-                                    <span class="lb-online-dot"></span>
-                                    <span class="online-player-name"><?= e($ou['username']) ?></span>
-                                    <span class="online-player-pts"><?= e((string)($ou['puntos'] ?? 0)) ?> pts</span>
-                                    <button class="lb-challenge-btn lb-challenge-btn--primary"
-                                            data-user-id="<?= (int)$ou['id'] ?>"
-                                            data-username="<?= e($ou['username']) ?>">
-                                        <i class="fa-solid fa-swords"></i> Desafiar
-                                    </button>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endif; ?>
                 </section>
 
                 <!-- Achievement -->
@@ -829,11 +1157,11 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 <!-- Duel invite modal -->
 <div id="duel-invite-modal" role="dialog" aria-modal="true" aria-labelledby="duel-invite-title">
   <div class="duel-invite-card">
-    <div style="font-size:2.5rem;margin-bottom:.5rem;">⚔️</div>
+    <span class="duel-invite-icon">⚔️</span>
     <h3 id="duel-invite-title">¡Te desafían!</h3>
-    <p id="duel-invite-msg">alguien quiere un duelo de 5 preguntas de Excel.</p>
+    <p id="duel-invite-msg"><strong>Alguien</strong> quiere un duelo de 5 preguntas de Excel.</p>
     <div class="duel-invite-btns">
-      <button id="duel-accept-btn"><i class="fa-solid fa-check"></i> Aceptar</button>
+      <button id="duel-accept-btn"><i class="fa-solid fa-check"></i> Aceptar duelo</button>
       <button id="duel-reject-btn"><i class="fa-solid fa-xmark"></i> Rechazar</button>
     </div>
   </div>
@@ -902,8 +1230,8 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 
     // Invite modal handling
     function showInviteModal(challengerName) {
-        document.getElementById('duel-invite-msg').textContent =
-            challengerName + ' te desafía a una ronda de 5 preguntas de Excel.';
+        document.getElementById('duel-invite-msg').innerHTML =
+            '<strong>' + challengerName + '</strong> te desafía a una ronda de 5 preguntas de Excel.';
         document.getElementById('duel-invite-modal').classList.add('show');
     }
 
