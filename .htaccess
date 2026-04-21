@@ -1,0 +1,85 @@
+# ═══════════════════════════════════════════════════════
+#  Excel Snake — Performance Configuration
+# ═══════════════════════════════════════════════════════
+
+# ── Gzip Compression ──────────────────────────────────
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE font/woff
+    AddOutputFilterByType DEFLATE font/woff2
+    # Avoid double-compressing already-compressed formats
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|webp|gz|zip|br)$ no-gzip dont-vary
+</IfModule>
+
+# ── Browser Caching ────────────────────────────────────
+<IfModule mod_expires.c>
+    ExpiresActive On
+    # Static assets — cache 1 year (fingerprinted/versioned files)
+    ExpiresByType text/css                  "access plus 1 year"
+    ExpiresByType application/javascript    "access plus 1 year"
+    ExpiresByType image/png                 "access plus 1 year"
+    ExpiresByType image/jpeg                "access plus 1 year"
+    ExpiresByType image/gif                 "access plus 1 year"
+    ExpiresByType image/svg+xml             "access plus 1 year"
+    ExpiresByType image/x-icon              "access plus 1 year"
+    ExpiresByType image/webp                "access plus 1 year"
+    ExpiresByType font/woff                 "access plus 1 year"
+    ExpiresByType font/woff2                "access plus 1 year"
+    ExpiresByType application/font-woff     "access plus 1 year"
+    ExpiresByType application/font-woff2    "access plus 1 year"
+    # HTML — short cache (dynamic content)
+    ExpiresByType text/html                 "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Static assets — immutable cache
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|webp|woff|woff2|ttf|otf)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+        Header unset ETag
+    </FilesMatch>
+    # PHP pages — no cache
+    <FilesMatch "\.php$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+    # Security headers (bonus)
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    # Keep connections alive
+    Header set Connection "keep-alive"
+</IfModule>
+
+# ── ETags — disable (use expires instead) ─────────────
+FileETag None
+
+# ── Keep-Alive ─────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header set Keep-Alive "timeout=5, max=100"
+</IfModule>
+
+# ── PHP output buffering ───────────────────────────────
+<IfModule mod_php.c>
+    php_value output_buffering 4096
+    php_flag zlib.output_compression on
+</IfModule>
+<IfModule mod_php8.c>
+    php_value output_buffering 4096
+    php_flag zlib.output_compression on
+</IfModule>
+
+# ── Redirect to HTTPS (if applicable) ─────────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Uncomment to force HTTPS:
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>

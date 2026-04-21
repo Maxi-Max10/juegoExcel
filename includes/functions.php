@@ -299,8 +299,13 @@ function get_user_progress(int $userId): array
 
 function get_all_levels(): array
 {
-    $stmt = getPDO()->query('SELECT * FROM levels ORDER BY numero ASC');
-    return $stmt->fetchAll();
+    static $cache = null;
+    if ($cache !== null) return $cache;
+    $stmt = getPDO()->query(
+        'SELECT id, numero, dificultad, categoria, titulo FROM levels ORDER BY numero ASC'
+    );
+    $cache = $stmt->fetchAll();
+    return $cache;
 }
 
 function get_level_by_number(int $number): ?array
@@ -451,6 +456,8 @@ function level_is_unlocked(array $progress, int $levelNumber): bool
 
 function fetch_leaderboard(int $limit = 15): array
 {
+    static $cache = [];
+    if (isset($cache[$limit])) return $cache[$limit];
     $stmt = getPDO()->prepare(
         'SELECT u.id, u.username, p.puntos, p.niveles_completados, p.nivel_actual
          FROM progress p
@@ -460,8 +467,8 @@ function fetch_leaderboard(int $limit = 15): array
     );
     $stmt->bindValue(1, $limit, PDO::PARAM_INT);
     $stmt->execute();
-
-    return $stmt->fetchAll();
+    $cache[$limit] = $stmt->fetchAll();
+    return $cache[$limit];
 }
 
 function level_band_title(int $number): string

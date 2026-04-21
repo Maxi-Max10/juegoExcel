@@ -489,11 +489,14 @@ img {
     pointer-events: none;
     z-index: 0;
     filter: blur(50px);
+    will-change: transform;
+    contain: layout style;
 }
 
 .metrics-blob {
     position: absolute;
     border-radius: 50%;
+    will-change: transform;
 }
 
 .metrics-blob--1 {
@@ -4203,6 +4206,7 @@ body.nav-open {
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
+    will-change: transform;
 }
 
 .hero-orbit--1 {

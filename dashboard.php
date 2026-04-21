@@ -38,9 +38,9 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 <head>
     <?php render_head(APP_NAME . ' | Panel'); ?>
     <style>
-        /* ── Dashboard Ambient Background ── */
-        .dash-ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-        .dash-ambient__orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;will-change:transform}
+        /* ── Ambient Background ── */
+        .dash-ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;contain:layout style}
+        .dash-ambient__orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;will-change:transform;contain:layout style}
         .dash-ambient__orb--1{width:400px;height:400px;top:-10%;left:-5%;background:rgba(33,115,70,.3);animation:dash-orb1 12s ease-in-out infinite alternate}
         .dash-ambient__orb--2{width:350px;height:350px;top:30%;right:-8%;background:rgba(59,130,246,.25);animation:dash-orb2 15s ease-in-out infinite alternate}
         .dash-ambient__orb--3{width:300px;height:300px;bottom:-5%;left:30%;background:rgba(250,204,21,.15);animation:dash-orb3 10s ease-in-out infinite alternate}
@@ -58,7 +58,7 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         @keyframes dashParticleFloat{0%{transform:translateY(100vh) rotate(0deg);opacity:0}8%{opacity:.6}50%{opacity:.8}92%{opacity:.6}100%{transform:translateY(-10vh) rotate(720deg);opacity:0}}
 
         /* ── Cursor glow follower ── */
-        .dash-cursor-glow{position:fixed;width:320px;height:320px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(51,196,129,.07),transparent 70%);transform:translate(-50%,-50%);transition:left .3s ease,top .3s ease;will-change:left,top}
+        .dash-cursor-glow{position:fixed;width:320px;height:320px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(51,196,129,.07),transparent 70%);top:0;left:0;will-change:transform;contain:layout style}
 
         /* ── Hero Welcome Card (enhanced) ── */
         .dash-welcome{position:relative;display:grid;grid-template-columns:1fr auto;align-items:center;gap:32px;padding:36px 40px;margin-bottom:28px;border-radius:var(--radius-xl);background:linear-gradient(135deg,rgba(17,24,39,.96),rgba(15,23,42,.92));border:1px solid rgba(51,196,129,.2);overflow:hidden;box-shadow:0 24px 70px rgba(2,6,23,.45);animation:welcomeEntrance .8s cubic-bezier(.22,1,.36,1) both}
@@ -936,10 +936,17 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
             var glow = document.createElement('div');
             glow.className = 'dash-cursor-glow';
             document.body.appendChild(glow);
+            var glowX = 0, glowY = 0, glowRaf = null;
             document.addEventListener('mousemove', function(e) {
-                glow.style.left = e.clientX + 'px';
-                glow.style.top = e.clientY + 'px';
-            });
+                glowX = e.clientX - 160;
+                glowY = e.clientY - 160;
+                if (!glowRaf) {
+                    glowRaf = requestAnimationFrame(function() {
+                        glow.style.transform = 'translate3d(' + glowX + 'px,' + glowY + 'px,0)';
+                        glowRaf = null;
+                    });
+                }
+            }, { passive: true });
         }
 
         /* ═══ Floating particles (enhanced with shapes) ═══ */
@@ -960,13 +967,16 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 
         /* ═══ Stat cards ripple on hover ═══ */
         document.querySelectorAll('.dash-stat').forEach(function(stat) {
+            var raf = null;
             stat.addEventListener('mousemove', function(e) {
-                var rect = stat.getBoundingClientRect();
-                var x = ((e.clientX - rect.left) / rect.width * 100);
-                var y = ((e.clientY - rect.top) / rect.height * 100);
-                stat.style.setProperty('--ripple-x', x + '%');
-                stat.style.setProperty('--ripple-y', y + '%');
-            });
+                if (raf) return;
+                raf = requestAnimationFrame(function() {
+                    var rect = stat.getBoundingClientRect();
+                    stat.style.setProperty('--ripple-x', ((e.clientX - rect.left) / rect.width * 100) + '%');
+                    stat.style.setProperty('--ripple-y', ((e.clientY - rect.top) / rect.height * 100) + '%');
+                    raf = null;
+                });
+            }, { passive: true });
         });
 
         /* ═══ Counter animation for stat values ═══ */
@@ -1072,12 +1082,17 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
         if (!window.matchMedia('(pointer: coarse)').matches) {
             var welcome = document.querySelector('.dash-welcome');
             if (welcome) {
+                var tiltRaf = null;
                 welcome.addEventListener('mousemove', function(e) {
-                    var rect = welcome.getBoundingClientRect();
-                    var px = (e.clientX - rect.left) / rect.width - 0.5;
-                    var py = (e.clientY - rect.top) / rect.height - 0.5;
-                    welcome.style.transform = 'perspective(1200px) rotateX(' + (py * -3) + 'deg) rotateY(' + (px * 3) + 'deg)';
-                });
+                    if (tiltRaf) return;
+                    tiltRaf = requestAnimationFrame(function() {
+                        var rect = welcome.getBoundingClientRect();
+                        var px = (e.clientX - rect.left) / rect.width - 0.5;
+                        var py = (e.clientY - rect.top) / rect.height - 0.5;
+                        welcome.style.transform = 'perspective(1200px) rotateX(' + (py * -3) + 'deg) rotateY(' + (px * 3) + 'deg)';
+                        tiltRaf = null;
+                    });
+                }, { passive: true });
                 welcome.addEventListener('mouseleave', function() {
                     welcome.style.transform = '';
                     welcome.style.transition = 'transform 0.5s ease';
@@ -1088,12 +1103,15 @@ $previewStart = max(1, $previewEnd - $previewSize + 1);
 
         /* ═══ Level card hover glow effect ═══ */
         document.querySelectorAll('.level-card:not([aria-disabled])').forEach(function(card) {
+            var lgRaf = null;
             card.addEventListener('mousemove', function(e) {
-                var rect = card.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                card.style.background = 'radial-gradient(circle at ' + x + 'px ' + y + 'px, rgba(255,255,255,.06), rgba(255,255,255,.02) 50%, rgba(255,255,255,.04))';
-            });
+                if (lgRaf) return;
+                lgRaf = requestAnimationFrame(function() {
+                    var rect = card.getBoundingClientRect();
+                    card.style.background = 'radial-gradient(circle at ' + (e.clientX - rect.left) + 'px ' + (e.clientY - rect.top) + 'px, rgba(255,255,255,.06), rgba(255,255,255,.02) 50%, rgba(255,255,255,.04))';
+                    lgRaf = null;
+                });
+            }, { passive: true });
             card.addEventListener('mouseleave', function() {
                 card.style.background = '';
             });

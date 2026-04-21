@@ -422,15 +422,19 @@ function initLevelCardTilt() {
     }
 
     document.querySelectorAll('[data-level-card]').forEach((card) => {
+        let raf = null;
         card.addEventListener('mousemove', (event) => {
-            const bounds = card.getBoundingClientRect();
-            const px = (event.clientX - bounds.left) / bounds.width;
-            const py = (event.clientY - bounds.top) / bounds.height;
-            const rotateY = (px - 0.5) * 7;
-            const rotateX = (0.5 - py) * 7;
-
-            card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-        });
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+                const bounds = card.getBoundingClientRect();
+                const px = (event.clientX - bounds.left) / bounds.width;
+                const py = (event.clientY - bounds.top) / bounds.height;
+                const rotateY = (px - 0.5) * 7;
+                const rotateX = (0.5 - py) * 7;
+                card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+                raf = null;
+            });
+        }, { passive: true });
 
         card.addEventListener('mouseleave', () => {
             card.style.transform = '';
@@ -510,17 +514,21 @@ function initHeroParallax() {
     if (!hero || window.matchMedia('(pointer: coarse)').matches) return;
 
     const orbits = hero.querySelectorAll('.hero-orbit');
+    let raf = null;
 
     hero.addEventListener('mousemove', (e) => {
-        const rect = hero.getBoundingClientRect();
-        const px = (e.clientX - rect.left) / rect.width - 0.5;
-        const py = (e.clientY - rect.top) / rect.height - 0.5;
-
-        orbits.forEach((orb, i) => {
-            const factor = (i + 1) * 8;
-            orb.style.transform = `translateX(${px * factor}px) translateY(${py * factor}px)`;
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+            const rect = hero.getBoundingClientRect();
+            const px = (e.clientX - rect.left) / rect.width - 0.5;
+            const py = (e.clientY - rect.top) / rect.height - 0.5;
+            orbits.forEach((orb, i) => {
+                const factor = (i + 1) * 8;
+                orb.style.transform = `translateX(${px * factor}px) translateY(${py * factor}px)`;
+            });
+            raf = null;
         });
-    });
+    }, { passive: true });
 
     hero.addEventListener('mouseleave', () => {
         orbits.forEach((orb) => {
@@ -576,12 +584,17 @@ function initMagneticButtons() {
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
     document.querySelectorAll('.hero__actions .button').forEach((btn) => {
+        let raf = null;
         btn.addEventListener('mousemove', (e) => {
-            const rect = btn.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            btn.style.transform = `translateY(-2px) translateX(${x * 0.15}px) translateY(${y * 0.15}px)`;
-        });
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translateY(-2px) translateX(${x * 0.15}px) translateY(${y * 0.15}px)`;
+                raf = null;
+            });
+        }, { passive: true });
 
         btn.addEventListener('mouseleave', () => {
             btn.style.transform = '';
