@@ -1259,21 +1259,56 @@ function generate_distractors(array $level, int $count = 3): array
     $normCorrect = normalize_formula($correct);
 
     $fnSwaps = [
+        // Matemáticas
         'SUMA' => 'PROMEDIO', 'PROMEDIO' => 'SUMA',
         'MAX' => 'MIN', 'MIN' => 'MAX',
+        'SUMAPRODUCTO' => 'SUMA',
+        'ENTERO' => 'TRUNCAR', 'TRUNCAR' => 'ENTERO',
+        'RESIDUO' => 'ENTERO', 'POTENCIA' => 'RAIZ', 'RAIZ' => 'POTENCIA',
+        'REDONDEAR.MAS' => 'REDONDEAR.MENOS', 'REDONDEAR.MENOS' => 'REDONDEAR.MAS',
+        // Búsqueda
         'BUSCARV' => 'BUSCARX', 'BUSCARX' => 'BUSCARV',
-        'CONTAR' => 'SUMA',
-        'SUMAR.SI' => 'CONTAR.SI', 'PROMEDIO.SI' => 'SUMAR.SI',
-        'CONTAR.SI.CONJUNTO' => 'SUMAR.SI.CONJUNTO', 'SUMAR.SI.CONJUNTO' => 'CONTAR.SI.CONJUNTO',
-        'CONTAR.SI' => 'SUMAR.SI',
         'INDICE' => 'BUSCARV', 'COINCIDIR' => 'CONTAR',
-        'SI.CONJUNTO' => 'SI',
+        // Conteo/suma condicional
+        'CONTAR' => 'SUMA',
+        'SUMAR.SI.CONJUNTO' => 'CONTAR.SI.CONJUNTO', 'CONTAR.SI.CONJUNTO' => 'SUMAR.SI.CONJUNTO',
+        'PROMEDIO.SI.CONJUNTO' => 'SUMAR.SI.CONJUNTO',
+        'SUMAR.SI' => 'CONTAR.SI', 'PROMEDIO.SI' => 'SUMAR.SI',
+        'CONTAR.SI' => 'SUMAR.SI',
+        'CONTARA' => 'CONTAR', 'CONTAR.BLANCO' => 'CONTARA',
+        // Lógicas
+        'SI.CONJUNTO' => 'SI', 'SI.ERROR' => 'SI', 'SI.ND' => 'SI.ERROR',
+        'Y(' => 'O(', 'O(' => 'Y(',
+        // Estadísticas
+        'MEDIANA' => 'PROMEDIO', 'MODA.UNO' => 'MEDIANA',
+        'K.ESIMO.MAYOR' => 'K.ESIMO.MENOR', 'K.ESIMO.MENOR' => 'K.ESIMO.MAYOR',
+        'DESVEST' => 'VAR', 'DESVEST.P' => 'DESVEST', 'VAR' => 'DESVEST',
+        'PERCENTIL' => 'CUARTIL', 'CUARTIL' => 'PERCENTIL',
+        // Texto
         'CONCATENAR' => 'LARGO', 'IZQUIERDA' => 'DERECHA', 'DERECHA' => 'IZQUIERDA',
         'ABS' => 'REDONDEAR', 'REDONDEAR' => 'ABS',
-        'Y(' => 'O(', 'O(' => 'Y(',
         'MAYUSC' => 'MINUSC', 'MINUSC' => 'MAYUSC',
-        'LARGO' => 'CONTAR',
-        'MED' => 'IZQUIERDA',
+        'LARGO' => 'CONTAR', 'MED' => 'IZQUIERDA',
+        'RECORTAR' => 'LIMPIAR', 'LIMPIAR' => 'RECORTAR',
+        'HALLAR' => 'ENCONTRAR', 'ENCONTRAR' => 'HALLAR',
+        'SUSTITUIR' => 'REEMPLAZAR', 'REEMPLAZAR' => 'SUSTITUIR',
+        'IGUAL' => 'LARGO', 'REPETIR' => 'LARGO',
+        'NOMPROPIO' => 'MAYUSC', 'VALOR' => 'ENTERO',
+        // Fechas
+        'HOY' => 'AHORA', 'AHORA' => 'HOY',
+        'AÑO' => 'MES', 'MES' => 'AÑO', 'DIA' => 'MES',
+        'DIASEM' => 'DIA', 'FECHA' => 'HOY',
+        'SIFECHA' => 'DIAS', 'DIAS' => 'SIFECHA',
+        'FIN.MES' => 'FECHA.MES', 'FECHA.MES' => 'FIN.MES',
+        'DIA.LAB' => 'DIAS.LAB', 'DIAS.LAB' => 'DIA.LAB',
+        'NUM.DE.SEMANA' => 'DIASEM',
+        'HORA' => 'MINUTO', 'MINUTO' => 'HORA', 'SEGUNDO' => 'MINUTO',
+        // Financieras
+        'PAGO' => 'VA', 'VA' => 'VF', 'VF' => 'VA',
+        'TASA' => 'NPER', 'NPER' => 'TASA',
+        'PAGOINT' => 'PAGOPRIN', 'PAGOPRIN' => 'PAGOINT',
+        // Misceláneas
+        'ELEGIR' => 'INDICE', 'TEXTO' => 'VALOR',
     ];
     foreach ($fnSwaps as $from => $to) {
         if (mb_stripos($correct, $from) !== false) {
