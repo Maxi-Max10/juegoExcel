@@ -13,7 +13,7 @@ $currentUser = is_logged_in() ? ($_SESSION['username'] ?? '') : '';
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <?php render_head(APP_NAME . ' | Ranking'); ?>
+    <?php render_head(APP_NAME . ' | Ranking', 'Ranking global de Excel Snake: los mejores jugadores clasificados por puntos y niveles completados. ¿Puedes llegar al top? Regístrate gratis y compite.'); ?>
     <style>
         /* ── Leaderboard Gaming Styles ── */
         .lb-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }

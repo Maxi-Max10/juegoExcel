@@ -1,0 +1,26 @@
+User-agent: *
+Allow: /
+Allow: /index.php
+Allow: /leaderboard.php
+Allow: /guia-excel.php
+Allow: /privacy.php
+Allow: /cookies.php
+Allow: /assets/
+
+# Don't crawl API endpoints, admin, auth flow, or user-specific pages
+Disallow: /api_
+Disallow: /admin/
+Disallow: /oauth_
+Disallow: /login.php
+Disallow: /logout.php
+Disallow: /register.php
+Disallow: /dashboard.php
+Disallow: /snake.php
+Disallow: /duel.php
+Disallow: /level.php
+Disallow: /submit_level.php
+Disallow: /verify_email.php
+Disallow: /resend_verification.php
+Disallow: /config/
+
+Sitemap: https://excelsnake.online/sitemap.xml.php

@@ -7,7 +7,7 @@ require_once __DIR__ . '/includes/layout.php';
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <?php render_head(APP_NAME . ' | Política de Privacidad'); ?>
+    <?php render_head(APP_NAME . ' | Política de Privacidad', 'Política de privacidad de Excel Snake: qué datos recopilamos, cómo los usamos y cómo protegemos tu información personal.'); ?>
 </head>
 <body class="legal-page">
     <div class="page-shell page-shell--legal">

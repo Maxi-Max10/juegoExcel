@@ -7,7 +7,7 @@ require_once __DIR__ . '/includes/layout.php';
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <?php render_head(APP_NAME . ' | Política de Cookies'); ?>
+    <?php render_head(APP_NAME . ' | Política de Cookies', 'Política de cookies de Excel Snake: qué cookies utilizamos, para qué sirven y cómo puedes gestionarlas desde tu navegador.'); ?>
 </head>
 <body class="legal-page">
     <div class="page-shell page-shell--legal">

@@ -13,7 +13,7 @@ $flash = get_flash();
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <?php render_head(APP_NAME . ' | Aprende Excel jugando'); ?>
+    <?php render_head(APP_NAME . ' | Aprende Excel jugando', 'Aprende fórmulas de Excel de forma gratuita con Excel Snake: un juego de serpiente con 200 niveles progresivos. Practica SUMA, BUSCARV, SI, SUMAR.SI y más. Empieza gratis ahora.'); ?>
 </head>
 <body class="landing-page">
     <!-- ═══ Background ambient ═══ -->
@@ -36,6 +36,7 @@ $flash = get_flash();
             <nav class="site-nav" id="main-nav">
                 <a href="#features">Ventajas</a>
                 <a href="#temario">Temario</a>
+                <a href="guia-excel.php">Guía Excel</a>
                 <a href="#acceso">Acceso</a>
                 <a href="leaderboard.php">Ranking</a>
             </nav>
@@ -312,6 +313,7 @@ $flash = get_flash();
             <div class="landing-footer__links">
                 <a href="privacy.php">Privacidad</a>
                 <a href="cookies.php">Cookies</a>
+                <a href="guia-excel.php">Guía Excel</a>
                 <a href="leaderboard.php">Ranking</a>
             </div>
             <p class="landing-footer__copy">&copy; <?= date('Y') ?> Excel Snake. Aprende jugando.</p>

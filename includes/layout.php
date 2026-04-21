@@ -1,11 +1,14 @@
 <?php
 declare(strict_types=1);
 
-function render_head(string $title): void
+function render_head(string $title, string $description = ''): void
 {
+    $defaultDesc = 'Excel Snake — Aprende fórmulas de Excel jugando. 200 niveles progresivos, desde SUMA hasta BUSCARV, con corrección instantánea y ranking global. 100% gratis.';
+    $metaDesc = $description !== '' ? $description : $defaultDesc;
     ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1">
+    <meta name="description" content="<?= htmlspecialchars($metaDesc, ENT_QUOTES, 'UTF-8') ?>">
     <meta name="theme-color" content="#0F172A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
